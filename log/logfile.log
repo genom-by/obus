@@ -1,618 +1,447 @@
-Sep,14 17:29:41 : Start logging
-Sep,15 17:12:53 : Start logging
-Sep,15 17:12:57 : Start logging
-Sep,15 17:14:30 : Start logging
-Sep,15 17:14:32 : Start logging
-Sep,15 17:14:39 : Start logging
-Sep,15 17:14:40 : Start logging
-Sep,15 17:15:47 : Start logging
-Sep,15 17:15:50 : Start logging
-Sep,15 17:15:52 : Start logging
-Sep,15 17:15:59 : Start logging
-Sep,15 17:16:02 : Start logging
-Sep,15 17:17:50 : Start logging
-Sep,15 17:17:50 : created and connected
-Sep,15 17:18:28 : Start logging
-Sep,15 17:18:28 : created and connected
-Sep,15 17:18:49 : Start logging
-Sep,15 17:18:49 : created and connected
-Sep,15 17:19:48 : Start logging
-Sep,15 17:20:01 : Start logging
-Sep,15 17:20:01 : created and connected
-Sep,15 17:20:23 : Start logging
-Sep,15 17:20:23 : created and connected
-Sep,15 17:20:47 : Start logging
-Sep,15 17:20:47 : created and connected
-Sep,15 17:25:08 : Start logging
-Sep,15 17:25:08 : created and connected
-Sep,15 17:29:08 : Start logging
-Sep,15 17:29:08 : created and connected
-Sep,15 17:29:11 : Start logging
-Sep,15 17:29:11 : created and connected
-Sep,15 17:29:28 : Start logging
-Sep,15 17:29:35 : Start logging
-Sep,15 17:29:35 : created and connected
-Sep,15 17:29:59 : Start logging
-Sep,15 17:29:59 : created and connected
-Sep,15 17:30:00 : Start logging
-Sep,15 17:30:00 : created and connected
-Sep,15 17:33:25 : Start logging
-Sep,15 17:33:25 : created and connected
-Sep,16 16:40:59 : Start logging
-Sep,16 16:41:09 : Start logging
-Sep,16 16:41:09 : created and connected
-Sep,16 16:46:36 : Start logging
-Sep,16 16:46:36 : created and connected
-Sep,19 16:39:20 : Start logging
-Sep,19 16:39:27 : Start logging
-Sep,19 16:39:27 : created and connected
-Sep,19 16:39:37 : Start logging
-Sep,19 16:39:37 : created and connected
-Sep,19 16:39:51 : Start logging
-Sep,19 16:39:51 : created and connected
-Sep,19 16:39:54 : Start logging
-Sep,19 16:39:54 : created and connected
-Sep,19 16:46:46 : Start logging
-Sep,19 16:55:40 : Start logging
-Sep,19 16:56:14 : Start logging
-Sep,19 16:56:18 : Start logging
-Sep,19 16:57:14 : Start logging
-Sep,19 16:57:14 : created and connected
-Sep,19 16:57:46 : Start logging
-Sep,19 16:57:46 : created and connected
-Sep,19 16:57:46 : error while saving into DB
-Sep,19 16:58:00 : Start logging
-Sep,19 16:58:00 : created and connected
-Sep,19 16:58:00 : error while saving into DB
-Sep,19 16:58:48 : Start logging
-Sep,19 16:58:48 : created and connected
-Sep,19 16:58:48 : error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:01:15 : Start logging
-Sep,19 17:01:39 : Start logging
-Sep,19 17:01:39 : created and connected
-Sep,19 17:01:39 : error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:01:40 : Start logging
-Sep,19 17:01:40 : created and connected
-Sep,19 17:01:40 : error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:15:06 : Start logging
-Sep,19 17:15:21 : Start logging
-Sep,19 17:15:21 : created and connected
-Sep,19 17:16:30 : Start logging
-Sep,19 17:16:30 : created and connected
-Sep,19 17:17:03 : Start logging
-Sep,19 17:17:03 : created and connected
-Sep,19 17:17:03 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:17:03 : error while saving into DB
-Sep,19 17:17:10 : Start logging
-Sep,19 17:17:10 : created and connected
-Sep,19 17:17:10 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:17:10 : error while saving into DB
-Sep,19 17:17:36 : Start logging
-Sep,19 17:17:36 : created and connected
-Sep,19 17:17:36 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:17:36 : error while saving into DB
-Sep,19 17:19:08 : Start logging
-Sep,19 17:19:08 : created and connected
-Sep,19 17:19:08 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:19:08 : error while saving into DB
-Sep,19 17:19:12 : Start logging
-Sep,19 17:19:12 : created and connected
-Sep,19 17:19:12 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:19:12 : error while saving into DB
-Sep,19 17:20:31 : Start logging
-Sep,19 17:20:31 : created and connected
-Sep,19 17:20:31 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:20:31 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:21:28 : Start logging
-Sep,19 17:21:28 : created and connected
-Sep,19 17:21:28 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:21:28 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:25:42 : Start logging
-Sep,19 17:25:42 : created and connected
-Sep,19 17:25:48 : Start logging
-Sep,19 17:25:48 : created and connected
-Sep,19 17:25:48 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:25:48 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,19 17:26:01 : Start logging
-Sep,19 17:26:01 : created and connected
-Sep,19 17:26:06 : Start logging
-Sep,19 17:26:06 : created and connected
-Sep,19 17:27:01 : Start logging
-Sep,19 17:27:01 : created and connected
-Sep,20 17:01:40 : Start logging
-Sep,20 17:02:31 : Start logging
-Sep,20 17:02:31 : created and connected
-Sep,20 17:03:08 : Start logging
-Sep,20 17:03:08 : created and connected
-Sep,20 17:03:08 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:03:08 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:03:18 : Start logging
-Sep,20 17:03:18 : created and connected
-Sep,20 17:14:49 : Start logging
-Sep,20 17:14:49 : created and connected
-Sep,20 17:16:13 : Start logging
-Sep,20 17:16:13 : SET NAMES utf8 - result: 
-Sep,20 17:16:13 : created and connected
-Sep,20 17:18:07 : Start logging
-Sep,20 17:18:07 : SET NAMES utf8 - failed 
-Sep,20 17:18:07 : created and connected
-Sep,20 17:18:07 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:18:07 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:18:13 : Start logging
-Sep,20 17:18:13 : SET NAMES utf8 - failed 
-Sep,20 17:18:13 : created and connected
-Sep,20 17:22:56 : Start logging
-Sep,20 17:22:56 : SET NAMES utf8 - failed 
-Sep,20 17:22:56 : created and connected
-Sep,20 17:22:56 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:22:56 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:22:57 : Start logging
-Sep,20 17:22:57 : SET NAMES utf8 - failed 
-Sep,20 17:22:57 : created and connected
-Sep,20 17:22:57 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:22:57 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,20 17:22:58 : Start logging
-Sep,20 17:23:06 : Start logging
-Sep,20 17:23:06 : SET NAMES utf8 - failed 
-Sep,20 17:23:06 : created and connected
-Sep,20 17:28:18 : Start logging
-Sep,20 17:28:18 : created and connected
-Sep,29 15:45:42 : Start logging
-Sep,29 15:45:42 : created and connected
-Sep,29 17:00:44 : Start logging
-Sep,29 17:00:44 : created and connected
-Sep,29 17:00:44 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,29 17:00:44 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,29 17:27:05 : Start logging
-Sep,29 17:27:48 : Start logging
-Sep,29 17:28:12 : Start logging
-Sep,29 17:28:34 : Start logging
-Sep,29 17:28:34 : created and connected
-Sep,29 17:28:34 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,29 17:28:34 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,29 17:28:52 : Start logging
-Sep,29 17:29:27 : Start logging
-Sep,29 17:30:55 : Start logging
-Sep,29 17:31:01 : Start logging
-Sep,29 17:31:06 : Start logging
-Sep,30 09:30:37 : Start logging
-Sep,30 09:31:12 : Start logging
-Sep,30 09:31:12 : created and connected
-Sep,30 10:08:14 : Start logging
-Sep,30 10:09:06 : Start logging
-Sep,30 10:09:06 : created and connected
-Sep,30 10:09:30 : Start logging
-Sep,30 10:09:30 : created and connected
-Sep,30 10:09:32 : Start logging
-Sep,30 10:09:32 : created and connected
-Sep,30 10:09:33 : Start logging
-Sep,30 10:09:33 : created and connected
-Sep,30 10:09:33 : Start logging
-Sep,30 10:09:33 : created and connected
-Sep,30 10:09:33 : Start logging
-Sep,30 10:09:33 : created and connected
-Sep,30 10:09:35 : Start logging
-Sep,30 10:09:35 : created and connected
-Sep,30 10:13:04 : Start logging
-Sep,30 10:13:04 : created and connected
-Sep,30 10:13:15 : Start logging
-Sep,30 10:13:15 : created and connected
-Sep,30 11:42:47 : Start logging
-Sep,30 11:42:47 : created and connected
-Sep,30 11:43:40 : Start logging
-Sep,30 11:43:40 : created and connected
-Sep,30 11:45:33 : Start logging
-Sep,30 11:45:33 : created and connected
-Sep,30 11:46:14 : Start logging
-Sep,30 11:46:14 : created and connected
-Sep,30 11:46:49 : Start logging
-Sep,30 11:46:49 : created and connected
-Sep,30 11:47:03 : Start logging
-Sep,30 11:47:03 : created and connected
-Sep,30 11:48:54 : Start logging
-Sep,30 11:48:54 : created and connected
-Sep,30 11:49:25 : Start logging
-Sep,30 11:49:25 : created and connected
-Sep,30 11:49:29 : Start logging
-Sep,30 11:49:29 : created and connected
-Sep,30 11:49:44 : Start logging
-Sep,30 11:49:44 : created and connected
-Sep,30 11:50:11 : Start logging
-Sep,30 11:50:11 : created and connected
-Sep,30 11:51:45 : Start logging
-Sep,30 11:51:45 : created and connected
-Sep,30 11:51:50 : Start logging
-Sep,30 11:51:50 : created and connected
-Sep,30 11:52:03 : Start logging
-Sep,30 11:52:03 : created and connected
-Sep,30 12:00:32 : Start logging
-Sep,30 12:00:32 : created and connected
-Sep,30 12:00:35 : Start logging
-Sep,30 12:00:35 : created and connected
-Sep,30 12:00:36 : Start logging
-Sep,30 12:00:36 : created and connected
-Sep,30 12:00:36 : Start logging
-Sep,30 12:00:36 : created and connected
-Sep,30 12:00:39 : Start logging
-Sep,30 12:00:39 : created and connected
-Sep,30 12:00:40 : Start logging
-Sep,30 12:00:40 : created and connected
-Sep,30 12:00:41 : Start logging
-Sep,30 12:00:41 : created and connected
-Sep,30 12:00:42 : Start logging
-Sep,30 12:00:42 : created and connected
-Sep,30 12:01:08 : Start logging
-Sep,30 12:01:08 : created and connected
-Sep,30 12:01:09 : Start logging
-Sep,30 12:01:09 : created and connected
-Sep,30 12:01:10 : Start logging
-Sep,30 12:01:10 : created and connected
-Sep,30 12:01:10 : Start logging
-Sep,30 12:01:10 : created and connected
-Sep,30 12:01:11 : Start logging
-Sep,30 12:01:11 : created and connected
-Sep,30 12:01:11 : Start logging
-Sep,30 12:01:11 : created and connected
-Sep,30 12:01:46 : Start logging
-Sep,30 12:01:46 : created and connected
-Sep,30 12:01:48 : Start logging
-Sep,30 12:01:48 : created and connected
-Sep,30 12:02:14 : Start logging
-Sep,30 12:02:14 : created and connected
-Sep,30 12:02:59 : Start logging
-Sep,30 12:02:59 : created and connected
-Sep,30 12:04:34 : Start logging
-Sep,30 12:04:34 : created and connected
-Sep,30 12:04:34 : Start logging
-Sep,30 12:04:34 : created and connected
-Sep,30 12:06:01 : Start logging
-Sep,30 12:06:01 : created and connected
-Sep,30 12:06:01 : Start logging
-Sep,30 12:06:01 : created and connected
-Sep,30 12:06:03 : Start logging
-Sep,30 12:06:03 : created and connected
-Sep,30 12:06:03 : Start logging
-Sep,30 12:06:03 : created and connected
-Sep,30 12:06:08 : Start logging
-Sep,30 12:06:08 : created and connected
-Sep,30 12:06:08 : Start logging
-Sep,30 12:06:08 : created and connected
-Sep,30 12:06:29 : Start logging
-Sep,30 12:06:29 : created and connected
-Sep,30 12:06:31 : Start logging
-Sep,30 12:06:31 : created and connected
-Sep,30 12:06:31 : Start logging
-Sep,30 12:06:31 : created and connected
-Sep,30 12:07:52 : Start logging
-Sep,30 12:07:52 : created and connected
-Sep,30 12:07:53 : Start logging
-Sep,30 12:07:53 : created and connected
-Sep,30 12:08:52 : Start logging
-Sep,30 12:08:52 : created and connected
-Sep,30 12:09:42 : Start logging
-Sep,30 12:09:42 : created and connected
-Sep,30 12:09:44 : Start logging
-Sep,30 12:09:44 : created and connected
-Sep,30 12:11:15 : Start logging
-Sep,30 12:11:15 : created and connected
-Sep,30 12:11:23 : Start logging
-Sep,30 12:11:23 : created and connected
-Sep,30 12:11:35 : Start logging
-Sep,30 12:11:35 : created and connected
-Sep,30 12:11:38 : Start logging
-Sep,30 12:11:38 : created and connected
-Sep,30 12:11:46 : Start logging
-Sep,30 12:11:46 : created and connected
-Sep,30 12:11:50 : Start logging
-Sep,30 12:11:50 : created and connected
-Sep,30 12:11:52 : Start logging
-Sep,30 12:11:52 : created and connected
-Sep,30 12:12:04 : Start logging
-Sep,30 12:12:04 : created and connected
-Sep,30 12:12:05 : Start logging
-Sep,30 12:12:05 : created and connected
-Sep,30 12:12:07 : Start logging
-Sep,30 12:12:07 : created and connected
-Sep,30 12:12:16 : Start logging
-Sep,30 12:12:16 : created and connected
-Sep,30 12:12:18 : Start logging
-Sep,30 12:12:18 : created and connected
-Sep,30 12:12:19 : Start logging
-Sep,30 12:12:19 : created and connected
-Sep,30 12:12:20 : Start logging
-Sep,30 12:12:20 : created and connected
-Sep,30 12:12:20 : Start logging
-Sep,30 12:12:20 : created and connected
-Sep,30 12:14:20 : Start logging
-Sep,30 12:14:20 : created and connected
-Sep,30 12:14:22 : Start logging
-Sep,30 12:14:22 : created and connected
-Sep,30 12:14:24 : Start logging
-Sep,30 12:14:24 : created and connected
-Sep,30 12:14:33 : Start logging
-Sep,30 12:14:33 : created and connected
-Sep,30 12:16:31 : Start logging
-Sep,30 12:16:31 : created and connected
-Sep,30 12:16:31 : Start logging
-Sep,30 12:16:31 : created and connected
-Sep,30 12:16:32 : Start logging
-Sep,30 12:16:32 : created and connected
-Sep,30 12:16:32 : Start logging
-Sep,30 12:16:32 : created and connected
-Sep,30 12:17:31 : Start logging
-Sep,30 12:17:31 : created and connected
-Sep,30 12:17:32 : Start logging
-Sep,30 12:17:32 : created and connected
-Sep,30 12:17:33 : Start logging
-Sep,30 12:17:33 : created and connected
-Sep,30 12:17:33 : Start logging
-Sep,30 12:17:33 : created and connected
-Sep,30 12:17:34 : Start logging
-Sep,30 12:17:34 : created and connected
-Sep,30 12:17:35 : Start logging
-Sep,30 12:17:35 : created and connected
-Sep,30 12:17:35 : Start logging
-Sep,30 12:17:35 : created and connected
-Sep,30 12:17:36 : Start logging
-Sep,30 12:17:36 : created and connected
-Sep,30 12:17:36 : Start logging
-Sep,30 12:17:36 : created and connected
-Sep,30 12:17:37 : Start logging
-Sep,30 12:17:37 : created and connected
-Sep,30 12:17:38 : Start logging
-Sep,30 12:17:38 : created and connected
-Sep,30 12:17:39 : Start logging
-Sep,30 12:17:39 : created and connected
-Sep,30 12:17:40 : Start logging
-Sep,30 12:17:40 : created and connected
-Sep,30 12:17:40 : Start logging
-Sep,30 12:17:40 : created and connected
-Sep,30 12:18:54 : Start logging
-Sep,30 12:18:54 : created and connected
-Sep,30 12:18:56 : Start logging
-Sep,30 12:18:56 : created and connected
-Sep,30 12:18:57 : Start logging
-Sep,30 12:18:57 : created and connected
-Sep,30 12:18:59 : Start logging
-Sep,30 12:18:59 : created and connected
-Sep,30 12:19:01 : Start logging
-Sep,30 12:19:01 : created and connected
-Sep,30 12:19:01 : Start logging
-Sep,30 12:19:01 : created and connected
-Sep,30 12:19:02 : Start logging
-Sep,30 12:19:02 : created and connected
-Sep,30 12:19:26 : Start logging
-Sep,30 12:19:26 : created and connected
-Sep,30 12:19:27 : Start logging
-Sep,30 12:19:27 : created and connected
-Sep,30 12:19:28 : Start logging
-Sep,30 12:19:28 : created and connected
-Sep,30 12:19:28 : Start logging
-Sep,30 12:19:28 : created and connected
-Sep,30 12:19:42 : Start logging
-Sep,30 12:19:42 : created and connected
-Sep,30 12:19:44 : Start logging
-Sep,30 12:19:44 : created and connected
-Sep,30 12:19:46 : Start logging
-Sep,30 12:19:46 : created and connected
-Sep,30 12:19:47 : Start logging
-Sep,30 12:19:47 : created and connected
-Sep,30 12:21:05 : Start logging
-Sep,30 12:21:05 : created and connected
-Sep,30 12:21:07 : Start logging
-Sep,30 12:21:07 : created and connected
-Sep,30 12:21:07 : Start logging
-Sep,30 12:21:07 : created and connected
-Sep,30 12:21:08 : Start logging
-Sep,30 12:21:08 : created and connected
-Sep,30 12:21:08 : Start logging
-Sep,30 12:21:08 : created and connected
-Sep,30 12:21:09 : Start logging
-Sep,30 12:21:09 : created and connected
-Sep,30 12:21:10 : Start logging
-Sep,30 12:21:10 : created and connected
-Sep,30 12:21:11 : Start logging
-Sep,30 12:21:11 : created and connected
-Sep,30 12:21:12 : Start logging
-Sep,30 12:21:12 : created and connected
-Sep,30 12:21:12 : Start logging
-Sep,30 12:21:12 : created and connected
-Sep,30 12:21:13 : Start logging
-Sep,30 12:21:13 : created and connected
-Sep,30 12:21:14 : Start logging
-Sep,30 12:21:14 : created and connected
-Sep,30 12:21:15 : Start logging
-Sep,30 12:21:15 : created and connected
-Sep,30 12:21:16 : Start logging
-Sep,30 12:21:16 : created and connected
-Sep,30 12:22:13 : Start logging
-Sep,30 12:22:13 : created and connected
-Sep,30 12:22:14 : Start logging
-Sep,30 12:22:14 : created and connected
-Sep,30 12:22:14 : Start logging
-Sep,30 12:22:14 : created and connected
-Sep,30 12:22:15 : Start logging
-Sep,30 12:22:15 : created and connected
-Sep,30 12:22:45 : Start logging
-Sep,30 12:22:45 : created and connected
-Sep,30 12:22:47 : Start logging
-Sep,30 12:22:47 : created and connected
-Sep,30 12:22:48 : Start logging
-Sep,30 12:22:48 : created and connected
-Sep,30 12:22:49 : Start logging
-Sep,30 12:22:49 : created and connected
-Sep,30 12:22:51 : Start logging
-Sep,30 12:22:51 : created and connected
-Sep,30 12:23:04 : Start logging
-Sep,30 12:23:04 : created and connected
-Sep,30 12:23:05 : Start logging
-Sep,30 12:23:05 : created and connected
-Sep,30 12:23:06 : Start logging
-Sep,30 12:23:06 : created and connected
-Sep,30 12:24:28 : Start logging
-Sep,30 12:24:28 : created and connected
-Sep,30 12:31:33 : Start logging
-Sep,30 12:31:33 : created and connected
-Sep,30 12:31:35 : Start logging
-Sep,30 12:31:35 : created and connected
-Sep,30 12:36:25 : Start logging
-Sep,30 12:36:25 : created and connected
-Sep,30 12:36:36 : Start logging
-Sep,30 12:36:36 : created and connected
-Sep,30 12:38:05 : Start logging
-Sep,30 12:38:05 : created and connected
-Sep,30 12:39:21 : Start logging
-Sep,30 12:39:21 : created and connected
-Sep,30 12:41:14 : Start logging
-Sep,30 12:41:14 : created and connected
-Sep,30 12:41:16 : Start logging
-Sep,30 12:41:16 : created and connected
-Sep,30 12:50:19 : Start logging
-Sep,30 12:51:47 : Start logging
-Sep,30 12:51:47 : created and connected
-Sep,30 12:55:34 : Start logging
-Sep,30 12:55:34 : created and connected
-Sep,30 13:01:50 : Start logging
-Sep,30 13:01:50 : created and connected
-Sep,30 13:02:04 : Start logging
-Sep,30 13:02:04 : created and connected
-Sep,30 13:02:56 : Start logging
-Sep,30 13:02:56 : created and connected
-Sep,30 13:02:56 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 13:02:56 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 13:05:06 : Start logging
-Sep,30 13:05:06 : created and connected
-Sep,30 13:05:16 : Start logging
-Sep,30 13:05:16 : created and connected
-Sep,30 13:06:35 : Start logging
-Sep,30 13:06:35 : created and connected
-Sep,30 13:08:07 : Start logging
-Sep,30 13:08:07 : created and connected
-Sep,30 13:08:12 : Start logging
-Sep,30 13:08:12 : created and connected
-Sep,30 13:09:17 : Start logging
-Sep,30 13:09:17 : created and connected
-Sep,30 13:09:17 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 13:09:17 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 13:09:34 : Start logging
-Sep,30 13:09:34 : created and connected
-Sep,30 14:50:57 : Start logging
-Sep,30 14:50:57 : created and connected
-Sep,30 14:51:01 : Start logging
-Sep,30 14:51:01 : created and connected
-Sep,30 14:51:10 : Start logging
-Sep,30 14:51:10 : created and connected
-Sep,30 14:51:23 : Start logging
-Sep,30 14:51:23 : created and connected
-Sep,30 15:03:33 : Start logging
-Sep,30 15:03:52 : Start logging
-Sep,30 15:03:52 : created and connected
-Sep,30 15:06:11 : Start logging
-Sep,30 15:06:11 : created and connected
-Sep,30 15:06:12 : Start logging
-Sep,30 15:06:12 : created and connected
-Sep,30 15:06:15 : Start logging
-Sep,30 15:06:15 : created and connected
-Sep,30 15:06:52 : Start logging
-Sep,30 15:06:52 : created and connected
-Sep,30 15:06:56 : Start logging
-Sep,30 15:06:56 : created and connected
-Sep,30 15:12:57 : Start logging
-Sep,30 15:12:57 : created and connected
-Sep,30 15:13:00 : Start logging
-Sep,30 15:13:00 : created and connected
-Sep,30 15:13:02 : Start logging
-Sep,30 15:13:02 : created and connected
-Sep,30 15:14:03 : Start logging
-Sep,30 15:14:03 : created and connected
-Sep,30 15:14:14 : Start logging
-Sep,30 15:14:15 : created and connected
-Sep,30 15:15:43 : Start logging
-Sep,30 15:15:43 : created and connected
-Sep,30 15:18:11 : Start logging
-Sep,30 15:18:11 : created and connected
-Sep,30 15:19:32 : Start logging
-Sep,30 15:19:32 : created and connected
-Sep,30 15:20:44 : Start logging
-Sep,30 15:20:44 : created and connected
-Sep,30 15:20:47 : Start logging
-Sep,30 15:20:47 : created and connected
-Sep,30 15:20:48 : Start logging
-Sep,30 15:20:48 : created and connected
-Sep,30 15:20:48 : Start logging
-Sep,30 15:20:48 : created and connected
-Sep,30 15:20:48 : Start logging
-Sep,30 15:20:48 : created and connected
-Sep,30 15:20:49 : Start logging
-Sep,30 15:20:49 : created and connected
-Sep,30 15:20:57 : Start logging
-Sep,30 15:20:57 : created and connected
-Sep,30 15:21:00 : Start logging
-Sep,30 15:21:00 : created and connected
-Sep,30 15:21:00 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:21:00 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:36:32 : Start logging
-Sep,30 15:41:30 : Start logging
-Sep,30 15:41:30 : created and connected
-Sep,30 15:41:32 : Start logging
-Sep,30 15:41:32 : created and connected
-Sep,30 15:41:38 : Start logging
-Sep,30 15:41:38 : created and connected
-Sep,30 15:41:38 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:41:38 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:42:23 : Start logging
-Sep,30 15:42:23 : created and connected
-Sep,30 15:42:26 : Start logging
-Sep,30 15:42:26 : created and connected
-Sep,30 15:42:26 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:42:26 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:42:35 : Start logging
-Sep,30 15:42:35 : created and connected
-Sep,30 15:42:35 : Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:42:35 : error while saving into DB: Error while saving into DB: SQLSTATE[23000]: Integrity constraint violation: 19 column name is not unique
-Sep,30 15:43:09 : Start logging
-Sep,30 15:43:09 : created and connected
-Sep,30 16:09:19 : Start logging
-Sep,30 16:09:19 : created and connected
-Sep,30 16:09:50 : Start logging
-Sep,30 16:09:50 : created and connected
-Sep,30 16:11:17 : Start logging
-Sep,30 16:11:17 : created and connected
-Sep,30 16:11:53 : Start logging
-Sep,30 16:11:53 : created and connected
-Sep,30 16:11:54 : Start logging
-Sep,30 16:11:54 : created and connected
-Sep,30 16:11:55 : Start logging
-Sep,30 16:11:55 : created and connected
-Sep,30 16:13:19 : Start logging
-Sep,30 16:13:19 : created and connected
-Sep,30 16:16:45 : Start logging
-Sep,30 16:16:45 : created and connected
-Sep,30 16:20:33 : Start logging
-Sep,30 16:20:33 : created and connected
-Sep,30 16:39:21 : Start logging
-Sep,30 16:39:21 : created and connected
-Sep,30 16:39:38 : Start logging
-Sep,30 16:39:38 : created and connected
-Sep,30 16:40:39 : Start logging
-Sep,30 16:40:39 : created and connected
-Sep,30 16:50:47 : Start logging
-Sep,30 16:50:47 : created and connected
-Sep,30 16:55:04 : Start logging
-Sep,30 16:55:04 : created and connected
-Sep,30 17:09:59 : Start logging
-Sep,30 17:09:59 : created and connected
-Sep,30 17:10:14 : Start logging
-Sep,30 17:10:14 : created and connected
-Sep,30 17:11:24 : Start logging
-Sep,30 17:11:24 : created and connected
-Sep,30 17:14:07 : Start logging
-Sep,30 17:14:07 : created and connected
-Sep,30 17:14:13 : Start logging
-Sep,30 17:14:13 : created and connected
-Sep,30 17:14:14 : Start logging
-Sep,30 17:14:14 : created and connected
-Sep,30 17:14:58 : Start logging
-Sep,30 17:14:59 : created and connected
-Sep,30 17:15:00 : Start logging
-Sep,30 17:15:00 : created and connected
+Jan,11 17:22:45 : created and connected
+Jan,11 17:24:06 : created and connected
+Jan,11 17:24:50 : created and connected
+Jan,11 17:25:26 : created and connected
+Jan,11 17:31:57 : Start logging
+Jan,11 17:31:57 : created and connected
+Jan,11 17:32:49 : Start logging
+Jan,11 17:32:49 : created and connected
+Jan,11 17:32:49 : here
+Jan,11 17:32:49 : stop[id_itinerary]=1
+Jan,11 17:32:49 : stop[id_itinerary]=1
+Jan,11 17:32:49 : stop[id_itinerary]=1
+Jan,11 17:32:49 : stop[id_itinerary]=5
+Jan,11 17:32:49 : stop[id_itinerary]=5
+Jan,11 17:32:49 : stop[id_itinerary]=5
+Jan,11 17:32:49 : stop[id_itinerary]=6
+Jan,11 17:32:49 : stop[id_itinerary]=6
+Jan,11 17:32:49 : stop[id_itinerary]=6
+Jan,11 17:32:49 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,11 17:33:31 : Start logging
+Jan,11 17:33:31 : created and connected
+Jan,11 17:33:31 : here
+Jan,11 17:33:31 : stop[id_itinerary]=1
+Jan,11 17:33:31 : stop[id_itinerary]=1
+Jan,11 17:33:31 : stop[id_itinerary]=1
+Jan,11 17:33:31 : stop[id_itinerary]=5
+Jan,11 17:33:31 : stop[id_itinerary]=5
+Jan,11 17:33:31 : stop[id_itinerary]=5
+Jan,11 17:33:31 : stop[id_itinerary]=6
+Jan,11 17:33:31 : stop[id_itinerary]=6
+Jan,11 17:33:31 : stop[id_itinerary]=6
+Jan,11 17:33:31 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:10:04 : Start logging
+Jan,21 16:10:04 : created and connected
+Jan,21 16:10:04 : here
+Jan,21 16:10:04 : stop[id_itinerary]=1
+Jan,21 16:10:04 : stop[id_itinerary]=1
+Jan,21 16:10:04 : stop[id_itinerary]=1
+Jan,21 16:10:04 : stop[id_itinerary]=5
+Jan,21 16:10:04 : stop[id_itinerary]=5
+Jan,21 16:10:04 : stop[id_itinerary]=5
+Jan,21 16:10:04 : stop[id_itinerary]=6
+Jan,21 16:10:04 : stop[id_itinerary]=6
+Jan,21 16:10:04 : stop[id_itinerary]=6
+Jan,21 16:10:04 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:10:17 : created and connected
+Jan,21 16:10:17 : here
+Jan,21 16:10:17 : stop[id_itinerary]=1
+Jan,21 16:10:17 : stop[id_itinerary]=1
+Jan,21 16:10:17 : stop[id_itinerary]=1
+Jan,21 16:10:17 : stop[id_itinerary]=5
+Jan,21 16:10:17 : stop[id_itinerary]=5
+Jan,21 16:10:17 : stop[id_itinerary]=5
+Jan,21 16:10:17 : stop[id_itinerary]=6
+Jan,21 16:10:17 : stop[id_itinerary]=6
+Jan,21 16:10:17 : stop[id_itinerary]=6
+Jan,21 16:10:17 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:19:39 : Start logging
+Jan,21 16:19:39 : created and connected
+Jan,21 16:19:39 : here
+Jan,21 16:19:39 : stop[id_itinerary]=1
+Jan,21 16:19:39 : stop[id_itinerary]=1
+Jan,21 16:19:39 : stop[id_itinerary]=1
+Jan,21 16:19:39 : stop[id_itinerary]=5
+Jan,21 16:19:39 : stop[id_itinerary]=5
+Jan,21 16:19:39 : stop[id_itinerary]=5
+Jan,21 16:19:39 : stop[id_itinerary]=6
+Jan,21 16:19:39 : stop[id_itinerary]=6
+Jan,21 16:19:39 : stop[id_itinerary]=6
+Jan,21 16:19:39 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:46:23 : Start logging
+Jan,21 16:46:23 : created and connected
+Jan,21 16:46:23 : here
+Jan,21 16:46:23 : stop[id_itinerary]=1
+Jan,21 16:46:23 : stop[id_itinerary]=1
+Jan,21 16:46:23 : stop[id_itinerary]=1
+Jan,21 16:46:23 : stop[id_itinerary]=5
+Jan,21 16:46:23 : stop[id_itinerary]=5
+Jan,21 16:46:23 : stop[id_itinerary]=5
+Jan,21 16:46:23 : stop[id_itinerary]=6
+Jan,21 16:46:23 : stop[id_itinerary]=6
+Jan,21 16:46:23 : stop[id_itinerary]=6
+Jan,21 16:46:23 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:47:58 : Start logging
+Jan,21 16:47:58 : created and connected
+Jan,21 16:47:58 : here
+Jan,21 16:47:58 : stop[id_itinerary]=1
+Jan,21 16:47:58 : stop[id_itinerary]=1
+Jan,21 16:47:58 : stop[id_itinerary]=1
+Jan,21 16:47:58 : stop[id_itinerary]=5
+Jan,21 16:47:58 : stop[id_itinerary]=5
+Jan,21 16:47:58 : stop[id_itinerary]=5
+Jan,21 16:47:58 : stop[id_itinerary]=6
+Jan,21 16:47:58 : stop[id_itinerary]=6
+Jan,21 16:47:58 : stop[id_itinerary]=6
+Jan,21 16:47:58 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:51:02 : Start logging
+Jan,21 16:51:02 : created and connected
+Jan,21 16:51:02 : here
+Jan,21 16:51:02 : stop[id_itinerary]=1
+Jan,21 16:51:02 : stop[id_itinerary]=1
+Jan,21 16:51:02 : stop[id_itinerary]=1
+Jan,21 16:51:02 : stop[id_itinerary]=5
+Jan,21 16:51:02 : stop[id_itinerary]=5
+Jan,21 16:51:02 : stop[id_itinerary]=5
+Jan,21 16:51:02 : stop[id_itinerary]=6
+Jan,21 16:51:02 : stop[id_itinerary]=6
+Jan,21 16:51:02 : stop[id_itinerary]=6
+Jan,21 16:51:02 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:55:04 : Start logging
+Jan,21 16:55:04 : created and connected
+Jan,21 16:55:04 : here
+Jan,21 16:55:04 : stop[id_itinerary]=1
+Jan,21 16:55:04 : stop[id_itinerary]=1
+Jan,21 16:55:04 : stop[id_itinerary]=1
+Jan,21 16:55:04 : stop[id_itinerary]=5
+Jan,21 16:55:04 : stop[id_itinerary]=5
+Jan,21 16:55:04 : stop[id_itinerary]=5
+Jan,21 16:55:04 : stop[id_itinerary]=6
+Jan,21 16:55:04 : stop[id_itinerary]=6
+Jan,21 16:55:04 : stop[id_itinerary]=6
+Jan,21 16:55:04 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 16:59:42 : Start logging
+Jan,21 16:59:42 : created and connected
+Jan,21 16:59:42 : here
+Jan,21 16:59:42 : stop[id_itinerary]=1
+Jan,21 16:59:42 : stop[id_itinerary]=1
+Jan,21 16:59:42 : stop[id_itinerary]=1
+Jan,21 16:59:42 : stop[id_itinerary]=5
+Jan,21 16:59:42 : stop[id_itinerary]=5
+Jan,21 16:59:42 : stop[id_itinerary]=5
+Jan,21 16:59:42 : stop[id_itinerary]=6
+Jan,21 16:59:42 : stop[id_itinerary]=6
+Jan,21 16:59:42 : stop[id_itinerary]=6
+Jan,21 16:59:42 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:11:15 : Start logging
+Jan,21 17:11:15 : created and connected
+Jan,21 17:11:15 : here
+Jan,21 17:11:15 : stop[id_itinerary]=1
+Jan,21 17:11:15 : stop[id_itinerary]=1
+Jan,21 17:11:15 : stop[id_itinerary]=1
+Jan,21 17:11:15 : stop[id_itinerary]=5
+Jan,21 17:11:15 : stop[id_itinerary]=5
+Jan,21 17:11:15 : stop[id_itinerary]=5
+Jan,21 17:11:15 : stop[id_itinerary]=6
+Jan,21 17:11:15 : stop[id_itinerary]=6
+Jan,21 17:11:15 : stop[id_itinerary]=6
+Jan,21 17:11:15 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:11:37 : Start logging
+Jan,21 17:11:37 : created and connected
+Jan,21 17:11:37 : here
+Jan,21 17:11:37 : stop[id_itinerary]=1
+Jan,21 17:11:37 : stop[id_itinerary]=1
+Jan,21 17:11:37 : stop[id_itinerary]=1
+Jan,21 17:11:37 : stop[id_itinerary]=5
+Jan,21 17:11:37 : stop[id_itinerary]=5
+Jan,21 17:11:37 : stop[id_itinerary]=5
+Jan,21 17:11:37 : stop[id_itinerary]=6
+Jan,21 17:11:37 : stop[id_itinerary]=6
+Jan,21 17:11:37 : stop[id_itinerary]=6
+Jan,21 17:11:37 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:12:39 : Start logging
+Jan,21 17:12:39 : created and connected
+Jan,21 17:12:39 : here
+Jan,21 17:12:39 : stop[id_itinerary]=1
+Jan,21 17:12:39 : stop[id_itinerary]=1
+Jan,21 17:12:39 : stop[id_itinerary]=1
+Jan,21 17:12:39 : stop[id_itinerary]=5
+Jan,21 17:12:39 : stop[id_itinerary]=5
+Jan,21 17:12:39 : stop[id_itinerary]=5
+Jan,21 17:12:39 : stop[id_itinerary]=6
+Jan,21 17:12:39 : stop[id_itinerary]=6
+Jan,21 17:12:39 : stop[id_itinerary]=6
+Jan,21 17:12:39 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:12:42 : Start logging
+Jan,21 17:12:42 : created and connected
+Jan,21 17:12:42 : here
+Jan,21 17:12:42 : stop[id_itinerary]=1
+Jan,21 17:12:42 : stop[id_itinerary]=1
+Jan,21 17:12:42 : stop[id_itinerary]=1
+Jan,21 17:12:42 : stop[id_itinerary]=5
+Jan,21 17:12:42 : stop[id_itinerary]=5
+Jan,21 17:12:42 : stop[id_itinerary]=5
+Jan,21 17:12:42 : stop[id_itinerary]=6
+Jan,21 17:12:42 : stop[id_itinerary]=6
+Jan,21 17:12:42 : stop[id_itinerary]=6
+Jan,21 17:12:42 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:13:27 : Start logging
+Jan,21 17:13:27 : created and connected
+Jan,21 17:13:27 : here
+Jan,21 17:13:27 : stop[id_itinerary]=1
+Jan,21 17:13:27 : stop[id_itinerary]=1
+Jan,21 17:13:27 : stop[id_itinerary]=1
+Jan,21 17:13:27 : stop[id_itinerary]=5
+Jan,21 17:13:27 : stop[id_itinerary]=5
+Jan,21 17:13:27 : stop[id_itinerary]=5
+Jan,21 17:13:27 : stop[id_itinerary]=6
+Jan,21 17:13:27 : stop[id_itinerary]=6
+Jan,21 17:13:27 : stop[id_itinerary]=6
+Jan,21 17:13:27 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:13:33 : Start logging
+Jan,21 17:13:33 : created and connected
+Jan,21 17:13:33 : here
+Jan,21 17:13:33 : stop[id_itinerary]=1
+Jan,21 17:13:33 : stop[id_itinerary]=1
+Jan,21 17:13:33 : stop[id_itinerary]=1
+Jan,21 17:13:33 : stop[id_itinerary]=5
+Jan,21 17:13:33 : stop[id_itinerary]=5
+Jan,21 17:13:33 : stop[id_itinerary]=5
+Jan,21 17:13:33 : stop[id_itinerary]=6
+Jan,21 17:13:33 : stop[id_itinerary]=6
+Jan,21 17:13:33 : stop[id_itinerary]=6
+Jan,21 17:13:33 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:13:44 : Start logging
+Jan,21 17:13:44 : created and connected
+Jan,21 17:13:44 : here
+Jan,21 17:13:44 : stop[id_itinerary]=1
+Jan,21 17:13:44 : stop[id_itinerary]=1
+Jan,21 17:13:44 : stop[id_itinerary]=1
+Jan,21 17:13:44 : stop[id_itinerary]=5
+Jan,21 17:13:44 : stop[id_itinerary]=5
+Jan,21 17:13:44 : stop[id_itinerary]=5
+Jan,21 17:13:44 : stop[id_itinerary]=6
+Jan,21 17:13:44 : stop[id_itinerary]=6
+Jan,21 17:13:44 : stop[id_itinerary]=6
+Jan,21 17:13:44 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:14:13 : Start logging
+Jan,21 17:14:13 : created and connected
+Jan,21 17:14:13 : here
+Jan,21 17:14:13 : stop[id_itinerary]=1
+Jan,21 17:14:13 : stop[id_itinerary]=1
+Jan,21 17:14:13 : stop[id_itinerary]=1
+Jan,21 17:14:13 : stop[id_itinerary]=5
+Jan,21 17:14:13 : stop[id_itinerary]=5
+Jan,21 17:14:13 : stop[id_itinerary]=5
+Jan,21 17:14:13 : stop[id_itinerary]=6
+Jan,21 17:14:13 : stop[id_itinerary]=6
+Jan,21 17:14:13 : stop[id_itinerary]=6
+Jan,21 17:14:13 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:14:58 : Start logging
+Jan,21 17:14:58 : created and connected
+Jan,21 17:14:58 : here
+Jan,21 17:14:58 : stop[id_itinerary]=1
+Jan,21 17:14:58 : stop[id_itinerary]=1
+Jan,21 17:14:58 : stop[id_itinerary]=1
+Jan,21 17:14:58 : stop[id_itinerary]=5
+Jan,21 17:14:58 : stop[id_itinerary]=5
+Jan,21 17:14:58 : stop[id_itinerary]=5
+Jan,21 17:14:58 : stop[id_itinerary]=6
+Jan,21 17:14:58 : stop[id_itinerary]=6
+Jan,21 17:14:58 : stop[id_itinerary]=6
+Jan,21 17:14:58 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:15:38 : Start logging
+Jan,21 17:15:38 : created and connected
+Jan,21 17:15:38 : here
+Jan,21 17:15:38 : stop[id_itinerary]=1
+Jan,21 17:15:38 : stop[id_itinerary]=1
+Jan,21 17:15:38 : stop[id_itinerary]=1
+Jan,21 17:15:38 : stop[id_itinerary]=5
+Jan,21 17:15:38 : stop[id_itinerary]=5
+Jan,21 17:15:38 : stop[id_itinerary]=5
+Jan,21 17:15:38 : stop[id_itinerary]=6
+Jan,21 17:15:38 : stop[id_itinerary]=6
+Jan,21 17:15:38 : stop[id_itinerary]=6
+Jan,21 17:15:38 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:15:41 : Start logging
+Jan,21 17:15:41 : created and connected
+Jan,21 17:15:41 : here
+Jan,21 17:15:41 : stop[id_itinerary]=1
+Jan,21 17:15:41 : stop[id_itinerary]=1
+Jan,21 17:15:41 : stop[id_itinerary]=1
+Jan,21 17:15:41 : stop[id_itinerary]=5
+Jan,21 17:15:41 : stop[id_itinerary]=5
+Jan,21 17:15:41 : stop[id_itinerary]=5
+Jan,21 17:15:41 : stop[id_itinerary]=6
+Jan,21 17:15:41 : stop[id_itinerary]=6
+Jan,21 17:15:41 : stop[id_itinerary]=6
+Jan,21 17:15:41 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:16:21 : Start logging
+Jan,21 17:16:21 : created and connected
+Jan,21 17:16:21 : here
+Jan,21 17:16:21 : stop[id_itinerary]=1
+Jan,21 17:16:21 : stop[id_itinerary]=1
+Jan,21 17:16:21 : stop[id_itinerary]=1
+Jan,21 17:16:21 : stop[id_itinerary]=5
+Jan,21 17:16:21 : stop[id_itinerary]=5
+Jan,21 17:16:21 : stop[id_itinerary]=5
+Jan,21 17:16:21 : stop[id_itinerary]=6
+Jan,21 17:16:21 : stop[id_itinerary]=6
+Jan,21 17:16:21 : stop[id_itinerary]=6
+Jan,21 17:16:21 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:16:29 : Start logging
+Jan,21 17:16:29 : created and connected
+Jan,21 17:16:29 : here
+Jan,21 17:16:29 : stop[id_itinerary]=1
+Jan,21 17:16:29 : stop[id_itinerary]=1
+Jan,21 17:16:29 : stop[id_itinerary]=1
+Jan,21 17:16:29 : stop[id_itinerary]=5
+Jan,21 17:16:29 : stop[id_itinerary]=5
+Jan,21 17:16:29 : stop[id_itinerary]=5
+Jan,21 17:16:29 : stop[id_itinerary]=6
+Jan,21 17:16:29 : stop[id_itinerary]=6
+Jan,21 17:16:29 : stop[id_itinerary]=6
+Jan,21 17:16:29 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:16:59 : Start logging
+Jan,21 17:16:59 : created and connected
+Jan,21 17:16:59 : here
+Jan,21 17:16:59 : stop[id_itinerary]=1
+Jan,21 17:16:59 : stop[id_itinerary]=1
+Jan,21 17:16:59 : stop[id_itinerary]=1
+Jan,21 17:16:59 : stop[id_itinerary]=5
+Jan,21 17:16:59 : stop[id_itinerary]=5
+Jan,21 17:16:59 : stop[id_itinerary]=5
+Jan,21 17:16:59 : stop[id_itinerary]=6
+Jan,21 17:16:59 : stop[id_itinerary]=6
+Jan,21 17:16:59 : stop[id_itinerary]=6
+Jan,21 17:16:59 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:18:44 : Start logging
+Jan,21 17:18:44 : created and connected
+Jan,21 17:18:44 : here
+Jan,21 17:18:44 : stop[id_itinerary]=1
+Jan,21 17:18:44 : stop[id_itinerary]=1
+Jan,21 17:18:44 : stop[id_itinerary]=1
+Jan,21 17:18:44 : stop[id_itinerary]=5
+Jan,21 17:18:44 : stop[id_itinerary]=5
+Jan,21 17:18:44 : stop[id_itinerary]=5
+Jan,21 17:18:44 : stop[id_itinerary]=6
+Jan,21 17:18:44 : stop[id_itinerary]=6
+Jan,21 17:18:44 : stop[id_itinerary]=6
+Jan,21 17:18:44 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:19:22 : Start logging
+Jan,21 17:19:22 : created and connected
+Jan,21 17:19:22 : here
+Jan,21 17:19:22 : stop[id_itinerary]=1
+Jan,21 17:19:22 : stop[id_itinerary]=1
+Jan,21 17:19:22 : stop[id_itinerary]=1
+Jan,21 17:19:22 : stop[id_itinerary]=5
+Jan,21 17:19:22 : stop[id_itinerary]=5
+Jan,21 17:19:22 : stop[id_itinerary]=5
+Jan,21 17:19:22 : stop[id_itinerary]=6
+Jan,21 17:19:22 : stop[id_itinerary]=6
+Jan,21 17:19:22 : stop[id_itinerary]=6
+Jan,21 17:19:22 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:19:30 : Start logging
+Jan,21 17:19:30 : created and connected
+Jan,21 17:19:30 : here
+Jan,21 17:19:30 : stop[id_itinerary]=1
+Jan,21 17:19:30 : stop[id_itinerary]=1
+Jan,21 17:19:30 : stop[id_itinerary]=1
+Jan,21 17:19:30 : stop[id_itinerary]=5
+Jan,21 17:19:30 : stop[id_itinerary]=5
+Jan,21 17:19:30 : stop[id_itinerary]=5
+Jan,21 17:19:30 : stop[id_itinerary]=6
+Jan,21 17:19:30 : stop[id_itinerary]=6
+Jan,21 17:19:30 : stop[id_itinerary]=6
+Jan,21 17:19:30 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:19:43 : Start logging
+Jan,21 17:19:43 : created and connected
+Jan,21 17:19:43 : here
+Jan,21 17:19:43 : stop[id_itinerary]=1
+Jan,21 17:19:43 : stop[id_itinerary]=1
+Jan,21 17:19:43 : stop[id_itinerary]=1
+Jan,21 17:19:43 : stop[id_itinerary]=5
+Jan,21 17:19:43 : stop[id_itinerary]=5
+Jan,21 17:19:43 : stop[id_itinerary]=5
+Jan,21 17:19:43 : stop[id_itinerary]=6
+Jan,21 17:19:43 : stop[id_itinerary]=6
+Jan,21 17:19:43 : stop[id_itinerary]=6
+Jan,21 17:19:43 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:26:33 : Start logging
+Jan,21 17:26:33 : created and connected
+Jan,21 17:26:33 : here
+Jan,21 17:26:33 : stop[id_itinerary]=1
+Jan,21 17:26:33 : stop[id_itinerary]=1
+Jan,21 17:26:33 : stop[id_itinerary]=1
+Jan,21 17:26:33 : stop[id_itinerary]=5
+Jan,21 17:26:33 : stop[id_itinerary]=5
+Jan,21 17:26:33 : stop[id_itinerary]=5
+Jan,21 17:26:33 : stop[id_itinerary]=6
+Jan,21 17:26:33 : stop[id_itinerary]=6
+Jan,21 17:26:33 : stop[id_itinerary]=6
+Jan,21 17:26:33 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:30:30 : Start logging
+Jan,21 17:30:30 : created and connected
+Jan,21 17:30:30 : here
+Jan,21 17:30:30 : stop[id_itinerary]=1
+Jan,21 17:30:30 : stop[id_itinerary]=1
+Jan,21 17:30:30 : stop[id_itinerary]=1
+Jan,21 17:30:30 : stop[id_itinerary]=5
+Jan,21 17:30:30 : stop[id_itinerary]=5
+Jan,21 17:30:30 : stop[id_itinerary]=5
+Jan,21 17:30:30 : stop[id_itinerary]=6
+Jan,21 17:30:30 : stop[id_itinerary]=6
+Jan,21 17:30:30 : stop[id_itinerary]=6
+Jan,21 17:30:30 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:30:51 : Start logging
+Jan,21 17:30:51 : created and connected
+Jan,21 17:30:51 : here
+Jan,21 17:30:51 : stop[id_itinerary]=1
+Jan,21 17:30:51 : stop[id_itinerary]=1
+Jan,21 17:30:51 : stop[id_itinerary]=1
+Jan,21 17:30:51 : stop[id_itinerary]=5
+Jan,21 17:30:51 : stop[id_itinerary]=5
+Jan,21 17:30:51 : stop[id_itinerary]=5
+Jan,21 17:30:51 : stop[id_itinerary]=6
+Jan,21 17:30:51 : stop[id_itinerary]=6
+Jan,21 17:30:51 : stop[id_itinerary]=6
+Jan,21 17:30:51 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:31:34 : Start logging
+Jan,21 17:31:34 : created and connected
+Jan,21 17:31:34 : here
+Jan,21 17:31:34 : stop[id_itinerary]=1
+Jan,21 17:31:34 : stop[id_itinerary]=1
+Jan,21 17:31:34 : stop[id_itinerary]=1
+Jan,21 17:31:34 : stop[id_itinerary]=5
+Jan,21 17:31:34 : stop[id_itinerary]=5
+Jan,21 17:31:34 : stop[id_itinerary]=5
+Jan,21 17:31:34 : stop[id_itinerary]=6
+Jan,21 17:31:34 : stop[id_itinerary]=6
+Jan,21 17:31:34 : stop[id_itinerary]=6
+Jan,21 17:31:34 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:31:49 : Start logging
+Jan,21 17:31:49 : created and connected
+Jan,21 17:31:49 : here
+Jan,21 17:31:49 : stop[id_itinerary]=1
+Jan,21 17:31:49 : stop[id_itinerary]=1
+Jan,21 17:31:49 : stop[id_itinerary]=1
+Jan,21 17:31:49 : stop[id_itinerary]=5
+Jan,21 17:31:49 : stop[id_itinerary]=5
+Jan,21 17:31:49 : stop[id_itinerary]=5
+Jan,21 17:31:49 : stop[id_itinerary]=6
+Jan,21 17:31:49 : stop[id_itinerary]=6
+Jan,21 17:31:49 : stop[id_itinerary]=6
+Jan,21 17:31:49 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}
+Jan,21 17:31:58 : Start logging
+Jan,21 17:31:58 : created and connected
+Jan,21 17:31:58 : here
+Jan,21 17:31:58 : stop[id_itinerary]=1
+Jan,21 17:31:58 : stop[id_itinerary]=1
+Jan,21 17:31:58 : stop[id_itinerary]=1
+Jan,21 17:31:58 : stop[id_itinerary]=5
+Jan,21 17:31:58 : stop[id_itinerary]=5
+Jan,21 17:31:58 : stop[id_itinerary]=5
+Jan,21 17:31:58 : stop[id_itinerary]=6
+Jan,21 17:31:58 : stop[id_itinerary]=6
+Jan,21 17:31:58 : stop[id_itinerary]=6
+Jan,21 17:31:58 : a:3:{i:1;s:17:"a47c_Зел_07:20";i:5;s:16:"a47c_ака_7:46";i:6;s:15:"t46_Кол_7:04";}

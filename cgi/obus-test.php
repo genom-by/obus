@@ -40,6 +40,15 @@ switch ($_POST['action']){
 				print_r("result: ".itinerary::$errormsg);			
 		}			
 	break;
+	case 'pitstops':
+				print_r($_POST);
+			if( !empty($_POST['itinerarySelect']) ){
+				$way = new Way($_POST);
+				$retval = $way->save($_POST);
+				if(!$retval)
+					print_r("result: ".way::$errormsg);				
+			}
+	break;
 	}
 }
 echo( 'action:'.$_POST['action'] );
@@ -50,6 +59,9 @@ echo( 'action:'.$_POST['action'] );
 <head>
 <title>Obus scheduling</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <script>
 function getSelectedText(elementId) {
     var elt = document.getElementById(elementId);
@@ -73,7 +85,16 @@ function btnItinerName_onClick(){
 	itinerName.value = obus_text+'_'+stat_text.substring(0,3)+'_'+starttime;
 	//document.getElementById("testSpan").innerHTML = "sdsd";//itinerName.value;
 }
+function btn_showtrans_onClick(){
+	var transblock = document.getElementById("transblock");
+	//if(transblock)
+}
 </script>
+<style>
+.hided{
+	display:none;
+}
+</style>
 </head>
 <body>
 <fieldset>
@@ -85,6 +106,14 @@ function btnItinerName_onClick(){
 <p>
 </p>
 <input type="submit" value="Send"/>
+<!--show existing-->
+<button type="button" id="btn_showtrans" onclick="btn_showtrans_onClick();" data-toggle="collapse" data-target="#transblock">Show trans</button>
+<div id="transblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
+<?php echo HTML::getTableItems('obus');?>
+</table>
+</div>
+<!--end show existing-->
 </form>
 </fieldset>
 <!-- stations -->
@@ -97,6 +126,14 @@ function btnItinerName_onClick(){
 <p>
 </p>
 <input type="submit" value="Send"/>
+<!--show existing-->
+<button type="button" data-toggle="collapse" data-target="#statsblock">Show stations</button>
+<div id="statsblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
+<?php echo HTML::getTableItems('stations');?>
+</table>
+</div>
+<!--end show existing-->
 </form>
 </fieldset>
 <!-- itineraries -->
@@ -106,6 +143,7 @@ function btnItinerName_onClick(){
 <label for="itineraryName">Itinerary Name</label>
 <input type="text" name="itineraryName" id="itineraryName" readonly="readonly"/>
 <button type="button" onclick="btnItinerName_onClick()">itir</button>
+
 <br/><p></p>
 <select name="obus" id="obusSel">
 <?php echo HTML::getSelectItems('obus');?>
@@ -114,7 +152,7 @@ function btnItinerName_onClick(){
 <?php echo HTML::getSelectItems('station');?>
 </select>
 <label for="startTime">Start time (HH:mm)</label>
-<input type="text" name="startTime" id="startTime" size="10"/>
+<input type="text" autocomplete="off" name="startTime" id="startTime" size="10"/>
 <input type="hidden" name="action" value="itinerary">
 <p>
 </p>
@@ -139,6 +177,26 @@ function btnItinerName_onClick(){
 <input type="submit" value="Send"/>
 </form>
 </fieldset>
+<!-- timetable test-->
+<fieldset>
+<legend>Time Table</legend>
+<!--show existing-->
+<button type="button" data-toggle="collapse" data-target="#pitsblock">Show stations</button>
+<div id="pitsblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
+<?php echo HTML::getPitstops();?>
+</table>
+</div>
+<!--end show existing-->
+</fieldset>
+<pre>
+<?php $pitstops = Way::getPitstopsByItinerary(); 
+//\LinkBox\Logger::log(serialize($pitstops));
+//var_dump($pitstops);
+//echo json_encode($pitstops);
+echo HTML::normalizeWays2JSON($pitstops);
+?>
+</pre>
 <span id="testSpan"></span>
 </body>
 </html>

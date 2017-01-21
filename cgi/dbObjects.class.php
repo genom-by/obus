@@ -46,6 +46,8 @@ class DBObject{
 			case 'obus': $table='obus';break;
 			case 'station': $table='station';break;
 			case 'itinerary': $table='itinerary';break;
+			case 'pitstop_type': $table='pitstop_type';break;
+			case 'way': $table='pitstop';break;
 			default: self::$errormsg = "No such table: {$object_}"; return false;
 		}
 		$objects = LinkBox\DataBase::getAll($table);
@@ -84,6 +86,21 @@ class Obus  extends DBObject{
 		return self::getAllRecords('obus');		
 	}
 }
+class PitType  extends DBObject{
+	
+	public function __construct($type_){
+		$this->name = Ut::cleanInput($type_);
+		$this->sqlPDOSave = "INSERT INTO pitstop_type(type) VALUES(':1:')";
+	}
+	public function save(){
+		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		return $this->saveObject($pdosql);
+	}
+	
+	public static function getAll(){
+		return self::getAllRecords('pitstop_type');		
+	}
+}
 
 class Station extends DBObject{
 	
@@ -98,6 +115,110 @@ class Station extends DBObject{
 		
 	public static function getAll(){
 		return self::getAllRecords('station');	
+	}
+}
+class Way extends DBObject{
+	
+	private $itinerary = 0; //main itinerary
+	private $pitstops = null; //['pitstop_id'=>time]
+	private $pitstopsTotal = 0;
+	
+	public function __construct($post_){
+		$this->name = "way";//Ut::cleanInput($name_);
+		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
+		$this->pitstopsTotal = $post_['totalstops'];
+		$this->itinerary = $post_['itinerarySelect'];
+		for($i=1; $i <= $this->pitstopsTotal; $i++) {
+			if(!empty($post_['stationTime'.$i])){
+			$this->pitstops[$i] = array(
+				'station'=>$post_['station'.$i], 
+			'time'=>Ut::HHmm2Int( Ut::cleanInput( $post_['stationTime'.$i])) ,
+				'pitType'=>$post_['pitType'.$i],
+									);
+									}
+		}
+	}
+	public function save($post_){
+		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		//phpnet//$conn = new PDO('sqlite:C:\path\to\file.sqlite');
+		//phpnet//$stmt = $conn->prepare('INSERT INTO my_table(my_id, my_value) VALUES(?, ?)');
+		//$conn = $this->getPDO(); //get raw connection
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		
+		if($conn === false){
+			self::$errormsg = 'error while saving pitstops into DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		$stmt = $conn->prepare('INSERT INTO pitstop(id_station, time, id_pittype, id_itinerary) VALUES(:id_stat, :time, :id_pittyp, :id_itin)');
+		
+		try {
+        $conn->beginTransaction();
+			//var_dump($this->pitstops);
+        foreach($this->pitstops as $pit_num => $pitstop) {
+            $stmt->bindValue(':id_stat', $pitstop['station'], PDO::PARAM_INT);
+            $stmt->bindValue(':time', $pitstop['time'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_pittyp', $pitstop['pitType'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_itin', $this->itinerary, PDO::PARAM_INT);
+            $stmt->execute();
+            sleep(1);
+        }
+        $conn->commit();
+    } catch(PDOException $e) {
+        if(stripos($e->getMessage(), 'DATABASE IS LOCKED') !== false) {
+            // This should be specific to SQLite, sleep for 0.25 seconds
+            // and try again.  We do have to commit the open transaction first though
+            $conn->commit();
+            usleep(250000);
+        } else {
+            $conn->rollBack();
+            //throw $e;
+			self::$errormsg = 'error performing pitstops transaction: '.$e->getMessage();//LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+        }
+    }
+		
+		//return $this->saveObject($pdosql);
+	}
+		
+	public static function getAll(){
+		return self::getAllRecords('way');	
+	}
+	
+	public static function getPitstopsByItinerary(){
+		$pitstops = self::getAll();
+		if( empty($pitstops) ) return false;
+		
+		$ways = array();
+		$id__it_name = array();
+		$id__stat_name = array();
+		//$id__name = array();
+		//groub by itinerary
+		LiLogger::log('here');
+		foreach($pitstops as $stop){
+			//TODO group records into array { 'itiner1'=>[  stop1=>123, stop2=>124], 'itiner2'=> [] ...}
+			LiLogger::log("stop[id_itinerary]=".$stop['id_itinerary']);
+			$id__it_name[$stop['id_itinerary']] = $stop['itinName']; //a:3:{i:1;N;i:5;N;i:6;N;}
+			$id__stat_name[$stop['id_station']] = $stop['statName'];
+			//array_push($ways[$stop['id_itinerary']], array($stop['id_station']=>$stop['time']) );
+		}
+		LiLogger::log(serialize($id__it_name));
+		foreach($id__it_name as $it_id => $val){
+			$ways[(string)$it_id] = array();
+			$ways[((string)$it_id)]['name'] = $val;
+			
+			// $ways['1'=>(), '5'=>(), '6'=>()]
+//a:4:{s:12:"id_itinerary";a:0:{}i:1;N;i:5;N;i:6;N;}
+		}//Logger::log(serialize($ways));
+		foreach($pitstops as $stop){
+			array_push($ways[(string)$stop['id_itinerary']], array($stop['id_station']=>$stop['time']) );
+			//array_push($ways[(string)$stop['id_itinerary']], array("itin_name"=>$stop['itinName'] ) );
+			//$ways["1"=>('1'=>'444', '2'=>'888')]
+		}
+		
+		return $ways;
 	}
 }
 
