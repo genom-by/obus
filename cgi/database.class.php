@@ -126,10 +126,10 @@ class DataBase{
 		}
 		switch($table){
 			case 'obus': $sql = "SELECT id_obus, name from obus ORDER BY name"; break;
-			case 'station': $sql = "SELECT id_station, name from station"; break;
+			case 'station': $sql = "SELECT id_station, name, shortName from station"; break;
 			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type"; break;
 			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station"; break;
-			case 'pitstop': $sql = "SELECT id_pitstop, pitstop.id_station, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin"; break;
+			case 'pitstop': $sql = "SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin"; break;
 			default: $sql = '';
 		}
 		try{

@@ -104,12 +104,15 @@ class PitType  extends DBObject{
 
 class Station extends DBObject{
 	
+	private $shortname="-";
+	
 	public function __construct($name_){
 		$this->name = Ut::cleanInput($name_);
-		$this->sqlPDOSave = "INSERT INTO station(name) VALUES(':1:')";
+		$this->sqlPDOSave = "INSERT INTO station(name, shortName) VALUES(':1:', ':2:')";
 	}
 	public function save(){
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		$pdosql = str_replace(':2:', $this->shortname, $this->sqlPDOSave);
 		return $this->saveObject($pdosql);
 	}
 		
@@ -196,15 +199,15 @@ class Way extends DBObject{
 		$id__stat_name = array();
 		//$id__name = array();
 		//groub by itinerary
-		LiLogger::log('here');
+		//LiLogger::log('here');
 		foreach($pitstops as $stop){
 			//TODO group records into array { 'itiner1'=>[  stop1=>123, stop2=>124], 'itiner2'=> [] ...}
-			LiLogger::log("stop[id_itinerary]=".$stop['id_itinerary']);
+			//LiLogger::log("stop[id_itinerary]=".$stop['id_itinerary']);
 			$id__it_name[$stop['id_itinerary']] = $stop['itinName']; //a:3:{i:1;N;i:5;N;i:6;N;}
 			$id__stat_name[$stop['id_station']] = $stop['statName'];
 			//array_push($ways[$stop['id_itinerary']], array($stop['id_station']=>$stop['time']) );
 		}
-		LiLogger::log(serialize($id__it_name));
+		//LiLogger::log(serialize($id__it_name));
 		foreach($id__it_name as $it_id => $val){
 			$ways[(string)$it_id] = array();
 			$ways[((string)$it_id)]['name'] = $val;
@@ -213,7 +216,7 @@ class Way extends DBObject{
 //a:4:{s:12:"id_itinerary";a:0:{}i:1;N;i:5;N;i:6;N;}
 		}//Logger::log(serialize($ways));
 		foreach($pitstops as $stop){
-			array_push($ways[(string)$stop['id_itinerary']], array($stop['id_station']=>$stop['time']) );
+			array_push($ways[(string)$stop['id_itinerary']], array($stop['shortName']=>$stop['time']) );
 			//array_push($ways[(string)$stop['id_itinerary']], array("itin_name"=>$stop['itinName'] ) );
 			//$ways["1"=>('1'=>'444', '2'=>'888')]
 		}

@@ -234,34 +234,39 @@ $htmlItem = "<tr><td>{$item['name']}</td></tr>";
     }
     [2]=>
     array(1) {
-      [3]=>
+      [3]=> -- stat_id
       string(1) "5"
     }
   }
   to
   var cars = [
 {name:"chevrolet chevelle malibu", mpg:18, cyl:8, dsp:307, hp:130, lbs:3504, acc:12, year:70, origin:1},
+{name : 'kol1',  value : kol1 },  	{name : 'nem2',  value : nem2 },  	{name : 'mas3',  value : mas3 }, 	{name : 'akd4',   value : akd4  }, 
+{name : 'spu5',  value : spu5 }, 	{name : 'kaz6',  value : kaz6 }, 	{name : 'tra7', value : tra7}
 	*/
 	public static function normalizeWays2JSON($ways){
 		if (empty($ways)) return false;
 	
 		$json_arr = array();
-		$js_arr_string = "seed";
+		$js_arr_string = "";
 		
 		foreach($ways as $pit){
-			
+		
 			//$js_arr_string = $js_arr_string.'{name:'.$pit['name'] ;
-			$js_arr_string = $js_arr_string + '{name:'.$pit['name'] ;
+			$js_arr_string = $js_arr_string.'{name:'.$pit['name'] ;
 				
 				foreach($pit as $key=>$val){
-
-					$js_arr_string = $js_arr_string + ", {$key}:{$val}";
+					if($key !== 'name'){
+						foreach($val as $stat_shrtname => $stat_time){
+							$js_arr_string = $js_arr_string.", {$stat_shrtname}:{$stat_time}";
+						}
+					}
 				}
-				$js_arr_string = $js_arr_string + '},';
+				$js_arr_string = $js_arr_string.'},';
 		}
-		//$js_arr_string1 = rtrim($js_arr_string, ",");
-echo $js_arr_string1;		
-		//$js_string = "var cars = [{$js_arr_string}]";
+		$js_arr_string = rtrim($js_arr_string, ",");
+//echo $js_arr_string;		
+//var cars = [{name:a47c_Зел_07:20, name:a47c_Зел_07:20, 0:Array, 1:Array, 2:Array},{name:a47c_ака_7:46, name:a47c_ака_7:46, 0:Array, 1:Array, 2:Array},{name:t46_Кол_7:04, name:t46_Кол_7:04, 0:Array, 1:Array, 2:Array}]		
 		$js_string = "var cars = [".$js_arr_string."]";
 		
 		return $js_string;

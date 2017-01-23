@@ -151,7 +151,7 @@ Highcharts.setOptions({
             borderWidth:0,
             states: {
                 hover: {
-                    lineWidthPlus:0,
+                    lineWidtakd4lus:0,
                 }
             }
         }
@@ -230,36 +230,20 @@ function randomData(points, positive, multiplier) {
 }
 <?php $pitstops = Way::getPitstopsByItinerary(); 
 //\LinkBox\Logger::log(serialize($pitstops));
-?>
+echo HTML::normalizeWays2JSON($pitstops);
+/*
 var cars = [
-{name:"chevrolet chevelle malibu", mpg:18, cyl:8, dsp:307, hp:130, lbs:3504, acc:12, year:70, origin:1},
-{name:"buick skylark 320", mpg:15, cyl:8, dsp:350, hp:165, lbs:3693, acc:11.5, year:70, origin:1},
-{name:"plymouth satellite", mpg:18, cyl:8, dsp:318, hp:150, lbs:3436, acc:11, year:70, origin:1},
-{name:"amc rebel sst", mpg:16, cyl:8, dsp:304, hp:150, lbs:3433, acc:12, year:70, origin:1},
-{name:"ford torino", mpg:17, cyl:8, dsp:302, hp:140, lbs:3449, acc:10.5, year:70, origin:1},
-{name:"ford galaxie 500", mpg:15, cyl:8, dsp:429, hp:198, lbs:4341, acc:10, year:70, origin:1},
-{name:"chevrolet impala", mpg:14, cyl:8, dsp:454, hp:220, lbs:4354, acc:9, year:70, origin:1},
-{name:"plymouth fury iii", mpg:14, cyl:8, dsp:440, hp:215, lbs:4312, acc:8.5, year:70, origin:1},
-{name:"pontiac catalina", mpg:14, cyl:8, dsp:455, hp:225, lbs:4425, acc:10, year:70, origin:1},
-{name:"amc ambassador dpl", mpg:15, cyl:8, dsp:390, hp:190, lbs:3850, acc:8.5, year:70, origin:1},
-{name:"citroen ds-21 pallas", mpg:undefined, cyl:4, dsp:133, hp:115, lbs:3090, acc:17.5, year:70, origin:2},
-{name:"chevrolet chevelle concours (sw)", mpg:undefined, cyl:8, dsp:350, hp:165, lbs:4142, acc:11.5, year:70, origin:1},
-{name:"ford torino (sw)", mpg:undefined, cyl:8, dsp:351, hp:153, lbs:4034, acc:11, year:70, origin:1},
-{name:"plymouth satellite (sw)", mpg:undefined, cyl:8, dsp:383, hp:175, lbs:4166, acc:10.5, year:70, origin:1},
-{name:"amc rebel sst (sw)", mpg:undefined, cyl:8, dsp:360, hp:175, lbs:3850, acc:11, year:70, origin:1},
-{name:"dodge challenger se", mpg:15, cyl:8, dsp:383, hp:170, lbs:3563, acc:10, year:70, origin:1},
-{name:"plymouth 'cuda 340", mpg:14, cyl:8, dsp:340, hp:160, lbs:3609, acc:8, year:70, origin:1},
-{name:"ford mustang boss 302", mpg:undefined, cyl:8, dsp:302, hp:140, lbs:3353, acc:8, year:70, origin:1},
-{name:"chevrolet monte carlo", mpg:15, cyl:8, dsp:400, hp:150, lbs:3761, acc:9.5, year:70, origin:1},
-{name:"ford gran torino (sw)", mpg:14, cyl:8, dsp:302, hp:140, lbs:4638, acc:16, year:74, origin:1},
-{name:"renault 18i", mpg:34.5, cyl:4, dsp:100, hp:undefined, lbs:2320, acc:15.8, year:81, origin:2},
-{name:"saab 900s", mpg:undefined, cyl:4, dsp:121, hp:110, lbs:2800, acc:15.4, year:81, origin:2},
-{name:"volvo diesel", mpg:30.7, cyl:6, dsp:145, hp:76, lbs:3160, acc:19.6, year:81, origin:2},
-{name:"amc concord dl", mpg:23, cyl:4, dsp:151, hp:undefined, lbs:3035, acc:20.5, year:82, origin:1},
-{name:"dodge rampage", mpg:32, cyl:4, dsp:135, hp:84, lbs:2295, acc:11.6, year:82, origin:1},
-{name:"ford ranger", mpg:28, cyl:4, dsp:120, hp:79, lbs:2625, acc:18.6, year:82, origin:1},
-{name:"chevy s-10", mpg:31, cyl:4, dsp:119, hp:82, lbs:2720, acc:19.4, year:82, origin:1}
-];
+{name:"chevrolet chevelle malibu", kaz6:18, kol1:8, nem2:307, akd4:130, mas3:3504, spu5:12, tra7:70, origin:1},
+{name:"buick skylark 320", kaz6:15, kol1:8, nem2:350, akd4:165, mas3:3693, spu5:11.5, tra7:70, origin:1},
+{name:"plymouth satellite", kaz6:18, kol1:8, nem2:318, akd4:150, mas3:3436, spu5:11, tra7:70, origin:1},
+{name:"citroen ds-21 pallas", kaz6:undefined, kol1:4, nem2:133, akd4:115, mas3:3090, spu5:17.5, tra7:70, origin:2},
+{name:"chevrolet chevelle concours (sw)", kaz6:undefined, kol1:8, nem2:350, akd4:165, mas3:4142, spu5:11.5, tra7:70, origin:1},
+{name:"amc concord dl", kaz6:23, kol1:4, nem2:151, akd4:undefined, mas3:3035, spu5:20.5, tra7:82, origin:1},
+{name:"dodge rampage", kaz6:32, kol1:4, nem2:135, akd4:84, mas3:2295, spu5:11.6, tra7:82, origin:1},
+{name:"ford ranger", kaz6:28, kol1:4, nem2:120, akd4:79, mas3:2625, spu5:18.6, tra7:82, origin:1},
+{name:"chevy s-10", kaz6:31, kol1:4, nem2:119, akd4:82, mas3:2720, spu5:19.4, tra7:82, origin:1}
+];*/
+?>
 </script>
 <script type="text/javascript" src="../js/hchart.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/hchart.css">

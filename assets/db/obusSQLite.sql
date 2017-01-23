@@ -22,6 +22,7 @@ CREATE TABLE "pitstop_type"(
 );
 CREATE TABLE "station"(
   "name" VARCHAR(40) DEFAULT NULL UNIQUE,
+  "shortName" VARCHAR(5) DEFAULT NOT NULL,
   "id_station" INTEGER PRIMARY KEY NOT NULL,
   CONSTRAINT "XPKstation"
     UNIQUE("id_station")

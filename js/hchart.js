@@ -72,94 +72,94 @@ $(function() {
 })
 
 function getCarData(cars) {
-    var mpgs 	= [];	var cyls 	= [];	var dsps 	= [];	var hps 	= [];
-	var lbss 	= [];	var accs 	= [];	var years 	= [];	
+    var kaz6s 	= [];	var kol1s 	= [];	var nem2s 	= [];	var akd4s 	= [];
+	var mas3s 	= [];	var spu5s 	= [];	var tra7s 	= [];	
 	
 	var mins 	= {};	var maxs 	= {};	var ranks 	= {};	var pData 	= {};
 	
-	var mpg;	var cyl;	var dsp;	var hp;	var lbs;	var acc;	var year;
-	var paramNames = ['mpg', 'cyl', 'dsp', 'hp', 'lbs', 'acc', 'year'];
+	var kaz6;	var kol1;	var nem2;	var akd4;	var mas3;	var spu5;	var tra7;
+	var paramNames = ['kaz6', 'kol1', 'nem2', 'akd4', 'mas3', 'spu5', 'tra7'];
 	        	
 	$.each(cars, function(i, car) {
 
-		//if(typeof car[paramNames[0]] 	!= 'undefined') { mpgs.push(car[paramNames[0]]		); }	
-		if(typeof car.mpg 	!= 'undefined') { mpgs.push(car.mpg		); }	
-		if(typeof car.cyl 	!= 'undefined') { cyls.push(car.cyl		); }	
-		if(typeof car.dsp 	!= 'undefined') { dsps.push(car.dsp		); }	
-		if(typeof car.hp  	!= 'undefined') { hps.push(car.hp		); }	
-		if(typeof car.lbs 	!= 'undefined') { lbss.push(car.lbs		); }	
-		if(typeof car.acc 	!= 'undefined') { accs.push(car.acc		); }	
-		if(typeof car.year 	!= 'undefined') { years.push(car.year	); }	
+		//if(typeof car[paramNames[0]] 	!= 'undefined') { kaz6s.push(car[paramNames[0]]		); }	
+		if(typeof car.kaz6 	!= 'undefined') { kaz6s.push(car.kaz6		); }	
+		if(typeof car.kol1 	!= 'undefined') { kol1s.push(car.kol1		); }	
+		if(typeof car.nem2 	!= 'undefined') { nem2s.push(car.nem2		); }	
+		if(typeof car.akd4  	!= 'undefined') { akd4s.push(car.akd4		); }	
+		if(typeof car.mas3 	!= 'undefined') { mas3s.push(car.mas3		); }	
+		if(typeof car.spu5 	!= 'undefined') { spu5s.push(car.spu5		); }	
+		if(typeof car.tra7 	!= 'undefined') { tra7s.push(car.tra7	); }	
 
-		mpg 	= typeof car.mpg 	!= 'undefined' ? car.mpg 	: null;
-		cyl 	= typeof car.cyl 	!= 'undefined' ? car.cyl 	: null;
-		dsp 	= typeof car.dsp 	!= 'undefined' ? car.dsp 	: null;
-		hp 		= typeof car.hp 	!= 'undefined' ? car.hp 	: null;
-		lbs 	= typeof car.lbs 	!= 'undefined' ? car.lbs 	: null;
-		acc 	= typeof car.acc 	!= 'undefined' ? car.acc 	: null;
-		year 	= typeof car.year 	!= 'undefined' ? car.year 	: null;
+		kaz6 	= typeof car.kaz6 	!= 'undefined' ? car.kaz6 	: null;
+		kol1 	= typeof car.kol1 	!= 'undefined' ? car.kol1 	: null;
+		nem2 	= typeof car.nem2 	!= 'undefined' ? car.nem2 	: null;
+		akd4 		= typeof car.akd4 	!= 'undefined' ? car.akd4 	: null;
+		mas3 	= typeof car.mas3 	!= 'undefined' ? car.mas3 	: null;
+		spu5 	= typeof car.spu5 	!= 'undefined' ? car.spu5 	: null;
+		tra7 	= typeof car.tra7 	!= 'undefined' ? car.tra7 	: null;
 		
 		pData[car.name] = [];
 		pData[car.name].push(
-			{name : 'cyl',  value : cyl }, 
-			{name : 'dsp',  value : dsp }, 
-			{name : 'lbs',  value : lbs }, 
-			{name : 'hp',   value : hp  }, 
-			{name : 'acc',  value : acc }, 
-			{name : 'mpg',  value : mpg }, 
-			{name : 'year', value : year}
+			{name : 'kol1',  value : kol1 }, 
+			{name : 'nem2',  value : nem2 }, 
+			{name : 'mas3',  value : mas3 }, 
+			{name : 'akd4',   value : akd4  }, 
+			{name : 'spu5',  value : spu5 }, 
+			{name : 'kaz6',  value : kaz6 }, 
+			{name : 'tra7', value : tra7}
 		);
 		
 	});
 
-	ranks['mpg' ] = percentileRank(mpgs );
-	ranks['cyl' ] = percentileRank(cyls );
-	ranks['dsp' ] = percentileRank(dsps );
-	ranks['hp'  ] = percentileRank(hps  );
-	ranks['lbs' ] = percentileRank(lbss );
-	ranks['acc' ] = percentileRank(accs, true );
-	ranks['year'] = percentileRank(years);
+	ranks['kaz6' ] = percentileRank(kaz6s );
+	ranks['kol1' ] = percentileRank(kol1s );
+	ranks['nem2' ] = percentileRank(nem2s );
+	ranks['akd4'  ] = percentileRank(akd4s  );
+	ranks['mas3' ] = percentileRank(mas3s );
+	ranks['spu5' ] = percentileRank(spu5s, true );
+	ranks['tra7'] = percentileRank(tra7s);
 
-	mins['mpg' ] = Math.min.apply(null, mpgs );
-	mins['cyl' ] = Math.min.apply(null, cyls );
-	mins['dsp' ] = Math.min.apply(null, dsps );
-	mins['hp'  ] = Math.min.apply(null, hps  );
-	mins['lbs' ] = Math.min.apply(null, lbss );
-	mins['acc' ] = Math.min.apply(null, accs );
-	mins['year'] = Math.min.apply(null, years);
+	mins['kaz6' ] = Math.min.apply(null, kaz6s );
+	mins['kol1' ] = Math.min.apply(null, kol1s );
+	mins['nem2' ] = Math.min.apply(null, nem2s );
+	mins['akd4'  ] = Math.min.apply(null, akd4s  );
+	mins['mas3' ] = Math.min.apply(null, mas3s );
+	mins['spu5' ] = Math.min.apply(null, spu5s );
+	mins['tra7'] = Math.min.apply(null, tra7s);
 
-	maxs['mpg' ] = Math.max.apply(null, mpgs );
-	maxs['cyl' ] = Math.max.apply(null, cyls );
-	maxs['dsp' ] = Math.max.apply(null, dsps );
-	maxs['hp'  ] = Math.max.apply(null, hps  );
-	maxs['lbs' ] = Math.max.apply(null, lbss );
-	maxs['acc' ] = Math.max.apply(null, accs );
-	maxs['year'] = Math.max.apply(null, years);
+	maxs['kaz6' ] = Math.max.apply(null, kaz6s );
+	maxs['kol1' ] = Math.max.apply(null, kol1s );
+	maxs['nem2' ] = Math.max.apply(null, nem2s );
+	maxs['akd4'  ] = Math.max.apply(null, akd4s  );
+	maxs['mas3' ] = Math.max.apply(null, mas3s );
+	maxs['spu5' ] = Math.max.apply(null, spu5s );
+	maxs['tra7'] = Math.max.apply(null, tra7s);
 	
 	var colNames = ['Кольцова','Немига','пл.Мясникова','акад.Управления','г-ца Спутник',
 	'пл.Казинца','з-д Транзистор'];
 	/*
 	for (var i_=0; i_<7; i_++){
 		catsTop[i_] = 
-			colNames[0]+'<br/><span style="font-weight:normal;">'+maxs['cyl']+'</span>';
+			colNames[0]+'<br/><span style="font-weight:normal;">'+maxs['kol1']+'</span>';
 	}*/
 	var catsTop = [
-		colNames[0]+'<br/><span style="font-weight:normal;">'+maxs['cyl']+'</span>', 
-    	colNames[1]+'<br/><span style="font-weight:normal;">'+maxs['dsp']+'</span>', 
-    	colNames[2]+'<br/><span style="font-weight:normal;">'+maxs['lbs']+'</span>', 
-        colNames[3]+'<br/><span style="font-weight:normal;">'+maxs['hp']+'</span>', 
-        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['acc']+'</span>', 
-        colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['mpg']+'</span>', 
-        colNames[6]+'<br/><span style="font-weight:normal;">'+maxs['year']+'</span>'
+		colNames[0]+'<br/><span style="font-weight:normal;">'+maxs['kol1']+'</span>', 
+    	colNames[1]+'<br/><span style="font-weight:normal;">'+maxs['nem2']+'</span>', 
+    	colNames[2]+'<br/><span style="font-weight:normal;">'+maxs['mas3']+'</span>', 
+        colNames[3]+'<br/><span style="font-weight:normal;">'+maxs['akd4']+'</span>', 
+        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['spu5']+'</span>', 
+        colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['kaz6']+'</span>', 
+        colNames[6]+'<br/><span style="font-weight:normal;">'+maxs['tra7']+'</span>'
 	]; 
 	var catsBot = [
-       	colNames[1]+'<br/><span style="font-weight:normal;">'+mins['cyl']+'</span>', 
-        colNames[2]+'<br/><span style="font-weight:normal;">'+mins['dsp']+'</span>', 
-        colNames[3]+'<br/><span style="font-weight:normal;">'+mins['lbs']+'</span>', 
-        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['hp']+'</span>', 
-        colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['acc']+'</span>', 
-        colNames[6]+'<br/><span style="font-weight:normal;">'+mins['mpg']+'</span>', 
-    	colNames[7]+'<br/><span style="font-weight:normal;">'+mins['year']+'</span>'
+       	colNames[1]+'<br/><span style="font-weight:normal;">'+mins['kol1']+'</span>', 
+        colNames[2]+'<br/><span style="font-weight:normal;">'+mins['nem2']+'</span>', 
+        colNames[3]+'<br/><span style="font-weight:normal;">'+mins['mas3']+'</span>', 
+        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['akd4']+'</span>', 
+        colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['spu5']+'</span>', 
+        colNames[6]+'<br/><span style="font-weight:normal;">'+mins['kaz6']+'</span>', 
+    	colNames[7]+'<br/><span style="font-weight:normal;">'+mins['tra7']+'</span>'
 	]; 
 	       	
 	var carData = [];
