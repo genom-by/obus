@@ -132,8 +132,8 @@ $htmlItem = "<tr><td>{$item['name']}</td></tr>";
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-					$time = LinkBox\Utils::Int2HHmm($item['start_time']);
-$htmlItem = "<tr><td>{$item['name']}</td></tr>";
+					//$time = LinkBox\Utils::Int2HHmm($item['start_time']);
+$htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -202,9 +202,10 @@ $htmlItem = "<tr><td>{$item['name']}</td></tr>";
 				foreach($list as $item){
 					$totalstops++;
 					
+					$btnDel = "<button type='button' onclick='btnDel_onClick({$item['id_pitstop']})'>del</button>";
 					$row_Time = $item['time'];
 					
-					$htmlItem = "<tr><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td></tr>";
+					$htmlItem = "<tr><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -253,7 +254,7 @@ $htmlItem = "<tr><td>{$item['name']}</td></tr>";
 		foreach($ways as $pit){
 		
 			//$js_arr_string = $js_arr_string.'{name:'.$pit['name'] ;
-			$js_arr_string = $js_arr_string.'{name:'.$pit['name'] ;
+			$js_arr_string = $js_arr_string.'{name:"'.$pit['name'].'"' ;
 				
 				foreach($pit as $key=>$val){
 					if($key !== 'name'){

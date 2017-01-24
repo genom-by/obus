@@ -22,7 +22,7 @@ switch ($_POST['action']){
 	case 'station':
 		echo 'staaation';
 		if(!empty($_POST['stationName'])){
-			$station= new Station($_POST['stationName']);
+			$station= new Station($_POST['stationName'], $_POST['statShortName']);
 			$retval = $station->save();
 			if(!$retval)
 			print_r("result: ".station::$errormsg);
@@ -89,6 +89,16 @@ function btn_showtrans_onClick(){
 	var transblock = document.getElementById("transblock");
 	//if(transblock)
 }
+function btnDel_onClick(id_pitstop){
+	//var transblock = document.getElementById("transblock");
+	console.info("id pitstop: "+id_pitstop);
+	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
+	$.post(
+		"post.routines.php",
+		{id:id_pitstop},
+		function(data){alert(data);}
+	);
+}
 </script>
 <style>
 .hided{
@@ -122,6 +132,8 @@ function btn_showtrans_onClick(){
 <form name="form2" method="post">
 <label for="stationName">Station Name</label>
 <input type="text" name="stationName" id="stationName"/>
+<label for="statShortName">Station Short Name</label>
+<input type="text" name="statShortName" id="statShortName"/>
 <input type="hidden" name="action" value="station">
 <p>
 </p>

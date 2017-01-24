@@ -153,13 +153,13 @@ function getCarData(cars) {
         colNames[6]+'<br/><span style="font-weight:normal;">'+maxs['tra7']+'</span>'
 	]; 
 	var catsBot = [
-       	colNames[1]+'<br/><span style="font-weight:normal;">'+mins['kol1']+'</span>', 
-        colNames[2]+'<br/><span style="font-weight:normal;">'+mins['nem2']+'</span>', 
-        colNames[3]+'<br/><span style="font-weight:normal;">'+mins['mas3']+'</span>', 
-        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['akd4']+'</span>', 
-        colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['spu5']+'</span>', 
-        colNames[6]+'<br/><span style="font-weight:normal;">'+mins['kaz6']+'</span>', 
-    	colNames[7]+'<br/><span style="font-weight:normal;">'+mins['tra7']+'</span>'
+       	colNames[0]+'<br/><span style="font-weight:normal;">'+mins['kol1']+'</span>', 
+        colNames[1]+'<br/><span style="font-weight:normal;">'+mins['nem2']+'</span>', 
+        colNames[2]+'<br/><span style="font-weight:normal;">'+mins['mas3']+'</span>', 
+        colNames[3]+'<br/><span style="font-weight:normal;">'+mins['akd4']+'</span>', 
+        colNames[4]+'<br/><span style="font-weight:normal;">'+maxs['spu5']+'</span>', 
+        colNames[5]+'<br/><span style="font-weight:normal;">'+mins['kaz6']+'</span>', 
+    	colNames[6]+'<br/><span style="font-weight:normal;">'+mins['tra7']+'</span>'
 	]; 
 	       	
 	var carData = [];
