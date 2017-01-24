@@ -231,6 +231,7 @@ function randomData(points, positive, multiplier) {
 <?php $pitstops = Way::getPitstopsByItinerary(); 
 //\LinkBox\Logger::log(serialize($pitstops));
 echo HTML::normalizeWays2JSON($pitstops);
+echo ';';
 /*
 var cars = [
 {name:"chevrolet chevelle malibu", kaz6:18, kol1:8, nem2:307, akd4:130, mas3:3504, spu5:12, tra7:70, origin:1},

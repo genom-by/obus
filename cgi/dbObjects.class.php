@@ -106,13 +106,14 @@ class Station extends DBObject{
 	
 	private $shortname="-";
 	
-	public function __construct($name_){
+	public function __construct($name_, $short_){
 		$this->name = Ut::cleanInput($name_);
+		$this->shortname = Ut::cleanInput($short_);
 		$this->sqlPDOSave = "INSERT INTO station(name, shortName) VALUES(':1:', ':2:')";
 	}
 	public function save(){
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
-		$pdosql = str_replace(':2:', $this->shortname, $this->sqlPDOSave);
+		$pdosql = str_replace(':2:', $this->shortname, $pdosql);
 		return $this->saveObject($pdosql);
 	}
 		
@@ -222,6 +223,14 @@ class Way extends DBObject{
 		}
 		
 		return $ways;
+	}
+	
+	public static function DeletePitstop($pit_id){
+		if(empty($pit_id)) return false;
+		
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		$db->executeInsert("DELETE FROM pitstop WHERE id_pitstop={$pit_id}");
 	}
 }
 
