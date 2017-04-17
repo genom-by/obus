@@ -104,9 +104,10 @@ class HTML{
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
+			$btnDel = self::createDELbutton($item['id_itin'], btnDelItin_onClick);
 					$time = LinkBox\Utils::Int2HHmm($item['start_time']);
 $htmlItem = "<tr><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
-			"<td>{$item['statName']}</td><td>{$time}</td></tr>";
+			"<td>{$item['statName']}</td><td>{$time}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -202,7 +203,8 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 				foreach($list as $item){
 					$totalstops++;
 					
-					$btnDel = "<button type='button' onclick='btnDel_onClick({$item['id_pitstop']})'>del</button>";
+					//$btnDel = "<button type='button' onclick='btnDel_onClick({$item['id_pitstop']})'>del</button>";
+					$btnDel = self::createDELbutton($item['id_pitstop'], btnDel_onClick);
 					$row_Time = $item['time'];
 					
 					$htmlItem = "<tr><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td><td>{$btnDel}</td></tr>";
@@ -215,6 +217,13 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 		return $htmlTable;
 	}
 	
+	/* create html button for deleting table row
+	*   input: +id, ?js-procedure
+	*/
+	public static function createDELbutton($id, $js_routine='alert("no js-routine to delete");'){
+		if(empty($id)) return "<span>xDELx</span>";
+		return "<button type='button' onclick='{$js_routine}({$id})'>del</button>";
+	}
 	/*
 	// get nested aray
 	// gives json array {var:val,...}
@@ -273,8 +282,85 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 		return $js_string;
 	}
 	
+	/* return such array:
+	[{         
+		name: 'Tokyo',
+		data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+	}, {
+		name: 'London',
+		data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8, 3.3, 4.4]
+	}]
+	source: Way::getPitstopsByItinerary()
+	array(9) {
+  [1]=>
+  array(5) {
+    ["name"]=>
+    string(16) "t46_Кол_07:04"
+    [0]=>
+    array(1) {
+      ["zel0"]=>
+      string(3) "417"
+    }
+    [1]=>
+    array(1) {
+      ["kol1"]=>
+      string(3) "424"
+    }
+    [2]=>
+    array(1) {
+      ["nem2"]=>
+      string(3) "446"
+    }
+    [3]=>
+    array(1) {
+      ["mas3"]=>
+      string(3) "452"
+    }
+  }
+	*/
+
 	
+	public static function arrayLineChart($ways){
+		if (empty($ways)) return false;
 	
+	$name2index = array ('zel0'=>0, 'kol1'=>1, 'nem2'=>2, 'mas3'=>3, 'akd4'=>4, 'spu5'=>5, 'kaz6'=>6, 'tra7'=>7);
+	$linechartXaxis = array(); //of 8 entries
+
+		$json_arr = array();
+		$js_arr_string = "";
+		
+		foreach($ways as $pit){
+			
+			$linechartXaxis = array_fill(0,8,'null'); // var_dump($linechartXaxis ); - array(8) { [0]=>   int(0)		
+
+			$lineArName = "name:'".$pit['name']."'";
+			//$lineArData = "data:[";
+				
+				foreach($pit as $key=>$val){
+					if($key !== 'name'){
+						foreach($val as $stat_shrtname => $stat_time){
+						$linechartXaxis[$name2index[$stat_shrtname]] = $stat_time;
+						//$js_arr_string = $js_arr_string.", {$stat_shrtname}:{$stat_time}";
+						}
+					}
+				}
+			$lineArData = implode(",",$linechartXaxis);	
+	
+			$line_arr_string = "{".$lineArName.",data:[".$lineArData."]},".PHP_EOL;
+			
+			$js_arr_string = $js_arr_string.$line_arr_string;
+
+		}
+		
+		$js_arr_string = rtrim($js_arr_string, PHP_EOL);
+		$js_arr_string = rtrim($js_arr_string, ",");
+		
+\LinkBox\Logger::log( $js_arr_string);
+		$js_string = "[".$js_arr_string."]";
+		
+//{name:'a73_Нем_07:32',433,440,452,458,461,465,480]}[{name:'a73_Нем_07:32',433,440,452,458,461,465,480]}]		
+		return $js_string;	
+	}
 	
 } //HTML class
 

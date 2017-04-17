@@ -58,7 +58,32 @@ class DBObject{
 			}
 		else return $objects;		
 	}
-
+	
+	public static function deleteEntry($table, $id, $id_column){
+		if (empty($table)) return false;
+		if (empty($id)) return false;
+		if (empty($id_column) ) $id_column = "id_{$table}";
+		
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		//$conn->beginTransaction();
+		if ($db->executeInsert("DELETE FROM {$table} WHERE {$id_column}={$id}") ){
+			if ($table == 'itinerary'){
+				// delete all pitstops for this itinerary
+				if ($db->executeInsert("DELETE FROM pitstop WHERE `id_itinerary`={$id}") )
+					{return true;}else{
+				self::$errormsg = 'error while deleting pitstops: '.LinkBox\DataBase::$errormsg;
+				LiLogger::log( self::$errormsg );
+				return false;}
+			}
+			
+			return true;}
+		else{
+			self::$errormsg = 'error while deleting DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;		
+		}
+	}
 	public function saveObject($pdosql){
 		$res = LinkBox\DataBase::executeInsert($pdosql);
 		if($res === false){
@@ -230,7 +255,7 @@ class Way extends DBObject{
 		
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
-		$db->executeInsert("DELETE FROM pitstop WHERE id_pitstop={$pit_id}");
+		return ( $db->executeInsert("DELETE FROM pitstop WHERE id_pitstop={$pit_id}") );
 	}
 }
 

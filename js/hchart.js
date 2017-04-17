@@ -5,7 +5,7 @@ var catsTop = cData.catsTop;
 var catsBot = cData.catsBot;
 $(function() {
     $('#container').highcharts({
-        chart       : { type    : 'line', alignTicks: false },
+        chart       : { type    : 'line', alignTicks: true },
         title       : { text: 'Parallel Coordindates' },
         subtitle    : { text: 'Proof of Concept Using the classic \'cars\' data set' },
         legend      : { enabled : false },
@@ -57,13 +57,13 @@ $(function() {
 			}
 		}],
 		yAxis  : {
-			min:0,
-			max:100,
+			min:424, //0
+			max:480, //100
 			gridLineWidth:0,
             tickWidth:0,
 			lineWidth:0,
 			labels: {
-				enabled: false
+				enabled: true
 			}
 		},
        	series : carData
@@ -79,7 +79,9 @@ function getCarData(cars) {
 	
 	var kaz6;	var kol1;	var nem2;	var akd4;	var mas3;	var spu5;	var tra7;
 	var paramNames = ['kaz6', 'kol1', 'nem2', 'akd4', 'mas3', 'spu5', 'tra7'];
-	        	
+	
+	var totalMIN; var totalMAX; // = Math.min.apply(null, mins);
+	
 	$.each(cars, function(i, car) {
 
 		//if(typeof car[paramNames[0]] 	!= 'undefined') { kaz6s.push(car[paramNames[0]]		); }	
@@ -94,32 +96,49 @@ function getCarData(cars) {
 		kaz6 	= typeof car.kaz6 	!= 'undefined' ? car.kaz6 	: null;
 		kol1 	= typeof car.kol1 	!= 'undefined' ? car.kol1 	: null;
 		nem2 	= typeof car.nem2 	!= 'undefined' ? car.nem2 	: null;
-		akd4 		= typeof car.akd4 	!= 'undefined' ? car.akd4 	: null;
+		akd4	= typeof car.akd4 	!= 'undefined' ? car.akd4 	: null;
 		mas3 	= typeof car.mas3 	!= 'undefined' ? car.mas3 	: null;
 		spu5 	= typeof car.spu5 	!= 'undefined' ? car.spu5 	: null;
 		tra7 	= typeof car.tra7 	!= 'undefined' ? car.tra7 	: null;
-		
+
 		pData[car.name] = [];
 		pData[car.name].push(
 			{name : 'kol1',  value : kol1 }, 
 			{name : 'nem2',  value : nem2 }, 
 			{name : 'mas3',  value : mas3 }, 
-			{name : 'akd4',   value : akd4  }, 
+			{name : 'akd4',  value : akd4  }, 
 			{name : 'spu5',  value : spu5 }, 
 			{name : 'kaz6',  value : kaz6 }, 
-			{name : 'tra7', value : tra7}
+			{name : 'tra7',  value : tra7}
 		);
 		
 	});
+var wholeCars = kol1s.concat(nem2s,mas3s,akd4s,spu5s,kaz6s,tra7s);
+totalMIN = Math.min.apply(null,wholeCars);
+totalMAX = Math.max.apply(null,wholeCars);
+console.log("min - max: "+totalMIN+" - "+totalMAX);	
 
-	ranks['kaz6' ] = percentileRank(kaz6s );
+	/*ranks['kaz6' ] = percentileRank(kaz6s );
 	ranks['kol1' ] = percentileRank(kol1s );
 	ranks['nem2' ] = percentileRank(nem2s );
 	ranks['akd4'  ] = percentileRank(akd4s  );
 	ranks['mas3' ] = percentileRank(mas3s );
-	ranks['spu5' ] = percentileRank(spu5s, true );
+	ranks['spu5' ] = percentileRank(spu5s );
 	ranks['tra7'] = percentileRank(tra7s);
+	*/
+	ranks['kaz6' ] = kaz6s;
+	ranks['kol1' ] = kol1s;
+	ranks['nem2' ] = nem2s;
+	ranks['akd4' ] = akd4s;
+	ranks['mas3' ] = mas3s;
+	ranks['spu5' ] = spu5s;
+	ranks['tra7' ] = tra7s;
 
+	$.each(paramNames, function(i_,param){
+		mins[param] = totalMIN;
+		maxs[param] = totalMAX;
+	});
+/*	
 	mins['kaz6' ] = Math.min.apply(null, kaz6s );
 	mins['kol1' ] = Math.min.apply(null, kol1s );
 	mins['nem2' ] = Math.min.apply(null, nem2s );
@@ -127,6 +146,7 @@ function getCarData(cars) {
 	mins['mas3' ] = Math.min.apply(null, mas3s );
 	mins['spu5' ] = Math.min.apply(null, spu5s );
 	mins['tra7'] = Math.min.apply(null, tra7s);
+
 
 	maxs['kaz6' ] = Math.max.apply(null, kaz6s );
 	maxs['kol1' ] = Math.max.apply(null, kol1s );
@@ -136,6 +156,7 @@ function getCarData(cars) {
 	maxs['spu5' ] = Math.max.apply(null, spu5s );
 	maxs['tra7'] = Math.max.apply(null, tra7s);
 	
+*/
 	var colNames = ['Кольцова','Немига','пл.Мясникова','акад.Управления','г-ца Спутник',
 	'пл.Казинца','з-д Транзистор'];
 	/*
@@ -148,7 +169,7 @@ function getCarData(cars) {
     	colNames[1]+'<br/><span style="font-weight:normal;">'+maxs['nem2']+'</span>', 
     	colNames[2]+'<br/><span style="font-weight:normal;">'+maxs['mas3']+'</span>', 
         colNames[3]+'<br/><span style="font-weight:normal;">'+maxs['akd4']+'</span>', 
-        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['spu5']+'</span>', 
+        colNames[4]+'<br/><span style="font-weight:normal;">'+maxs['spu5']+'</span>', 
         colNames[5]+'<br/><span style="font-weight:normal;">'+maxs['kaz6']+'</span>', 
         colNames[6]+'<br/><span style="font-weight:normal;">'+maxs['tra7']+'</span>'
 	]; 
@@ -157,7 +178,7 @@ function getCarData(cars) {
         colNames[1]+'<br/><span style="font-weight:normal;">'+mins['nem2']+'</span>', 
         colNames[2]+'<br/><span style="font-weight:normal;">'+mins['mas3']+'</span>', 
         colNames[3]+'<br/><span style="font-weight:normal;">'+mins['akd4']+'</span>', 
-        colNames[4]+'<br/><span style="font-weight:normal;">'+maxs['spu5']+'</span>', 
+        colNames[4]+'<br/><span style="font-weight:normal;">'+mins['spu5']+'</span>', 
         colNames[5]+'<br/><span style="font-weight:normal;">'+mins['kaz6']+'</span>', 
     	colNames[6]+'<br/><span style="font-weight:normal;">'+mins['tra7']+'</span>'
 	]; 
@@ -171,7 +192,7 @@ function getCarData(cars) {
 		var val; 
 		$.each(measures, function() {
 			var val = typeof ranks[this.name][this.value] != 'undefined' ? ranks[this.name][this.value] : null; 
-			console.info("name[ %s ] and value [ %d ]",this.name, ranks[this.name][this.value]);
+			//console.info("name[ %s ] and value [ %d ]",this.name, ranks[this.name][this.value]);
 			carData[i].data.push(val);
 		});
 		i++;
@@ -188,7 +209,8 @@ function percentileRank(data, reverse=false) {
 	if(reverse === true) {
 		data.reverse();
 	}
-	var len   = data.length;
+	//var len   = data.length;
+	var len   = 10;
 	var sData = {};
 	$.each(data, function(i, point) {
 		sData[point] = (i / (len / 100));

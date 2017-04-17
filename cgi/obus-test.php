@@ -11,7 +11,7 @@ if(!empty($_POST['action'])){
 		
 switch ($_POST['action']){
 	case 'obus':
-		echo 'obus';		
+		//echo 'obus';		
 		if(!empty($_POST['obusName'])){
 			$obus= new Obus($_POST['obusName']);
 			$retval = $obus->save();
@@ -20,7 +20,7 @@ switch ($_POST['action']){
 		}
 		break;
 	case 'station':
-		echo 'staaation';
+		//echo 'staaation';
 		if(!empty($_POST['stationName'])){
 			$station= new Station($_POST['stationName'], $_POST['statShortName']);
 			$retval = $station->save();
@@ -29,8 +29,8 @@ switch ($_POST['action']){
 		}		
 		break;
 	case 'itinerary':
-		echo 'itinerary';
-		print_r($_POST);
+		//echo 'itinerary';
+		//print_r($_POST);
 		if(!empty($_POST['itineraryName'])){
 			// [itineraryName] => a47c_Çåë_ [obus] => 1 [station] => 1 [startTime] => 07:20 [action] => itinerary 
 			$iName = $_POST['itineraryName'];
@@ -41,7 +41,7 @@ switch ($_POST['action']){
 		}			
 	break;
 	case 'pitstops':
-				print_r($_POST);
+				//print_r($_POST);
 			if( !empty($_POST['itinerarySelect']) ){
 				$way = new Way($_POST);
 				$retval = $way->save($_POST);
@@ -51,7 +51,7 @@ switch ($_POST['action']){
 	break;
 	}
 }
-echo( 'action:'.$_POST['action'] );
+//echo( 'action:'.$_POST['action'] );
 //parse_str($_POST["lbx_form_addlink"], $ajax);
 //print_r($ajax);
 ?>
@@ -84,6 +84,7 @@ function btnItinerName_onClick(){
 	var itinerName = document.getElementById("itineraryName");
 	itinerName.value = obus_text+'_'+stat_text.substring(0,3)+'_'+starttime;
 	//document.getElementById("testSpan").innerHTML = "sdsd";//itinerName.value;
+	$('#itir_submit').prop('disabled', false);
 }
 function btn_showtrans_onClick(){
 	var transblock = document.getElementById("transblock");
@@ -95,10 +96,35 @@ function btnDel_onClick(id_pitstop){
 	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
 	$.post(
 		"post.routines.php",
-		{id:id_pitstop},
-		function(data){alert(data);}
+		{id:id_pitstop, table:'pitstop'},
+		function(data){
+		console.log(data.result);
+		alert(data.result);}
+		,"json"
 	);
 }
+function btnDelItin_onClick(id_itin){
+	//var transblock = document.getElementById("transblock");
+	console.info("id itinerary: "+id_itin);
+	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
+	$.post(
+		"post.routines.php",
+		{id:id_itin, table:'itinerary'},
+		function(data){
+			console.log(data.result);
+			alert(data.result);}
+		,"json"
+	);
+}
+function postTest(){
+	console.log('there');
+	$.post( "post.routines.php", { id: "test" }, function( data ) {
+		console.log('here');
+	  console.log( data.result ); // John
+	  console.log( data.time ); // 2pm
+	},"json");
+}
+
 </script>
 <style>
 .hided{
@@ -107,6 +133,8 @@ function btnDel_onClick(id_pitstop){
 </style>
 </head>
 <body>
+<button onclick="postTest();">test post</button>
+<button onclick="postTest2();">test post 2</button>
 <fieldset>
 <legend>Transport names</legend>
 <form name="form1" method="post">
@@ -168,12 +196,16 @@ function btnDel_onClick(id_pitstop){
 <input type="hidden" name="action" value="itinerary">
 <p>
 </p>
-<input type="submit" value="Send"/>
+<input id="itir_submit" type="submit" value="Send" disabled/>
 </form>
-<hr/>
-<table>
+<!--show existing-->
+<button type="button" data-toggle="collapse" data-target="#itiblock">Show Itineraries</button>
+<div id="itiblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
 <?php echo HTML::getTableItems('itinerary');?>
 </table>
+</div>
+<!--end show existing-->
 </fieldset>
 <!-- pitstops -->
 <fieldset>
@@ -193,7 +225,7 @@ function btnDel_onClick(id_pitstop){
 <fieldset>
 <legend>Time Table</legend>
 <!--show existing-->
-<button type="button" data-toggle="collapse" data-target="#pitsblock">Show stations</button>
+<button type="button" data-toggle="collapse" data-target="#pitsblock">Show pitstops</button>
 <div id="pitsblock" class="collapse">
 <table class="table table-striped table-hover table-condensed small">
 <?php echo HTML::getPitstops();?>
@@ -201,12 +233,14 @@ function btnDel_onClick(id_pitstop){
 </div>
 <!--end show existing-->
 </fieldset>
+<a href="hchartLine.php">line chart</a>
 <pre>
-<?php $pitstops = Way::getPitstopsByItinerary(); 
+<?php
+//$pitstops = Way::getPitstopsByItinerary(); 
 //\LinkBox\Logger::log(serialize($pitstops));
 //var_dump($pitstops);
 //echo json_encode($pitstops);
-echo HTML::normalizeWays2JSON($pitstops);
+//echo HTML::normalizeWays2JSON($pitstops);
 ?>
 </pre>
 <span id="testSpan"></span>

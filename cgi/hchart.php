@@ -77,7 +77,7 @@ Highcharts.setOptions({
         align:'left',
         x: 12,
     },
-    legend: { enabled: false },
+    legend: { enabled: true },
     plotOptions: {
         area: {
             lineWidth:1,
@@ -203,7 +203,7 @@ Highcharts.setOptions({
         tickColor:'rgba(0,0,0,.75)'
     }
 });	
-    
+    /*
 function randomData(points, positive, multiplier) {
     points     = !points            ? 1     : points;
     positive   = positive !== true  ? false : true;
@@ -227,7 +227,7 @@ function randomData(points, positive, multiplier) {
         rData.push(val);    
     }
     return rData;
-}
+}*/
 <?php $pitstops = Way::getPitstopsByItinerary(); 
 //\LinkBox\Logger::log(serialize($pitstops));
 echo HTML::normalizeWays2JSON($pitstops);
@@ -245,11 +245,15 @@ var cars = [
 {name:"chevy s-10", kaz6:31, kol1:4, nem2:119, akd4:82, mas3:2720, spu5:19.4, tra7:82, origin:1}
 ];*/
 ?>
-</script>
+</script><pre>
+<?php
+var_dump($pitstops);
+?></pre>
 <script type="text/javascript" src="../js/hchart.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/hchart.css">
 </head>
 <body>
 <div id="container" style="width:1000px;height:600px;margin:.5em;"></div>
+<a href="obus-test.php" >settings</a>
 </body>
 </html>
