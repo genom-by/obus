@@ -16,7 +16,7 @@ switch ($_POST['action']){
 			$obus= new Obus($_POST['obusName']);
 			$retval = $obus->save();
 			if(!$retval)
-			print_r("result: ".obus::$errormsg);
+			print_r("result: ".$obus::$errormsg);
 		}
 		break;
 	case 'station':
@@ -25,7 +25,7 @@ switch ($_POST['action']){
 			$station= new Station($_POST['stationName'], $_POST['statShortName']);
 			$retval = $station->save();
 			if(!$retval)
-			print_r("result: ".station::$errormsg);
+			print_r("result: ".$station::$errormsg);
 		}		
 		break;
 	case 'itinerary':
@@ -37,7 +37,7 @@ switch ($_POST['action']){
 			$itiner = new Itinerary($iName, $_POST['obus'], $_POST['station'], $_POST['startTime']);
 			$retval = $itiner->save();
 			if(!$retval)
-				print_r("result: ".itinerary::$errormsg);			
+				print_r("result: ".$itinerary::$errormsg);			
 		}			
 	break;
 	case 'pitstops':
@@ -46,7 +46,16 @@ switch ($_POST['action']){
 				$way = new Way($_POST);
 				$retval = $way->save($_POST);
 				if(!$retval)
-					print_r("result: ".way::$errormsg);				
+					print_r("result: ".$way::$errormsg);				
+			}
+	break;
+	case 'destination':
+				//print_r($_POST);
+			if( !empty($_POST['destName']) ){
+				$dest = new Destination($_POST['destName'], $_POST['destName']);
+				$retval = $dest->save();
+				if(!$retval)
+					print_r("result: ".$dest::$errormsg);				
 			}
 	break;
 	}
@@ -130,20 +139,54 @@ function postTest(){
 .hided{
 	display:none;
 }
+.table-condensed .btn_del{
+    padding: 2px 5px;
+    font-size: 10px;
+	font-weight:bold;
+    line-height: 1.1;
+    border-radius: 3px;
+	margin:-2px 0;
+}
+.obus_header{
+	margin-bottom:20px;
+}
+.statName_send{
+position:relative;
+float:right;
+width:20%;
+}
+.clearfix{
+content:"";
+display:block;
+clear:both;
+}
+.statName_inputs{
+float:left;
+width:80%;
+}
 </style>
 </head>
 <body>
-<button onclick="postTest();">test post</button>
-<button onclick="postTest2();">test post 2</button>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="obus_header">
+			</div>
+		</div>	
+	</div>
+</div>	
+<div class="container">
+	<div class="row">
+		<div class="col-md-6"><div class="obus_numbers">
 <fieldset>
 <legend>Transport names</legend>
 <form name="form1" method="post">
 <label for="obusName">Tran Name</label>
 <input type="text" name="obusName" id="obusName"/>
+<input type="submit" value="Send"/>
 <input type="hidden" name="action" value="obus">
 <p>
 </p>
-<input type="submit" value="Send"/>
 <!--show existing-->
 <button type="button" id="btn_showtrans" onclick="btn_showtrans_onClick();" data-toggle="collapse" data-target="#transblock">Show trans</button>
 <div id="transblock" class="collapse">
@@ -153,19 +196,26 @@ function postTest(){
 </div>
 <!--end show existing-->
 </form>
-</fieldset>
+</fieldset>	
+		</div></div>
+		<div class="col-md-6"><div class="obus_stations">
 <!-- stations -->
 <fieldset>
 <legend>Station names</legend>
 <form name="form2" method="post">
+<div class="statName_inputs">
 <label for="stationName">Station Name</label>
-<input type="text" name="stationName" id="stationName"/>
+<input type="text" name="stationName" id="stationName"/><br/>
 <label for="statShortName">Station Short Name</label>
 <input type="text" name="statShortName" id="statShortName"/>
+</div>
+<div class="statName_send">
+<input type="submit" value="Send"/>
+</div>
+<div class="clearfix"></div>
 <input type="hidden" name="action" value="station">
 <p>
 </p>
-<input type="submit" value="Send"/>
 <!--show existing-->
 <button type="button" data-toggle="collapse" data-target="#statsblock">Show stations</button>
 <div id="statsblock" class="collapse">
@@ -175,8 +225,15 @@ function postTest(){
 </div>
 <!--end show existing-->
 </form>
-</fieldset>
-<!-- itineraries -->
+</fieldset>		
+		</div></div>
+	</div>
+</div>
+<!-- -------------------------------------------- itineraries --------------------------------------------  -->
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="obus_itineraries">
 <fieldset>
 <legend>Itineraries</legend>
 <form name="form3" method="post">
@@ -194,9 +251,9 @@ function postTest(){
 <label for="startTime">Start time (HH:mm)</label>
 <input type="text" autocomplete="off" name="startTime" id="startTime" size="10"/>
 <input type="hidden" name="action" value="itinerary">
+<input id="itir_submit" type="submit" value="Send" disabled/>
 <p>
 </p>
-<input id="itir_submit" type="submit" value="Send" disabled/>
 </form>
 <!--show existing-->
 <button type="button" data-toggle="collapse" data-target="#itiblock">Show Itineraries</button>
@@ -206,7 +263,35 @@ function postTest(){
 </table>
 </div>
 <!--end show existing-->
-</fieldset>
+</fieldset>			
+			</div>
+		</div>	
+		<div class="col-md-4">
+			<div class="obus_destinations">
+<fieldset>
+<legend>Destinations</legend>
+<form name="formDest" method="post">
+<label for="destName">D.Name</label>
+<input type="text" name="destName" id="destName" autocomplete="off"/>
+<input type="submit" value="Send"/>
+<input type="hidden" name="action" value="destination">
+<p>
+</p>
+<!--show existing-->
+<button type="button" id="btn_showdest" onclick="btn_showdest_onClick();" data-toggle="collapse" data-target="#destblock">Show Dest</button>
+<div id="destblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
+<?php echo HTML::getTableItems('destination');?>
+</table>
+</div>
+<!--end show existing-->
+</form>
+</fieldset>				
+			</div>
+		</div>	
+	</div>
+</div><!-- itineraries end -->
+
 <!-- pitstops -->
 <fieldset>
 <legend>Pitstops</legend>

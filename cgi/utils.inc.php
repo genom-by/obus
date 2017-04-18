@@ -57,8 +57,10 @@ class Utils{
 	//convert nteger HH*60 + mm to string HH:mm
 	public static function Int2HHmm($intgr){
 		$m = $intgr % 60;
+		$m_str = "";
+		if($m < 10){$m_str='0'.$m;}else{$m_str=$m;}
 		$h = floor($intgr / 60);
-		return $h.':'.$m;
+		return $h.':'.$m_str;
 	}
 }
 

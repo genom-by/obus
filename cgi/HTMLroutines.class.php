@@ -87,6 +87,19 @@ class HTML{
 			else $htmlList = "<option disabled value='-1'>No Stations</option>";
 		}
 		break;
+		case 'destination':{
+			$list = Destination::getAll() ;
+			if(false !== $list){
+				$htmlItem = '';
+				foreach($list as $item){
+					$htmlItem = "<option value='{$item['id_dest']}'>{$item['name']}</option>";
+					$htmlList = $htmlList.$htmlItem.PHP_EOL;
+				}
+			//return $htmlList;
+			}
+			else $htmlList = "<option disabled value='-1'>No Stations</option>";
+		}
+		break;
 		default:
 			$htmlList = "<option disabled value='-1'>No data</option>";	
 		}
@@ -104,10 +117,25 @@ class HTML{
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-			$btnDel = self::createDELbutton($item['id_itin'], btnDelItin_onClick);
+			$btnDel = self::createDELbutton($item['id_itin'], 'btnDelItin_onClick');
 					$time = LinkBox\Utils::Int2HHmm($item['start_time']);
 $htmlItem = "<tr><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
 			"<td>{$item['statName']}</td><td>{$time}</td><td>{$btnDel}</td></tr>";
+					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
+				}
+			//return $htmlList;
+			}else{$htmlTable = "no data";}			
+		}
+		break;
+		case 'destination':{
+			$list = Destination::getAll() ;
+			if(false !== $list){
+				$htmlItem = '';
+				foreach($list as $item){
+			$btnDel = self::createDELbutton($item['id_dest'], 'btnDelDest_onClick');
+					
+$htmlItem = "<tr><td>{$item['id_dest']}</td><td>{$item['name']}</td>".
+			"<td>{$item['dest_seq']}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -204,7 +232,7 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 					$totalstops++;
 					
 					//$btnDel = "<button type='button' onclick='btnDel_onClick({$item['id_pitstop']})'>del</button>";
-					$btnDel = self::createDELbutton($item['id_pitstop'], btnDel_onClick);
+					$btnDel = self::createDELbutton($item['id_pitstop'], 'btnDel_onClick');
 					$row_Time = $item['time'];
 					
 					$htmlItem = "<tr><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td><td>{$btnDel}</td></tr>";
@@ -222,7 +250,7 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 	*/
 	public static function createDELbutton($id, $js_routine='alert("no js-routine to delete");'){
 		if(empty($id)) return "<span>xDELx</span>";
-		return "<button type='button' onclick='{$js_routine}({$id})'>del</button>";
+		return "<button type='button' class='btn_del' onclick='{$js_routine}({$id})'>del</button>";
 	}
 	/*
 	// get nested aray

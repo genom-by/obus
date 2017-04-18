@@ -126,6 +126,7 @@ class DataBase{
 		}
 		switch($table){
 			case 'obus': $sql = "SELECT id_obus, name from obus ORDER BY name"; break;
+			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination ORDER BY name"; break;
 			case 'station': $sql = "SELECT id_station, name, shortName from station"; break;
 			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type"; break;
 			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station"; break;
