@@ -58,6 +58,15 @@ switch ($_POST['action']){
 					print_r("result: ".$dest::$errormsg);				
 			}
 	break;
+	case 'sequence':
+				print_r($_POST);
+			if( !empty($_POST['seqName']) ){
+				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
+				$retval = $seq->save();
+				if(!$retval)
+					print_r("result: ".$seq::$errormsg);				
+			}
+	break;
 	}
 }
 //echo( 'action:'.$_POST['action'] );
@@ -98,6 +107,25 @@ function btnItinerName_onClick(){
 function btn_showtrans_onClick(){
 	var transblock = document.getElementById("transblock");
 	//if(transblock)
+}
+function btnDelFromTable(table_, id_entry){
+	console.info("delete from table: "+table_+" entry id:"+id_entry);
+	
+	$.post(
+		"post.routines.php",
+		{id:id_entry, table:table_},
+		function(data){
+		console.log("post returned: "+data.result);
+		//console.table("post returned: "+data);
+		alert(data.result);
+		if (data.result == 'ok' ){
+			var domID = '#'+table_+'_id_'+id_entry;
+			//$(domID).background();
+			$(domID).toggle( "highlight" );
+		}
+		}
+		,"json"
+	);	
 }
 function btnDel_onClick(id_pitstop){
 	//var transblock = document.getElementById("transblock");
@@ -177,12 +205,35 @@ width:80%;
 </div>	
 <div class="container">
 	<div class="row">
-		<div class="col-md-6"><div class="obus_numbers">
+		<div class="col-md-3">
+			<div class="obus_destination">
+<fieldset>
+<legend>Destinations</legend>
+<form name="formDest" method="post">
+<label for="destName">D.Name</label>
+<input type="text" name="destName" id="destName" autocomplete="off"/>
+<input type="submit" value="Send"/>
+<input type="hidden" name="action" value="destination">
+<p>
+</p>
+<!--show existing-->
+<button type="button" id="btn_showdest" onclick="btn_showdest_onClick();" data-toggle="collapse" data-target="#destblock">Show Dest</button>
+<div id="destblock" class="collapse">
+<table class="table table-striped table-hover table-condensed small">
+<?php echo HTML::getTableItems('destination');?>
+</table>
+</div>
+<!--end show existing-->
+</form>
+</fieldset>				
+			</div>
+		</div>	
+		<div class="col-md-3"><div class="obus_numbers">
 <fieldset>
 <legend>Transport names</legend>
 <form name="form1" method="post">
 <label for="obusName">Tran Name</label>
-<input type="text" name="obusName" id="obusName"/>
+<input type="text" name="obusName" id="obusName" size="10"/>
 <input type="submit" value="Send"/>
 <input type="hidden" name="action" value="obus">
 <p>
@@ -267,21 +318,24 @@ width:80%;
 			</div>
 		</div>	
 		<div class="col-md-4">
-			<div class="obus_destinations">
+			<div class="obus_sequense">
 <fieldset>
-<legend>Destinations</legend>
-<form name="formDest" method="post">
-<label for="destName">D.Name</label>
-<input type="text" name="destName" id="destName" autocomplete="off"/>
+<legend>Sequence</legend>
+<form name="formSeq" method="post">
+<select name="seqDest" id="seqDest">
+<?php echo HTML::getSelectItems('destination');?>
+</select>
+<label for="seqName">Seq.Name</label>
+<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 <input type="submit" value="Send"/>
-<input type="hidden" name="action" value="destination">
+<input type="hidden" name="action" value="sequence">
 <p>
 </p>
 <!--show existing-->
-<button type="button" id="btn_showdest" onclick="btn_showdest_onClick();" data-toggle="collapse" data-target="#destblock">Show Dest</button>
-<div id="destblock" class="collapse">
+<button type="button" id="btn_showseq" onclick="btn_showseq_onClick();" data-toggle="collapse" data-target="#seqblock">Show Seq</button>
+<div id="seqblock" class="collapse">
 <table class="table table-striped table-hover table-condensed small">
-<?php echo HTML::getTableItems('destination');?>
+<?php echo HTML::getTableItems('sequences');?>
 </table>
 </div>
 <!--end show existing-->

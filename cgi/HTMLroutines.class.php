@@ -106,7 +106,9 @@ class HTML{
 	return $htmlList;	
 
 	}
-	
+/* ==============================
+*								getTableItems
+* ============================== */	
 	public static function getTableItems($table){
 		
 	$htmlTable = '';	
@@ -161,8 +163,21 @@ $htmlItem = "<tr><td>{$item['name']}</td></tr>";
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-					//$time = LinkBox\Utils::Int2HHmm($item['start_time']);
-$htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
+					$btnDel = self::createDELTablebutton('station', $item['id_station']);
+$htmlItem = "<tr id='station_id_{$item['id_station']}'><td>{$item['name']}</td><td>{$item['shortName']}</td><td>{$btnDel}</td></tr>";
+					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
+				}
+			//return $htmlList;
+			}else{$htmlTable = "no data";}			
+		}
+		break;
+		case 'sequences':{
+			$list = Sequence::getAll() ;
+			if(false !== $list){
+				$htmlItem = '';
+				foreach($list as $item){
+				$btnDel = self::createDELTablebutton('sequences', $item['id_seq']);
+$htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td>{$item['destName']}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -251,6 +266,13 @@ $htmlItem = "<tr><td>{$item['name']}</td><td>{$item['shortName']}</td></tr>";
 	public static function createDELbutton($id, $js_routine='alert("no js-routine to delete");'){
 		if(empty($id)) return "<span>xDELx</span>";
 		return "<button type='button' class='btn_del' onclick='{$js_routine}({$id})'>del</button>";
+	}
+	/* create html button wih common function btnDelFromTable for deleting table row
+	*   input: table, id
+	*/
+	public static function createDELTablebutton($table='no_table_provided',$id=0){
+		if(empty($id)) return "<span>xDELx</span>";
+		return "<button type='button' class='btn_del' onclick='btnDelFromTable(`{$table}`,{$id});'>del</button>";
 	}
 	/*
 	// get nested aray

@@ -49,6 +49,7 @@ class DBObject{
 			case 'pitstop_type': $table='pitstop_type';break;
 			case 'way': $table='pitstop';break;
 			case 'destination': $table='destination';break;
+			case 'sequences': $table='sequences';break;
 			default: self::$errormsg = "No such table: {$object_}"; return false;
 		}
 		$objects = LinkBox\DataBase::getAll($table);
@@ -304,6 +305,29 @@ class Itinerary extends DBObject{
 		
 	public static function getAll(){
 		return self::getAllRecords('itinerary');	
+	}
+}
+class Sequence extends DBObject{
+	//private $obus;
+	private $destination;
+
+	public function __construct($seqName_, $dest_){
+		$this->name = Ut::cleanInput($seqName_);
+		$this->destination = Ut::cleanInput($dest_);
+		$this->sqlPDOSave = "INSERT INTO sequences(name, destination) VALUES(':iName:', :iDest:)";
+	}
+	public function save(){
+		$arrParameters = array(
+		":iName:"=>$this->name,
+		":iDest:"=>$this->destination);
+		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
+		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		//print_r($pdosql);
+		return $this->saveObject($pdosql);
+	}
+		
+	public static function getAll(){
+		return self::getAllRecords('sequences');	
 	}
 }
 

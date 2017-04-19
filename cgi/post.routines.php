@@ -14,7 +14,13 @@ $err = "";
 	switch($_POST['table']){
 		case 'itinerary':
 		$res = DBObject::deleteEntry('itinerary', $_POST['id'], 'id_itin');
-
+		break;
+		case 'sequences':
+		$res = DBObject::deleteEntry('sequences', $_POST['id'], 'id_seq');
+		break;
+		case 'station':
+		$res = DBObject::deleteEntry('station', $_POST['id']);
+		\LinkBox\Logger::log('res:'.$res);
 		break;
 		case 'test':
 		$res = true;
