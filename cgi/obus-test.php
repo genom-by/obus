@@ -59,6 +59,15 @@ switch ($_POST['action']){
 			}
 	break;
 	case 'sequence':
+				//print_r($_POST);
+			if( !empty($_POST['seqName']) ){
+				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
+				$retval = $seq->save();
+				if(!$retval)
+					print_r("result: ".$seq::$errormsg);				
+			}
+	break;
+	case 'sequencesDest':
 				print_r($_POST);
 			if( !empty($_POST['seqName']) ){
 				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
@@ -108,51 +117,52 @@ function btn_showtrans_onClick(){
 	var transblock = document.getElementById("transblock");
 	//if(transblock)
 }
+function onTestPOSToperation(){
+	/*test 
+	data to send: Object { id: -1, table: "test" }
+	data to send: Object { id: 9, table: "station" }
+	
+	if ( table_ == 'station' ){
+		console.log('station '+id_entry);
+		$.post(
+			"post.routines.php",
+			{id:-1, table:'test'},
+			function(data){
+			console.log("post returned: "+data.result);
+			//console.table("post returned: "+data);
+			alert(data.result);
+			if (data.result == 'ok' ){
+				var domID = '#'+table_+'_id_'+id_entry;
+				//$(domID).background();
+				$(domID).toggle( "highlight" );
+			}
+			}
+			,"json"
+		);
+		return;
+	}*/
+}
 function btnDelFromTable(table_, id_entry){
 	console.info("delete from table: "+table_+" entry id:"+id_entry);
-	
+	console.info('data to send:', {id:id_entry, table:table_});
+
 	$.post(
 		"post.routines.php",
 		{id:id_entry, table:table_},
 		function(data){
 		console.log("post returned: "+data.result);
-		//console.table("post returned: "+data);
 		alert(data.result);
 		if (data.result == 'ok' ){
 			var domID = '#'+table_+'_id_'+id_entry;
-			//$(domID).background();
 			$(domID).toggle( "highlight" );
+		}else{
+			console.log('error message: ',data.message);
 		}
 		}
 		,"json"
 	);	
 }
-function btnDel_onClick(id_pitstop){
-	//var transblock = document.getElementById("transblock");
-	console.info("id pitstop: "+id_pitstop);
-	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
-	$.post(
-		"post.routines.php",
-		{id:id_pitstop, table:'pitstop'},
-		function(data){
-		console.log(data.result);
-		alert(data.result);}
-		,"json"
-	);
-}
-function btnDelItin_onClick(id_itin){
-	//var transblock = document.getElementById("transblock");
-	console.info("id itinerary: "+id_itin);
-	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
-	$.post(
-		"post.routines.php",
-		{id:id_itin, table:'itinerary'},
-		function(data){
-			console.log(data.result);
-			alert(data.result);}
-		,"json"
-	);
-}
+
 function postTest(){
 	console.log('there');
 	$.post( "post.routines.php", { id: "test" }, function( data ) {
@@ -345,8 +355,11 @@ width:80%;
 		</div>	
 	</div>
 </div><!-- itineraries end -->
-
-<!-- pitstops -->
+<!-- ---------------------------------------------- pitstops ----------------   |   ----------------------------- sequenses -------------------------------------------    -->
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="obus_pitstops">
 <fieldset>
 <legend>Pitstops</legend>
 <form name="form4" method="post">
@@ -359,7 +372,29 @@ width:80%;
 <input type="hidden" name="action" value="pitstops">
 <input type="submit" value="Send"/>
 </form>
-</fieldset>
+</fieldset>			
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="obus_sequences">
+<fieldset>
+<legend>Sequences</legend>
+<form name="formSeq" method="post">
+<select name="sequencesSelect" id="sequencesSelect">
+<?php echo HTML::getSelectItems('sequences');?>
+</select>
+<p></p>
+<?php echo HTML::getSequencesTable();?>
+<p></p>
+<input type="hidden" name="action" value="sequencesDest">
+<input type="submit" value="Send"/>
+</form>
+</fieldset>	
+			</div>
+		</div>	
+	</div>
+</div>	
+
 <!-- timetable test-->
 <fieldset>
 <legend>Time Table</legend>

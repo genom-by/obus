@@ -113,6 +113,33 @@ class DataBase{
 			return false;
 		}
 		else return true;
+	}	
+	public static function executeDelete($query){
+		if(empty($query)){
+			self::$errormsg = 'No query provided.';
+			return false;
+		}
+		
+		if(! self::checkConnect() ){
+			self::$errormsg = 'No connection to DB.';
+			Logger::log(self::$errormsg);		
+			return false;
+		}
+		//print_r($pdosql);
+		try{
+			$res = self::getPDO()->exec($query);
+		}catch(\Exception $e){
+			self::$errormsg = 'Error while deleting from DB: '.$e->getMessage();
+			Logger::log(self::$errormsg);
+			return false;
+		}
+		//$res = $this->db->connection->exec($pdosql);
+		if($res === false){
+			self::$errormsg = 'Error while deleting from DB.';
+			Logger::log(self::$errormsg);
+			return false;
+		}
+		else return true;
 	}
 	
 	public static function getAll($table){
@@ -128,6 +155,9 @@ class DataBase{
 			case 'obus': $sql = "SELECT id_obus, name from obus ORDER BY name"; break;
 			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination ORDER BY name"; break;
 			case 'sequences': $sql = "SELECT id_seq, name, destination from sequences ORDER BY name"; break;
+			case 'sequencesDestination': $sql = "SELECT (destination.name  || ' via ' || sequences.name) AS dest, id_seq, sequences.name 
+from sequences LEFT JOIN destination ON sequences.destination = destination.id_dest 
+ORDER BY dest"; break;
 			case 'station': $sql = "SELECT id_station, name, shortName from station"; break;
 			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type"; break;
 			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station"; break;

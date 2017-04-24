@@ -50,6 +50,7 @@ class DBObject{
 			case 'way': $table='pitstop';break;
 			case 'destination': $table='destination';break;
 			case 'sequences': $table='sequences';break;
+			case 'sequencesDestination': $table='sequencesDestination';break;
 			default: self::$errormsg = "No such table: {$object_}"; return false;
 		}
 		$objects = LinkBox\DataBase::getAll($table);
@@ -61,7 +62,7 @@ class DBObject{
 		else return $objects;		
 	}
 	
-	public static function deleteEntry($table, $id, $id_column){
+	public static function deleteEntry($table, $id, $id_column=""){
 		if (empty($table)) return false;
 		if (empty($id)) return false;
 		if (empty($id_column) ) $id_column = "id_{$table}";
@@ -69,10 +70,10 @@ class DBObject{
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
 		//$conn->beginTransaction();
-		if ($db->executeInsert("DELETE FROM {$table} WHERE {$id_column}={$id}") ){
+		if ($db->executeDelete("DELETE FROM {$table} WHERE {$id_column}={$id}") ){
 			if ($table == 'itinerary'){
 				// delete all pitstops for this itinerary
-				if ($db->executeInsert("DELETE FROM pitstop WHERE `id_itinerary`={$id}") )
+				if (false !== $db->executeDelete("DELETE FROM pitstop WHERE `id_itinerary`={$id}") )
 					{return true;}else{
 				self::$errormsg = 'error while deleting pitstops: '.LinkBox\DataBase::$errormsg;
 				LiLogger::log( self::$errormsg );
@@ -277,7 +278,7 @@ class Way extends DBObject{
 		
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
-		return ( $db->executeInsert("DELETE FROM pitstop WHERE id_pitstop={$pit_id}") );
+		return ( $db->executeDelete("DELETE FROM pitstop WHERE id_pitstop={$pit_id}") );
 	}
 }
 
@@ -327,7 +328,7 @@ class Sequence extends DBObject{
 	}
 		
 	public static function getAll(){
-		return self::getAllRecords('sequences');	
+		return self::getAllRecords('sequencesDestination');	
 	}
 }
 

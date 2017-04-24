@@ -100,6 +100,19 @@ class HTML{
 			else $htmlList = "<option disabled value='-1'>No Stations</option>";
 		}
 		break;
+		case 'sequences':{
+			$list = Sequence::getAll() ;
+			if(false !== $list){
+				$htmlItem = '';
+				foreach($list as $item){
+					$htmlItem = "<option value='{$item['id_seq']}'>{$item['dest']}</option>";
+					$htmlList = $htmlList.$htmlItem.PHP_EOL;
+				}
+			//return $htmlList;
+			}
+			else $htmlList = "<option disabled value='-1'>No Sequences</option>";
+		}
+		break;
 		default:
 			$htmlList = "<option disabled value='-1'>No data</option>";	
 		}
@@ -119,9 +132,10 @@ class HTML{
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-			$btnDel = self::createDELbutton($item['id_itin'], 'btnDelItin_onClick');
+			//$btnDel = self::createDELbutton($item['id_itin'], 'btnDelItin_onClick');
+			$btnDel = self::createDELTablebutton('itinerary', $item['id_itin']);		
 					$time = LinkBox\Utils::Int2HHmm($item['start_time']);
-$htmlItem = "<tr><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
+$htmlItem = "<tr id='itinerary_id_{$item['id_itin']}'><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
 			"<td>{$item['statName']}</td><td>{$time}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
@@ -134,9 +148,9 @@ $htmlItem = "<tr><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-			$btnDel = self::createDELbutton($item['id_dest'], 'btnDelDest_onClick');
-					
-$htmlItem = "<tr><td>{$item['id_dest']}</td><td>{$item['name']}</td>".
+			//$btnDel = self::createDELbutton($item['id_dest'], 'btnDelDest_onClick');
+			$btnDel = self::createDELTablebutton('destination', $item['id_dest']);		
+$htmlItem = "<tr id='destination_id_{$item['id_dest']}'><td>{$item['id_dest']}</td><td>{$item['name']}</td>".
 			"<td>{$item['dest_seq']}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
@@ -214,6 +228,30 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 	return "<table>".$htmlheader.$htmlTable."</table>".PHP_EOL."<input name='totalstops' value='{$totalstops}' type='hidden'>";
 	}
 	
+	public static function getSequencesTable(){
+		
+	$htmlTable = '';	
+	$totalstops = 0;
+	
+	$list = Station::getAll() ;
+	if(false !== $list){
+		$htmlItem = '';
+		foreach($list as $item){
+			$totalstops++;
+			$row_selStation = "<select name='station".$item['id_station']."' id='stationSel".$item['id_station']."'>".self::getSelectItems('station')."</select>";//self::getSelectItems('station')
+			//$row_Time = "<input type='text' autocomplete='off' name='stationTime".$item['id_station']."' id='stationTime".$item['id_station']."' size='10'/>";
+			$row_selpitType = "<select name='pitType".$item['id_station']."' id='pitType".$item['id_station']."'>".self::getSelectItems('pitstopType')."</select>";
+			
+			$htmlItem = "<tr><td>{$totalstops}</td><td>{$row_selStation}</td><td>{$row_selpitType}</td></tr>";
+			$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
+		}
+	//return $htmlList;
+	}else{$htmlTable = "no data";}			
+	
+	$htmlheader = "<tr><th>Station</th><th>Time(HH:mm)</th></tr>";
+	return "<table>".$htmlheader.$htmlTable."</table>".PHP_EOL."<input name='totalstops' value='{$totalstops}' type='hidden'>";
+	}
+	
 	public static function timeTableTest($startHour = 6, $endHour = 10){
 			
 			$htmlTable="";
@@ -247,10 +285,11 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 					$totalstops++;
 					
 					//$btnDel = "<button type='button' onclick='btnDel_onClick({$item['id_pitstop']})'>del</button>";
-					$btnDel = self::createDELbutton($item['id_pitstop'], 'btnDel_onClick');
+					$btnDel = self::createDELTablebutton('pitstop', $item['id_pitstop']);
+					//$btnDel = self::createDELbutton($item['id_pitstop'], 'btnDel_onClick');
 					$row_Time = $item['time'];
 					
-					$htmlItem = "<tr><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td><td>{$btnDel}</td></tr>";
+					$htmlItem = "<tr id='pitstop_id_{$item['id_pitstop']}'><td>{$item['itinName']}</td><td>{$item['statName']}</td><td>{$row_Time}</td><td>{$btnDel}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
