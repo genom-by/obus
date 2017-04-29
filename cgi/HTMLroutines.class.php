@@ -105,7 +105,7 @@ class HTML{
 			if(false !== $list){
 				$htmlItem = '';
 				foreach($list as $item){
-					$htmlItem = "<option value='{$item['id_seq']}'>{$item['dest']}</option>";
+					$htmlItem = "<option value='{$item['id_seq']}'>{$item['name']}</option>";
 					$htmlList = $htmlList.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -239,16 +239,16 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 		foreach($list as $item){
 			$totalstops++;
 			$row_selStation = "<select name='station".$item['id_station']."' id='stationSel".$item['id_station']."'>".self::getSelectItems('station')."</select>";//self::getSelectItems('station')
-			//$row_Time = "<input type='text' autocomplete='off' name='stationTime".$item['id_station']."' id='stationTime".$item['id_station']."' size='10'/>";
+			$row_orderal = "<input type='text' hidden name='orderal".$item['id_station']."' id='orderal".$item['id_station']."' size='0' value='{$totalstops}'/>";
 			$row_selpitType = "<select name='pitType".$item['id_station']."' id='pitType".$item['id_station']."'>".self::getSelectItems('pitstopType')."</select>";
 			
-			$htmlItem = "<tr><td>{$totalstops}</td><td>{$row_selStation}</td><td>{$row_selpitType}</td></tr>";
+			$htmlItem = "<tr><td>{$totalstops}</td><td>{$row_orderal}</td><td>{$row_selStation}</td><td>{$row_selpitType}</td></tr>";
 			$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 		}
 	//return $htmlList;
 	}else{$htmlTable = "no data";}			
 	
-	$htmlheader = "<tr><th>Station</th><th>Time(HH:mm)</th></tr>";
+	$htmlheader = "<tr><th>Orderal</th><th>Station</th></tr>";
 	return "<table>".$htmlheader.$htmlTable."</table>".PHP_EOL."<input name='totalstops' value='{$totalstops}' type='hidden'>";
 	}
 	
@@ -444,11 +444,27 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 		$js_arr_string = rtrim($js_arr_string, PHP_EOL);
 		$js_arr_string = rtrim($js_arr_string, ",");
 		
-\LinkBox\Logger::log( $js_arr_string);
+// \LinkBox\Logger::log( $js_arr_string);
 		$js_string = "[".$js_arr_string."]";
 		
 //{name:'a73_Нем_07:32',433,440,452,458,461,465,480]}[{name:'a73_Нем_07:32',433,440,452,458,461,465,480]}]		
 		return $js_string;	
+	}
+	
+	public static function arrayLineChartCategories($seqs){
+		if (empty($seqs)) return false;
+//echo'<pre>'; 	var_dump($seqs);	echo'</pre>';
+		$arQuoted = array();
+		
+		foreach($seqs as $ss){
+			$arQuoted[] = "'{$ss}'";
+		}
+		$lineArData = implode(",",$arQuoted);	
+		$line_arr_string = "[".$lineArData."]".PHP_EOL;
+		
+	return $line_arr_string; 
+ //return "['zel0', 'kol1', 'nem2', 'mas3', 'akd4', 'spu5', 'kaz6', 'tra7']";
+ 
 	}
 	
 } //HTML class

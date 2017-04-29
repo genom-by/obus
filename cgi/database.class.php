@@ -142,8 +142,8 @@ class DataBase{
 		else return true;
 	}
 	
-	public static function getAll($table){
-	
+	public static function getAll($table, $byID=-1){
+Logger::log("get all for table: {$table} and id {$byID}");	
 		if(empty($table)){
 			self::$errormsg = 'No table provided.';
 			return false;
@@ -155,9 +155,13 @@ class DataBase{
 			case 'obus': $sql = "SELECT id_obus, name from obus ORDER BY name"; break;
 			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination ORDER BY name"; break;
 			case 'sequences': $sql = "SELECT id_seq, name, destination from sequences ORDER BY name"; break;
-			case 'sequencesDestination': $sql = "SELECT (destination.name  || ' via ' || sequences.name) AS dest, id_seq, sequences.name 
-from sequences LEFT JOIN destination ON sequences.destination = destination.id_dest 
-ORDER BY dest"; break;
+			case 'sequencesStations': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
+ORDER BY orderal "; break;
+			case 'sequencesStationsBYID': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
+WHERE seq_stations.id_seq = {$byID}
+ORDER BY orderal ;"; break;
 			case 'station': $sql = "SELECT id_station, name, shortName from station"; break;
 			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type"; break;
 			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station"; break;
@@ -182,6 +186,77 @@ ORDER BY dest"; break;
 				return false;
 			}else{
 				return $obuses;
+			}		
+		//-----
+		}catch(\Exception $e){
+			self::$errormsg = "Error while getting all records from {$table}: ".$e->getMessage();
+			Logger::log(self::$errormsg);
+			return false;		
+		}
+	}
+	
+	public static function getEntryByID($table, $id){
+	
+		if(empty($table)){
+			self::$errormsg = 'No table provided.';
+			return false;
+		}
+		if(empty($id)){
+			self::$errormsg = 'No id provided.';
+			return false;
+		}
+		if(! is_numeric($id)){
+			self::$errormsg = 'id should be numeric.';
+			return false;
+		}
+		
+		if(! self::checkConnect() ){
+			return false;
+		}
+		switch($table){
+			case 'obus': $sql = "SELECT id_obus, name from obus WHERE id_obus = {$id}"; break;
+			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination WHERE id_dest = {$id}"; break;
+			case 'sequences': $sql = "SELECT id_seq, name, destination from sequences WHERE id_seq = {$id}"; break;
+			case 'sequencesStations': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
+WHERE seq_stations.id_seq = {$id}
+ORDER BY orderal ;"; break;
+			case 'station': $sql = "SELECT id_station, name, shortName from station WHERE id_station = {$id}"; break;
+			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type WHERE id_pitstoptype = {$id}"; break;
+			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station WHERE id_itin = {$id}"; break;
+			case 'pitstop': $sql = "SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin WHERE id_pitstop = {$id}"; break;
+			default: $sql = '';
+		}
+		try{
+		//-----
+//Logger::log("sql:".$sql);
+			//PDOStatement::closeCursor();
+			//self::getPDO()->closeCursor();
+			$statement = self::getPDO()->prepare($sql);
+			if(empty($statement)){
+				self::$errormsg = "could not obtain statement";
+				return false;			
+			}
+			if(false === $statement){
+				self::$errormsg = implode(' ', self::getPDO()->errorInfo() );
+				return false;
+			}
+			$result = $statement->execute();
+			if(empty($result)){
+				self::$errormsg = "could not obtain result";
+				return false;			
+			}
+			if($result === false){
+				self::$errormsg = implode(' ', self::getPDO()->errorInfo() );
+				return false;
+			}
+//Logger::log("result".serialize($result));			
+			$object = $statement->fetch();
+			if($object === false ){
+				self::$errormsg = implode(' ', $statement->errorInfo() );
+				return false;
+			}else{
+				return $object;
 			}		
 		//-----
 		}catch(\Exception $e){
@@ -347,7 +422,16 @@ echo 'sql:'.$sql;
 			return $messages;
 		}		
 	}
-	
+	/*
+	CREATE TABLE [seq_stations] (
+ [id_ss] INTEGER NOT NULL PRIMARY KEY CONSTRAINT [XPKss] UNIQUE, 
+ [id_seq] INTEGER NOT NULL CONSTRAINT [XPKss_seq] REFERENCES [sequences]([id_seq]) ON DELETE CASCADE,  
+ [id_station] INTEGER NOT NULL CONSTRAINT [XPKss_stat] REFERENCES [station] ON DELETE RESTRICT, 
+ [id_pitstoptype] INTEGER NOT NULL CONSTRAINT [XPKss_pitype] REFERENCES [pitstop_type] ON DELETE SET NULL, 
+ [orderal] INTEGER NOT NULL,
+ CONSTRAINT "XPKss_ord" UNIQUE("id_ss","orderal")
+ );
+	*/
 	
 }
 ?>

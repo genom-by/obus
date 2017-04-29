@@ -67,11 +67,11 @@ switch ($_POST['action']){
 					print_r("result: ".$seq::$errormsg);				
 			}
 	break;
-	case 'sequencesDest':
-				print_r($_POST);
-			if( !empty($_POST['seqName']) ){
-				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
-				$retval = $seq->save();
+	case 'sequencesStations':
+				//var_dump($_POST);
+			if( !empty($_POST['sequencesSelect']) ){
+				$seq = new sequencesStations($_POST);
+				$retval = $seq->save($_POST);
 				if(!$retval)
 					print_r("result: ".$seq::$errormsg);				
 			}
@@ -171,7 +171,29 @@ function postTest(){
 	  console.log( data.time ); // 2pm
 	},"json");
 }
-
+function btn_del_seq_stats_onClick(){
+	
+	if (! confirm('Are you sure to delete all stations for destination?') ) {return;}
+	//console.info("delete from table: "+table_+" entry id:"+id_entry);
+	var id_entry = $('#sequencesSelect').val();
+	console.info('data to send:', {id:id_entry, table:'seq_stations_delete'});
+	
+	$.post(
+		"post.routines.php",
+		{id:id_entry, table:'seq_stations_delete'},
+		function(data){
+		console.log("post returned: "+data.result);
+		alert(data.result);
+		if (data.result == 'ok' ){
+			//var domID = '#'+table_+'_id_'+id_entry;
+			//$(domID).toggle( "highlight" );
+		}else{
+			console.log('error message: ',data.message);
+		}
+		}
+		,"json"
+	);	
+}
 </script>
 <style>
 .hided{
@@ -202,6 +224,23 @@ clear:both;
 float:left;
 width:80%;
 }
+/* ... loading ...
+<div style="
+ margin: 10% auto;
+ border-bottom: 6px solid #fff;
+ border-left: 6px solid #fff;
+ border-right: 6px solid #c30;
+ border-top: 6px solid #c30;
+ border-radius: 100%;
+ height: 100px;
+ width: 100px;
+ -webkit-animation: spin .6s infinite linear;
+ -moz-animation: spin .6s infinite linear;
+ -ms-animation: spin .6s infinite linear;
+ -o-animation: spin .6s infinite linear;
+ animation: spin .6s infinite linear;
+ ></div>
+*/
 </style>
 </head>
 <body>
@@ -378,15 +417,16 @@ width:80%;
 		<div class="col-md-6">
 			<div class="obus_sequences">
 <fieldset>
-<legend>Sequences</legend>
+<legend>Sequence Stations</legend>
 <form name="formSeq" method="post">
 <select name="sequencesSelect" id="sequencesSelect">
 <?php echo HTML::getSelectItems('sequences');?>
 </select>
+<button type="button" id="btn_del_seq_stats" onclick="btn_del_seq_stats_onClick();">Clear stations</button>
 <p></p>
 <?php echo HTML::getSequencesTable();?>
 <p></p>
-<input type="hidden" name="action" value="sequencesDest">
+<input type="hidden" name="action" value="sequencesStations">
 <input type="submit" value="Send"/>
 </form>
 </fieldset>	

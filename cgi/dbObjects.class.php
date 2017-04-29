@@ -41,7 +41,9 @@ class DBObject{
 	private $db;	// database connection
 	private $sqlPDOSave;
 
-	public static function getAllRecords($object_){
+	private static $objectType; // what kind of table is the class
+	
+	public static function getAllRecords($object_, $byID=-1){
 		switch($object_){
 			case 'obus': $table='obus';break;
 			case 'station': $table='station';break;
@@ -50,16 +52,41 @@ class DBObject{
 			case 'way': $table='pitstop';break;
 			case 'destination': $table='destination';break;
 			case 'sequences': $table='sequences';break;
-			case 'sequencesDestination': $table='sequencesDestination';break;
+			case 'sequencesStations': $table='sequencesStations';break;
+			case 'sequencesStationsBYID': $table='sequencesStationsBYID';break;
 			default: self::$errormsg = "No such table: {$object_}"; return false;
 		}
-		$objects = LinkBox\DataBase::getAll($table);
+		$objects = LinkBox\DataBase::getAll($table, $byID);
 		if($objects === false){
 			self::$errormsg = "No {$object_} data: ".LinkBox\DataBase::$errormsg;
 			LiLogger::log( self::$errormsg );
 				return false;
 			}
 		else return $objects;		
+	}
+	//TODO : get by ID
+	public static function getEntryByID( $id_){
+//LiLogger::log("self - static".static::$objectType);			
+//LiLogger::log("res".serialize($dest));		
+		switch(static::$objectType){
+			case 'obus': $table='obus';break;
+			case 'station': $table='station';break;
+			case 'itinerary': $table='itinerary';break;
+			case 'pitstop_type': $table='pitstop_type';break;
+			case 'way': $table='pitstop';break;
+			case 'destination': $table='destination';break;
+			case 'sequences': $table='sequences';break;
+			case 'sequencesStations': $table='sequencesStations';break;
+			default: self::$errormsg = "No such table: {$object_}"; return false;
+		}
+//LiLogger::log( "DBObject.getEntryByID: {$id_}".self::$objectType );		
+		$object = LinkBox\DataBase::getEntryByID($table, $id_);
+		if($object === false){
+			self::$errormsg = "No {$table} data: ".LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+				return false;
+			}
+		else return $object;		
 	}
 	
 	public static function deleteEntry($table, $id, $id_column=""){
@@ -100,7 +127,9 @@ class DBObject{
 }
 //implements IDBObjects, ObjectEntity
 class Obus  extends DBObject{
-	
+
+	protected static $objectType = 'obus';
+		
 	public function __construct($name_){
 		$this->name = Ut::cleanInput($name_);
 		$this->sqlPDOSave = "INSERT INTO obus(name) VALUES(':1:')";
@@ -131,7 +160,8 @@ class PitType  extends DBObject{
 }
 
 class Station extends DBObject{
-	
+
+	protected static $objectType = 'station';	
 	private $shortname="-";
 	
 	public function __construct($name_, $short_){
@@ -150,6 +180,8 @@ class Station extends DBObject{
 	}
 }
 class Destination extends DBObject{
+	
+	protected static $objectType = 'destination';
 	
 	private $sequence="-";
 	
@@ -282,6 +314,109 @@ class Way extends DBObject{
 	}
 }
 
+/*							sequencesStations
+* set of stations for X-axis of graph
+*/
+class sequencesStations extends DBObject{
+
+	protected static $objectType = 'sequencesStations';	
+	private $sequence = 0; //main sequence
+	private $seq_stations = null; //['pitstop_id'=>time]
+	private $pitstopsTotal = 0;
+	
+	public function __construct($post_){
+		$this->name = "sequencesStations";//Ut::cleanInput($name_);
+		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
+		$this->sequence = $post_['sequencesSelect'];
+		$this->pitstopsTotal = $post_['totalstops'];
+			
+		for($i=1; $i <= $this->pitstopsTotal; $i++) {
+
+			$this->seq_stations[$i] = array(
+				'station'=>Ut::cleanInput($post_['station'.$i]), 
+				'orderal'=>Ut::cleanInput($post_['orderal'.$i]),
+				'pitType'=>Ut::cleanInput($post_['pitType'.$i]),
+									);									
+		}
+	}
+	public function save($post_){
+
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		
+		if($conn === false){
+			self::$errormsg = 'error while saving seq-stations into DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		$stmt = $conn->prepare('INSERT INTO seq_stations(id_seq, id_station, id_pitstoptype, orderal) VALUES(:id_seq, :id_stat, :id_pittyp, :orderal)');
+		
+		try {
+        $conn->beginTransaction();
+			//var_dump($this->pitstops);
+        foreach($this->seq_stations as $stat_order => $station) {
+            $stmt->bindValue(':id_stat', $station['station'], PDO::PARAM_INT);
+            $stmt->bindValue(':orderal', $station['orderal'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_pittyp', $station['pitType'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_seq', $this->sequence, PDO::PARAM_INT);
+            $stmt->execute();
+            sleep(1);
+        }
+        $conn->commit();
+    } catch(PDOException $e) {
+        if(stripos($e->getMessage(), 'DATABASE IS LOCKED') !== false) {
+            // This should be specific to SQLite, sleep for 0.25 seconds
+            // and try again.  We do have to commit the open transaction first though
+            $conn->commit();
+            usleep(250000);
+        } else {
+            $conn->rollBack();
+            //throw $e;
+			self::$errormsg = 'error performing sequences transaction: '.$e->getMessage();//LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+        }
+    }
+		
+		//return $this->saveObject($pdosql);
+	}
+		
+	public static function getAll(){
+		return self::getAllRecords('sequencesStations');	
+	}
+	
+	public static function getSequenceStationsBySequence($seq_id){
+		
+/*
+SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
+WHERE seq_stations.id_seq = 1
+ORDER BY orderal ;
+*/
+		$seqstats = self::getAllRecords('sequencesStationsBYID', $seq_id );
+/*echo'<pre>'; 	var_dump($seqstats);	echo'</pre>';*/
+		if( empty($seqstats) ) {self::$errormsg='could not obtain sequences by id';
+		return false;}
+		
+		$statNames = array();
+
+		foreach($seqstats as $t=>$seq){
+			array_push($statNames, $seq['shortName']);
+			//$statNames[] = $seq['shortName'];
+		}
+//LiLogger::log( "seqstat".serialize($statNames) );		
+		return $statNames;
+	}
+	
+	public static function DeleteSeqStations($seq_id){
+		if(empty($seq_id)) return false;
+		
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		return ( $db->executeDelete("DELETE FROM seq_stations WHERE id_seq={$seq_id}") );
+	}
+}
+
 class Itinerary extends DBObject{
 	private $obus;
 	private $station;
@@ -310,6 +445,7 @@ class Itinerary extends DBObject{
 }
 class Sequence extends DBObject{
 	//private $obus;
+	protected static $objectType = 'sequence';
 	private $destination;
 
 	public function __construct($seqName_, $dest_){
@@ -318,8 +454,18 @@ class Sequence extends DBObject{
 		$this->sqlPDOSave = "INSERT INTO sequences(name, destination) VALUES(':iName:', :iDest:)";
 	}
 	public function save(){
+//LiLogger::log("seq save. dest id{$this->destination}");	
+		$dest = Destination::getEntryByID($this->destination);
+//LiLogger::log("res".serialize($dest));		
+		$destName = $dest['name'];
+		if(empty($destName)){
+			self::$errormsg = 'could not obtain destination name.';
+			LiLogger::log(self::$errormsg);
+			return false;
+		}
+		$seqDestName = "[ {$destName} ] via {$this->name}";
 		$arrParameters = array(
-		":iName:"=>$this->name,
+		":iName:"=>$seqDestName,
 		":iDest:"=>$this->destination);
 		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
@@ -328,7 +474,7 @@ class Sequence extends DBObject{
 	}
 		
 	public static function getAll(){
-		return self::getAllRecords('sequencesDestination');	
+		return self::getAllRecords('sequences');	
 	}
 }
 

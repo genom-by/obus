@@ -47,6 +47,18 @@ if(! is_numeric($_POST['id'])){
 		case 'pitstop':
 		$res = Way::DeletePitstop($_POST['id']);		
 		break;
+		case 'seq_stations_delete':
+		$res = sequencesStations::DeleteSeqStations($_POST['id']);		
+		break;
+		case 'chart_redraw_seq':
+			$seqstats = sequencesStations::getSequenceStationsBySequence($_POST['id']);
+			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
+			else{
+				$seqstats = HTML::arrayLineChartCategories($seqstats);
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;
 		
 		default:
 		$res=false;
