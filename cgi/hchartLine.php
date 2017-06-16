@@ -3,7 +3,9 @@ namespace obus;
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
-
+if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=2;
+echo 'seq: '.Sequence::load($seq)->name;
+//var_dump(Sequence::load($seq)->name);
 ?>
 <html>
 <head>
@@ -21,9 +23,9 @@ include_once 'HTMLroutines.class.php';
 var chart1 = new Highcharts.chart('container', {
     chart:		{	type: 'line'   },
     title:		{	text: 'Transport timeline'    },
-    subtitle:	{	text: 'Source: minsktrans'    },	
+    subtitle:	{	text: '<?php echo Sequence::load($seq)->name; ?> '   },	
     xAxis: {
-        categories: ['zel0', 'kol1', 'nem2', 'mas3', 'akd4', 'spu5', 'kaz6', 'tra7']
+        categories: <?php $seqstats = sequencesStations::getSeqStatNamesBySequenceID($seq); echo "[".HTML::arrayLineChartCategories($seqstats)."]";?>
     },
     yAxis: {
         title: {          text: 'Time (normalized)'        }
@@ -55,7 +57,7 @@ var chart1 = new Highcharts.chart('container', {
 	tooltip: {  formatter: pit_formatter 
         /*formatter: function () {            return 'Time at <b>' + this.x + '</b> is <b>' + time2HHMM(this.y) + '</b><br/> of '+this.series.name;   }*/
     },
-    series: <?php $pitstops = Way::getPitstopsByItinerary(); echo HTML::arrayLineChart($pitstops);?>
+    series: <?php $pitstops = Way::getPitstopsBySequence($seq); echo HTML::arrayLineChart($pitstops, $seq);?>
 });
 })
 function pit_formatter(){
@@ -69,10 +71,13 @@ function time2HHMM(time){
 		if(m < 10){ mstr = '0'+m}else{mstr = m}
 		return h+':'+mstr;
 }
+function redraw2(){
+	var id_sequence = $('#sequencesSelect').val();
+	window.location.replace('hchartLine.php?seq='+id_sequence);
+}
 function redraw(){
-/*var newData = [1,2,3,4,5,6,7];
-var chart = $('#container').highcharts();
-chart.series[0].setData(newData, true); */
+// TODO
+//figure out how to pass array_as_string to js and parse it
 	var id_sequence = $('#sequencesSelect').val();
 	console.info('data to send:', {id:id_sequence, table:'chart_redraw_seq'});
 	
@@ -82,31 +87,34 @@ chart.series[0].setData(newData, true); */
 		"post.routines.php",
 		{id:id_sequence, table:'chart_redraw_seq'},
 		function(data){
-console.log("post returned: "+data.result);
-console.log("post payload: "+data.payload);
-		alert(data.result);
-		if (data.result == 'ok' ){
-	newSequences = data.payload ;
-			//var domID = '#'+table_+'_id_'+id_entry;
-			//$(domID).toggle( "highlight" );
-		}else{
-			console.log('error message: ',data.message);
-		}
+			if (data.result == 'ok' ){
+				afterResponce(data.payload, data.seqpits );
+			}else{	console.log('error message: ',data.message);}
 		}
 		,"json"
 	);
-//TODO multithreading value
+//TODO categories values depending on destination REF
+function afterResponce(newSequences, newPits){
 console.log("newSequences: "+newSequences);	
+console.log("newPits: "+newPits.slice(1,-1));	
 
+//var categoriesArr = newSequences.split(',');
+var categoriesArr = JSON.parse("[" + newSequences + "]"); 
+var seriesArr = JSON.parse("[" + newPits.slice(1,-1) + "]"); 
+
+//var seriesArr = (newPits.slice(1,-1)).split('|');
+//var seriesArr = eval( "(" + newPits.slice(1,-1) + ")" );
+console.log(seriesArr);
 var chart1 = $('#container').highcharts();
 chart1.destroy();
+
 var chart1 = new Highcharts.chart('container', {
     chart:		{	type: 'line'   },
     title:		{	text: 'Transport timeline'    },
     subtitle:	{	text: 'Source: minsktrans'    },	
     xAxis: {
         //categories: ['zel0', 'kol1', 'nem2', 'mas3', 'akd4', 'spu5', 'kaz6', 'tra7']
-		categories: <?php $seqstats = sequencesStations::getSequenceStationsBySequence(1); echo HTML::arrayLineChartCategories($seqstats);?>
+		categories: categoriesArr
     },
     yAxis: {
         title: {          text: 'Time (normalized)'        }
@@ -138,8 +146,10 @@ var chart1 = new Highcharts.chart('container', {
 	tooltip: {  formatter: pit_formatter 
         /*formatter: function () {            return 'Time at <b>' + this.x + '</b> is <b>' + time2HHMM(this.y) + '</b><br/> of '+this.series.name;   }*/
     },
-    series: <?php $pitstops = Way::getPitstopsByItinerary(); echo HTML::arrayLineChart($pitstops);?>
+    series: seriesArr
 });
+//chart1.xAxis[0].update({        categories: newSequences    });
+}//after responce
 }
 </script><pre>
 <?php
@@ -155,8 +165,10 @@ var chart1 = new Highcharts.chart('container', {
 <?php echo HTML::getSelectItems('sequences');?>
 </select>
 <button onClick="redraw();">Redraw</button>
+<button onClick="redraw2();">Redraw2</button>
 </fieldset>
 <a href="obus-test.php" >settings</a>
-<?php $seqstats = sequencesStations::getSequenceStationsBySequence(1); //echo HTML::arrayLineChartCategories($seqstats);?>
+<?php //$seqstats = sequencesStations::getSeqStatNamesBySequenceID(1); echo "[".HTML::arrayLineChartCategories($seqstats)."]";
+?>
 </body>
 </html>

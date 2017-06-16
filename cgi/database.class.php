@@ -89,182 +89,108 @@ class DataBase{
 			return false;
 		} else return true;	
 	}
-	
-	public static function executeInsert($query){
-		if(empty($query)){
-			self::$errormsg = 'No query provided.';
-			return false;
-		}
-		
-		if(! self::checkConnect() ){
-			return false;
-		}
-		//print_r($pdosql);
-		try{
-			$res = self::getPDO()->exec($query);
-		}catch(\Exception $e){
-			self::$errormsg = 'Error while saving into DB: '.$e->getMessage();
-			Logger::log(self::$errormsg);
-			return false;
-		}
-		//$res = $this->db->connection->exec($pdosql);
-		if($res != 1){
-			Logger::log('Error while saving into DB.');
-			return false;
-		}
-		else return true;
-	}	
-	public static function executeDelete($query){
-		if(empty($query)){
-			self::$errormsg = 'No query provided.';
-			return false;
-		}
-		
-		if(! self::checkConnect() ){
-			self::$errormsg = 'No connection to DB.';
+	/* ### REFACTORED ###
+	execute prepared query
+	*/
+	public static function executeQuery($query, $action='default'){
+		if(empty($query)){		self::$errormsg = 'DB[executeQuery]: No query provided.';
 			Logger::log(self::$errormsg);		
 			return false;
 		}
-		//print_r($pdosql);
+		if($action == 'default'){	self::$errormsg = 'DB[executeQuery]: No action provided.';
+			Logger::log(self::$errormsg);		
+			return false;
+		}	
+		if(! self::checkConnect() ){ self::$errormsg = 'DB[executeQuery]: Not connected to DB.';
+			Logger::log(self::$errormsg);		
+			return false;
+		}
 		try{
 			$res = self::getPDO()->exec($query);
 		}catch(\Exception $e){
-			self::$errormsg = 'Error while deleting from DB: '.$e->getMessage();
+			self::$errormsg = 'DB[executeQuery]: Error while executing query: '.$e->getMessage();
 			Logger::log(self::$errormsg);
 			return false;
 		}
-		//$res = $this->db->connection->exec($pdosql);
-		if($res === false){
-			self::$errormsg = 'Error while deleting from DB.';
-			Logger::log(self::$errormsg);
+		switch ($action){
+			case 'insert':
+				if($res != 1){
+					self::$errormsg = 'DB[executeQuery]: Error while inserting into DB.'.implode(',',self::getPDO()->errorInfo());					Logger::log(self::$errormsg);
+					return false;
+				}
+			break;
+			case 'delete':
+				if($res === false){
+					self::$errormsg = 'DB[executeQuery]: Error while deleting from DB.'.implode(',',self::getPDO()->errorInfo());					Logger::log(self::$errormsg);
+					return false;
+				}			
+			break;
+			case 'update':
+				if($res < 1){
+					self::$errormsg = 'DB[executeQuery]: No one record was updated.'.implode(',',self::getPDO()->errorInfo());					Logger::log(self::$errormsg);
+					return false;
+				}			
+			break;
+			default:
 			return false;
 		}
-		else return true;
+	return true;
+		
+	} ## refactored end	
+	### REFACTORED ###
+	public static function executeInsert($query){
+		return self::executeQuery($query, 'insert');
 	}
-	
-	public static function getAll($table, $byID=-1){
-Logger::log("get all for table: {$table} and id {$byID}");	
-		if(empty($table)){
-			self::$errormsg = 'No table provided.';
-			return false;
-		}
-		if(! self::checkConnect() ){
-			return false;
-		}
-		switch($table){
-			case 'obus': $sql = "SELECT id_obus, name from obus ORDER BY name"; break;
-			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination ORDER BY name"; break;
-			case 'sequences': $sql = "SELECT id_seq, name, destination from sequences ORDER BY name"; break;
-			case 'sequencesStations': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
-FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
-ORDER BY orderal "; break;
-			case 'sequencesStationsBYID': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
-FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
-WHERE seq_stations.id_seq = {$byID}
-ORDER BY orderal ;"; break;
-			case 'station': $sql = "SELECT id_station, name, shortName from station"; break;
-			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type"; break;
-			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station"; break;
-			case 'pitstop': $sql = "SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin"; break;
-			default: $sql = '';
-		}
-		try{
-		//-----
-			$statement = self::getPDO()->prepare($sql);
-			if(!$statement){
-				self::$errormsg = implode(' ', self::getPDO()->errorInfo() );
-				return false;
-			}
-			if(!$statement->execute() ){
-				self::$errormsg = implode(' ', $statement->errorInfo() );
-				return false;
-			}
-			
-			$obuses = $statement->fetchAll();
-			if($obuses === false ){
-				self::$errormsg = implode(' ', $statement->errorInfo() );
-				return false;
-			}else{
-				return $obuses;
-			}		
-		//-----
-		}catch(\Exception $e){
-			self::$errormsg = "Error while getting all records from {$table}: ".$e->getMessage();
-			Logger::log(self::$errormsg);
-			return false;		
-		}
+	### REFACTORED ###	
+	public static function executeDelete($query){
+		return self::executeQuery($query, 'delete');
 	}
-	
-	public static function getEntryByID($table, $id){
-	
-		if(empty($table)){
-			self::$errormsg = 'No table provided.';
+	### NEW ###	
+	public static function executeUpdate($query){
+		return self::executeQuery($query, 'update');
+		//Logger::log($query);
+		//return false;
+	}
+
+/* refactored 
+@sql query to fetch
+%array of objects or %false +$errormsg
+*/	
+public static function getArrayBySQL($sql, $ref=-1){
+//Logger::log("get all for table: {$table} and id {$byID}");	
+	if(empty($sql)){ self::$errormsg = 'DB[getArrayBySQL]:No query provided.';
+		return false;
+	}
+	if(! self::checkConnect() ){ self::$errormsg = 'DB[getArrayBySQL]:No connection.';
+		return false;
+	}
+	try{
+		$statement = self::getPDO()->prepare($sql);
+		if(!$statement){
+			self::$errormsg = "DB[getArrayBySQL]".implode(' ', self::getPDO()->errorInfo() );
 			return false;
 		}
-		if(empty($id)){
-			self::$errormsg = 'No id provided.';
-			return false;
-		}
-		if(! is_numeric($id)){
-			self::$errormsg = 'id should be numeric.';
+		if(false === $statement->execute() ){
+			self::$errormsg = "DB[getArrayBySQL]".implode(' ', $statement->errorInfo() );
 			return false;
 		}
 		
-		if(! self::checkConnect() ){
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		$entries = $statement->fetchAll();
+		
+		if($entries === false ){		self::$errormsg = "DB[getArrayBySQL] No entries returned: ".implode(' ', $statement->errorInfo() );
 			return false;
-		}
-		switch($table){
-			case 'obus': $sql = "SELECT id_obus, name from obus WHERE id_obus = {$id}"; break;
-			case 'destination': $sql = "SELECT id_dest, name, dest_seq from destination WHERE id_dest = {$id}"; break;
-			case 'sequences': $sql = "SELECT id_seq, name, destination from sequences WHERE id_seq = {$id}"; break;
-			case 'sequencesStations': $sql = "SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
-FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
-WHERE seq_stations.id_seq = {$id}
-ORDER BY orderal ;"; break;
-			case 'station': $sql = "SELECT id_station, name, shortName from station WHERE id_station = {$id}"; break;
-			case 'pitstop_type': $sql = "SELECT id_pittype, type from pitstop_type WHERE id_pitstoptype = {$id}"; break;
-			case 'itinerary': $sql = "SELECT id_itin, itinerary.name, start_station, start_time, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station WHERE id_itin = {$id}"; break;
-			case 'pitstop': $sql = "SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin WHERE id_pitstop = {$id}"; break;
-			default: $sql = '';
-		}
-		try{
-		//-----
-//Logger::log("sql:".$sql);
-			//PDOStatement::closeCursor();
-			//self::getPDO()->closeCursor();
-			$statement = self::getPDO()->prepare($sql);
-			if(empty($statement)){
-				self::$errormsg = "could not obtain statement";
-				return false;			
-			}
-			if(false === $statement){
-				self::$errormsg = implode(' ', self::getPDO()->errorInfo() );
-				return false;
-			}
-			$result = $statement->execute();
-			if(empty($result)){
-				self::$errormsg = "could not obtain result";
-				return false;			
-			}
-			if($result === false){
-				self::$errormsg = implode(' ', self::getPDO()->errorInfo() );
-				return false;
-			}
-//Logger::log("result".serialize($result));			
-			$object = $statement->fetch();
-			if($object === false ){
-				self::$errormsg = implode(' ', $statement->errorInfo() );
-				return false;
-			}else{
-				return $object;
-			}		
-		//-----
-		}catch(\Exception $e){
-			self::$errormsg = "Error while getting all records from {$table}: ".$e->getMessage();
-			Logger::log(self::$errormsg);
-			return false;		
-		}
+		}else{
+			return $entries;
+		}		
+	}catch(\Exception $e){
+		self::$errormsg = "DB[getArrayBySQL] Error getting records: ".$e->getMessage();
+		Logger::log("DB[getArrayBySQL] exception executing query::".$sql);
+		Logger::log(self::$errormsg);
+		return false;		
 	}
+} //getArrayBySQL
+
 /*---------------------------------------------------------------------------------
 * perform Update operation
 * @table string what table to update

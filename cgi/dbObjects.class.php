@@ -3,9 +3,9 @@ namespace obus;
 
 //==========================================
 // DB objecs classes
-// ver 1.0
+// ver 1.5
 // © genom_by
-// last updated 13 sep 2016
+// last updated 05 may 2017
 //==========================================
 
 use PDO;
@@ -38,57 +38,34 @@ class DBObject{
 	public static $errormsg;	//error(s) when executing
 	public $name;
 	
+	protected $id;	// database table id of object
+	
 	private $db;	// database connection
 	private $sqlPDOSave;
-
+	## ORM ## //protected static $orm = array('table'=>'obus', 'table_id'=>'id_obus'); 
+	
 	private static $objectType; // what kind of table is the class
-	
-	public static function getAllRecords($object_, $byID=-1){
-		switch($object_){
-			case 'obus': $table='obus';break;
-			case 'station': $table='station';break;
-			case 'itinerary': $table='itinerary';break;
-			case 'pitstop_type': $table='pitstop_type';break;
-			case 'way': $table='pitstop';break;
-			case 'destination': $table='destination';break;
-			case 'sequences': $table='sequences';break;
-			case 'sequencesStations': $table='sequencesStations';break;
-			case 'sequencesStationsBYID': $table='sequencesStationsBYID';break;
-			default: self::$errormsg = "No such table: {$object_}"; return false;
-		}
-		$objects = LinkBox\DataBase::getAll($table, $byID);
-		if($objects === false){
-			self::$errormsg = "No {$object_} data: ".LinkBox\DataBase::$errormsg;
-			LiLogger::log( self::$errormsg );
-				return false;
-			}
-		else return $objects;		
+	private static $sqlGetAll;	// SQL query for getting all records without WHERE clause
+	private static $sqlGetAllOrdered;	// SQL query for getting all records ordered (if applicable)
+
+/* ### REFACTORED ###
+@sql
+%array or %fale+%errormsg
+*/
+public static function getEntriesArrayBySQL($sql, $ref=-1){
+	if (empty($sql)) {
+		self::$errormsg="DBObject[getEntriesBySQL]: No SQL provided";
+		return false;
 	}
-	//TODO : get by ID
-	public static function getEntryByID( $id_){
-//LiLogger::log("self - static".static::$objectType);			
-//LiLogger::log("res".serialize($dest));		
-		switch(static::$objectType){
-			case 'obus': $table='obus';break;
-			case 'station': $table='station';break;
-			case 'itinerary': $table='itinerary';break;
-			case 'pitstop_type': $table='pitstop_type';break;
-			case 'way': $table='pitstop';break;
-			case 'destination': $table='destination';break;
-			case 'sequences': $table='sequences';break;
-			case 'sequencesStations': $table='sequencesStations';break;
-			default: self::$errormsg = "No such table: {$object_}"; return false;
+	$objects = LinkBox\DataBase::getArrayBySQL($sql, $ref);
+	if($objects === false){
+		self::$errormsg = "DBObject[getEntriesBySQL]: No data from DB: ".LinkBox\DataBase::$errormsg;
+		LiLogger::log( self::$errormsg );
+		return false;
 		}
-//LiLogger::log( "DBObject.getEntryByID: {$id_}".self::$objectType );		
-		$object = LinkBox\DataBase::getEntryByID($table, $id_);
-		if($object === false){
-			self::$errormsg = "No {$table} data: ".LinkBox\DataBase::$errormsg;
-			LiLogger::log( self::$errormsg );
-				return false;
-			}
-		else return $object;		
-	}
-	
+	else return $objects;		
+}//getEntriesArrayBySQL
+
 	public static function deleteEntry($table, $id, $id_column=""){
 		if (empty($table)) return false;
 		if (empty($id)) return false;
@@ -123,12 +100,85 @@ class DBObject{
 		}
 		else return true;
 	}
-	
-}
-//implements IDBObjects, ObjectEntity
-class Obus  extends DBObject{
+	## NEW ##
+	/*input @array(field=>value)
+	*/
+	public function update($fields_values=null){
+		if( empty($this->id) ){			self::$errormsg = 'DB[updateObject]: no id for update.';
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		$values = self::buildUpdateValues($fields_values);
+		if( empty($values) ){			self::$errormsg = 'DB[updateObject]: values are empty.';
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		
+		$tableName = static::$orm['table'];
+		$tableId = static::$orm['table_id'];
+		
+		$whereClause = " WHERE {$tableId} = {$this->id}";
+		$sql = "UPDATE {$tableName} SET {$values} {$whereClause}";
 
-	protected static $objectType = 'obus';
+		$res = LinkBox\DataBase::executeUpdate($sql);
+		if($res === false){
+			self::$errormsg = 'DBO[update]: Error while updating into DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		else return true;
+	}
+	private static function buildUpdateValues($fields_values){
+		if( empty($fields_values) ){	self::$errormsg = 'DB[buildUpdateValues]: no values.';
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		$str = "";
+		foreach($fields_values as $key=>$value){
+			if(gettype($value)=='string'){$valstr="'{$value}'";}else{$valstr=$value;}
+			$str = $str."{$key} = {$valstr},";
+		}
+		$str = rtrim($str,',');
+		return $str;
+	}
+	
+	/* 
+	returns all records for inherited class based on static sql query
+	*/
+	public static function getAll(){
+		if(!empty(static::$sqlGetAllOrdered)){$sql = static::$sqlGetAllOrdered;
+		}else{$sql = static::$sqlGetAll;}
+		return self::getEntriesArrayBySQL($sql);		
+	}
+	/*
+	returns filtered records for inherited class based on static sql query and provided filter
+	*/
+	public static function getAllWhere($whereSQL){
+		if(empty($whereSQL)){self::$errormsg = "DBObject[getAllWhere] no where clause"; return false;}
+		$sql = static::$sqlGetAll.' '.$whereSQL;		//LiLogger::log( $sql);		
+
+		return self::getEntriesArrayBySQL($sql);		
+	}
+	/*
+	returns class objext based on provided id
+	*/
+	public static function getFromDB($id){
+		if(empty($id)){self::$errormsg = "DBObject[getFromDB] no id to load"; return false;}
+		
+		$tableId = static::$orm['table_id'];
+		$whereClause = " WHERE {$tableId} = {$id}";
+		$sql = static::$sqlGetAll.' '.$whereClause;
+				//LiLogger::log( $sql);
+		$result = self::getEntriesArrayBySQL($sql);
+		if(false === result){return false;}else{return $result[0];}
+	}	
+}//class DBObject
+//implements IDBObjects, ObjectEntity
+class Obus extends DBObject{
+
+	protected static $orm = array('table'=>'obus', 'table_id'=>'id_obus');
+	protected static $sqlGetAll = 'SELECT id_obus, name from obus';
+	protected static $sqlGetAllOrdered = 'SELECT id_obus, name from obus ORDER BY name';
 		
 	public function __construct($name_){
 		$this->name = Ut::cleanInput($name_);
@@ -138,13 +188,20 @@ class Obus  extends DBObject{
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		return $this->saveObject($pdosql);
 	}
-	
-	public static function getAll(){
-		return self::getAllRecords('obus');		
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new Obus($load['name']);
+		$me->id = $load['id_obus'];
+		return $me;}
 	}
+
 }
-class PitType  extends DBObject{
-	
+class PitType extends DBObject{
+
+	protected static $orm = array('table'=>'pitstop_type', 'table_id'=>'id_pittype');
+	protected static $sqlGetAll = 'SELECT id_pittype, type from pitstop_type';
+			
 	public function __construct($type_){
 		$this->name = Ut::cleanInput($type_);
 		$this->sqlPDOSave = "INSERT INTO pitstop_type(type) VALUES(':1:')";
@@ -153,15 +210,21 @@ class PitType  extends DBObject{
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		return $this->saveObject($pdosql);
 	}
-	
-	public static function getAll(){
-		return self::getAllRecords('pitstop_type');		
-	}
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new PitType($load['type']);
+		$me->id = $load['id_pittype'];
+		return $me;}
+	}	
 }
 
 class Station extends DBObject{
-
-	protected static $objectType = 'station';	
+	
+	protected static $orm = array('table'=>'station', 'table_id'=>'id_station');
+	protected static $sqlGetAll = 'SELECT id_station, name, shortName from station';
+	protected static $sqlGetAllOrdered = 'SELECT id_station, name, shortName from station ORDER BY name COLLATE NOCASE';
+		
 	private $shortname="-";
 	
 	public function __construct($name_, $short_){
@@ -174,14 +237,19 @@ class Station extends DBObject{
 		$pdosql = str_replace(':2:', $this->shortname, $pdosql);
 		return $this->saveObject($pdosql);
 	}
-		
-	public static function getAll(){
-		return self::getAllRecords('station');	
-	}
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new Station($load['name'], $load['shortName'] );
+		$me->id = $load['id_station'];
+		return $me;}
+	}	
 }
 class Destination extends DBObject{
 	
-	protected static $objectType = 'destination';
+	protected static $orm = array('table'=>'destination', 'table_id'=>'id_dest');
+	protected static $sqlGetAll = 'SELECT id_dest, name, dest_seq from destination';
+	protected static $sqlGetAllOrdered = 'SELECT id_dest, name, dest_seq from destination ORDER BY name';
 	
 	private $sequence="-";
 	
@@ -195,24 +263,41 @@ class Destination extends DBObject{
 		$pdosql = str_replace(':2:', $this->shortname, $pdosql);
 		return $this->saveObject($pdosql);
 	}
-		
-	public static function getAll(){
-		return self::getAllRecords('destination');	
-	}
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new Destination($load['name'], $load['dest_seq'] );
+		$me->id = $load['id_dest'];
+		return $me;}
+	}	
 }
 
 class Way extends DBObject{
 	
+	protected static $orm = array('table'=>'pitstop', 'table_id'=>'id_pitstop');
+	protected static $sqlGetAll = 'SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin';
+
 	private $itinerary = 0; //main itinerary
 	private $pitstops = null; //['pitstop_id'=>time]
 	private $pitstopsTotal = 0;
+	private $pitstopsMaxId = 0;
 	
 	public function __construct($post_){
 		$this->name = "way";//Ut::cleanInput($name_);
 		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
 		$this->pitstopsTotal = $post_['totalstops'];
+		$this->pitstopsMaxId = $post_['laststopID'];
 		$this->itinerary = $post_['itinerarySelect'];
-		for($i=1; $i <= $this->pitstopsTotal; $i++) {
+		/*for($i=1; $i <= $this->pitstopsTotal; $i++) {
+			if(!empty($post_['stationTime'])){
+			$this->pitstops[$i] = array(
+				'station'=>$post_['station'], 
+			'time'=>Ut::HHmm2Int( Ut::cleanInput( $post_['stationTime'])) ,
+				'pitType'=>$post_['pitType'],
+									);
+									}
+		}
+		*/for($i=1; $i <= $this->pitstopsMaxId; $i++) {
 			if(!empty($post_['stationTime'.$i])){
 			$this->pitstops[$i] = array(
 				'station'=>$post_['station'.$i], 
@@ -266,43 +351,96 @@ class Way extends DBObject{
 		
 		//return $this->saveObject($pdosql);
 	}
+/*
+all pitstops for desired itin. for compatibility default == -2 (all)
+for expanding -3 :: select by destination
+*/	
+	public static function getPitstopsByItinerary($id_itin = -2, $id_destin = -2){
 		
-	public static function getAll(){
-		return self::getAllRecords('way');	
-	}
-	
-	public static function getPitstopsByItinerary(){
-		$pitstops = self::getAll();
-		if( empty($pitstops) ) return false;
-		
+		if($id_itin == -2){
+			$pitstops = self::getAll();
+		}else if($id_itin == -3){
+			$sql = "SELECT id_itin FROM itinerary WHERE destination = {$id_destin}";
+			$itins = self::getEntriesArrayBySQL($sql);
+			if($itins === false){
+		self::$errormsg = 'Way[getPitstopsByItinerary]::error';	LiLogger::log( self::$errormsg );
+			return false;}
+			$itinsA = array();	
+			foreach($itins as $it){array_push($itinsA,$it['id_itin']);}
+			$id_itins = implode(',',$itinsA);
+			$clause="WHERE id_itinerary IN ( {$id_itins} )";		//LiLogger::log($clause);die();
+
+			$pitstops = self::getAllWhere($clause); 		
+		}
+		else{
+			$clause="WHERE id_itinerary = {$id_itin}";
+			$pitstops = self::getAllWhere($clause); 
+		}			
+		if( empty($pitstops) ) {
+		self::$errormsg = 'Way[getPitstopsByItinerary]::error2';LiLogger::log( self::$errormsg );
+		return false;}
+//var_dump($pitstops);	//die();
 		$ways = array();
 		$id__it_name = array();
 		$id__stat_name = array();
-		//$id__name = array();
-		//groub by itinerary
-		//LiLogger::log('here');
+		
 		foreach($pitstops as $stop){
-			//TODO group records into array { 'itiner1'=>[  stop1=>123, stop2=>124], 'itiner2'=> [] ...}
-			//LiLogger::log("stop[id_itinerary]=".$stop['id_itinerary']);
 			$id__it_name[$stop['id_itinerary']] = $stop['itinName']; //a:3:{i:1;N;i:5;N;i:6;N;}
 			$id__stat_name[$stop['id_station']] = $stop['statName'];
-			//array_push($ways[$stop['id_itinerary']], array($stop['id_station']=>$stop['time']) );
-		}
-		//LiLogger::log(serialize($id__it_name));
+		}		//LiLogger::log(serialize($id__it_name));
 		foreach($id__it_name as $it_id => $val){
 			$ways[(string)$it_id] = array();
 			$ways[((string)$it_id)]['name'] = $val;
-			
-			// $ways['1'=>(), '5'=>(), '6'=>()]
-//a:4:{s:12:"id_itinerary";a:0:{}i:1;N;i:5;N;i:6;N;}
-		}//Logger::log(serialize($ways));
+		}		//Logger::log(serialize($ways));
 		foreach($pitstops as $stop){
 			array_push($ways[(string)$stop['id_itinerary']], array($stop['shortName']=>$stop['time']) );
-			//array_push($ways[(string)$stop['id_itinerary']], array("itin_name"=>$stop['itinName'] ) );
-			//$ways["1"=>('1'=>'444', '2'=>'888')]
-		}
-		
+		}		//var_dump($ways); 
 		return $ways;
+	}
+/*
+all pitstops for desired destination. proxy for getPitstopsByItinerary
+*/
+	public static function getPitstopsByDestination($id_destin){
+		
+		if( empty($id_destin) ) {
+			self::$errormsg = 'getPitstopsByDestination:no id_destin';
+			LiLogger::log( self::$errormsg );
+		return false;}
+		
+		return self::getPitstopsByItinerary(-3, $id_destin);
+	}		
+/*
+all pitstops for desired sequence. proxy for getPitstopsByDestination
+*/
+	public static function getPitstopsBySequence($id_seq){
+		if( empty($id_seq) ) {
+			self::$errormsg = 'getPitstopsByDestination:no id_seq';
+			LiLogger::log( self::$errormsg );
+		return false;}
+		//get id destination for this sequence
+		$sql = "SELECT destination FROM sequences WHERE id_seq = {$id_seq}";
+		$destA = self::getEntriesArrayBySQL($sql);
+		if($dest === false){
+			self::$errormsg = 'Way[getPitstopsBySequence]::error';	LiLogger::log( self::$errormsg );
+			return false;}	
+	//var_dump($destA[0]['destination']);
+		$id_dest = $destA[0]['destination'];
+		
+		return self::getPitstopsByDestination($id_dest);	
+	}
+
+	
+	public static function GetPitsCountForItinerary($itin_id){
+		if(empty($itin_id)) return false;
+		
+		$itin_id = Ut::cleanInput($itin_id);
+		$sql = "SELECT COUNT (id_pitstop) FROM pitstop WHERE id_itinerary = {$itin_id}";
+	
+		$db = LinkBox\DataBase::connect(); //get raw connection		
+		$conn = $db::getPDO(); //get raw connection
+		$count = $conn->query($sql)->fetchColumn();
+//var_dump($count);
+		if($count > 0){return $count;}else{return 0;}
 	}
 	
 	public static function DeletePitstop($pit_id){
@@ -312,31 +450,45 @@ class Way extends DBObject{
 		$conn = $db::getPDO(); //get raw connection
 		return ( $db->executeDelete("DELETE FROM pitstop WHERE id_pitstop={$pit_id}") );
 	}
+	
+	public static function DeleteItinStations($itin_id){
+		if(empty($itin_id)) return false;
+		
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		return ( $db->executeDelete("DELETE FROM pitstop WHERE id_itinerary={$itin_id}") );
+	}
 }
-
+	
 /*							sequencesStations
 * set of stations for X-axis of graph
 */
 class sequencesStations extends DBObject{
 
-	protected static $objectType = 'sequencesStations';	
+	protected static $orm = array('table'=>'seq_stations', 'table_id'=>'id_ss');
+	protected static $sqlGetAll = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station';
+	protected static $sqlGetAllOrdered = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station ORDER BY orderal';
+	
 	private $sequence = 0; //main sequence
 	private $seq_stations = null; //['pitstop_id'=>time]
-	private $pitstopsTotal = 0;
+	private $seqTotal = 0;
+	private $seqLastID = 0;
 	
 	public function __construct($post_){
 		$this->name = "sequencesStations";//Ut::cleanInput($name_);
 		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
 		$this->sequence = $post_['sequencesSelect'];
-		$this->pitstopsTotal = $post_['totalstops'];
+		$this->seqTotal = $post_['totalsequences'];
+		$this->seqLastID = $post_['lastseqID'];
 			
-		for($i=1; $i <= $this->pitstopsTotal; $i++) {
-
+		for($i=1; $i <= $this->seqLastID; $i++) {
+		if($post_['station'.$i] <> -1){
 			$this->seq_stations[$i] = array(
 				'station'=>Ut::cleanInput($post_['station'.$i]), 
 				'orderal'=>Ut::cleanInput($post_['orderal'.$i]),
 				'pitType'=>Ut::cleanInput($post_['pitType'.$i]),
-									);									
+									);	
+			}
 		}
 	}
 	public function save($post_){
@@ -381,21 +533,16 @@ class sequencesStations extends DBObject{
 		//return $this->saveObject($pdosql);
 	}
 		
-	public static function getAll(){
-		return self::getAllRecords('sequencesStations');	
-	}
 	
-	public static function getSequenceStationsBySequence($seq_id){
+	public static function getSeqStatNamesBySequenceID($seq_id){
 		
-/*
-SELECT seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+/* SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName 
 FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
-WHERE seq_stations.id_seq = 1
-ORDER BY orderal ;
-*/
-		$seqstats = self::getAllRecords('sequencesStationsBYID', $seq_id );
-/*echo'<pre>'; 	var_dump($seqstats);	echo'</pre>';*/
-		if( empty($seqstats) ) {self::$errormsg='could not obtain sequences by id';
+WHERE seq_stations.id_seq = 1	ORDER BY orderal ; */
+		$clause = "WHERE seq_stations.id_seq = {$seq_id} ORDER BY orderal";
+		$seqstats = self::getAllWhere($clause );
+//echo'<pre>'; 	var_dump($seqstats);	echo'</pre>';
+		if( $seqstats === false ) {self::$errormsg='SNames: Could not obtain sequences by id';
 		return false;}
 		
 		$statNames = array();
@@ -408,6 +555,40 @@ ORDER BY orderal ;
 		return $statNames;
 	}
 	
+	public static function getSeqStationsBySequenceID($seq_id){
+		
+/* SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName 
+FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station 
+WHERE seq_stations.id_seq = 1	ORDER BY orderal ; */
+		$clause = "WHERE seq_stations.id_seq = {$seq_id} ORDER BY orderal";
+		$seqstats = self::getAllWhere($clause );
+//echo'<pre>'; 	var_dump($seqstats);	echo'</pre>';
+		if( $seqstats === false ) {self::$errormsg='SStations: Could not obtain sequences by id';
+		return false;}
+		return $seqstats;
+		/*
+		$statNames = array();
+		foreach($seqstats as $t=>$seq){
+			array_push($statNames, $seq['shortName']);
+			//$statNames[] = $seq['shortName'];
+		}
+//LiLogger::log( "seqstat".serialize($statNames) );		
+		return $statNames;*/
+	}
+	
+	public static function GetPitsCountForSequence($seq_id){
+		if(empty($seq_id)) return false;
+		
+		$seq_id = Ut::cleanInput($seq_id);
+		$sql = "SELECT COUNT (id_ss) FROM seq_stations WHERE id_seq = {$seq_id}";
+	
+		$db = LinkBox\DataBase::connect(); //get raw connection		
+		$conn = $db::getPDO(); //get raw connection
+		$count = $conn->query($sql)->fetchColumn();
+//var_dump($count);
+		if($count > 0){return $count;}else{return 0;}
+	}
+	
 	public static function DeleteSeqStations($seq_id){
 		if(empty($seq_id)) return false;
 		
@@ -418,34 +599,47 @@ ORDER BY orderal ;
 }
 
 class Itinerary extends DBObject{
+
+	protected static $orm = array('table'=>'itinerary', 'table_id'=>'id_itin');
+	protected static $sqlGetAll = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station';
+	protected static $sqlGetAllOrdered = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station ORDER BY itinerary.name';
+
 	private $obus;
 	private $station;
 	private $startTime;
-	public function __construct($itineraryName_, $obus_, $station_, $startTime_){
+	private $destination;
+	public function __construct($itineraryName_, $obus_, $station_, $startTime_, $destination_){
 		$this->name = Ut::cleanInput($itineraryName_);
 		$this->obus = Ut::cleanInput($obus_);
 		$this->station = Ut::cleanInput($station_);
+		$this->destination = Ut::cleanInput($destination_);
 		$this->startTime = Ut::HHmm2Int( Ut::cleanInput($startTime_) );
-		$this->sqlPDOSave = "INSERT INTO itinerary(name, start_station, start_time) VALUES(':iName:', :iStSt:, :iStTime:)";
+		$this->sqlPDOSave = "INSERT INTO itinerary(name, start_station, destination, start_time) VALUES(':iName:', :iStSt:, :iDest:, :iStTime:)";
 	}
 	public function save(){
 		$arrParameters = array(
 		":iName:"=>$this->name,
 		":iStSt:"=>$this->station,
+		":iDest:"=>$this->destination,
 		":iStTime:"=>$this->startTime);
 		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		//print_r($pdosql);
 		return $this->saveObject($pdosql);
 	}
-		
-	public static function getAll(){
-		return self::getAllRecords('itinerary');	
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new Itinerary($load['name'], 'no-obus',$load['start_station'], $load['start_time'],$load['destination'] );
+		$me->id = $load['id_itin'];
+		return $me;}
 	}
 }
 class Sequence extends DBObject{
-	//private $obus;
-	protected static $objectType = 'sequence';
+	
+	protected static $orm = array('table'=>'sequences', 'table_id'=>'id_seq');
+	protected static $sqlGetAll = 'SELECT id_seq, name, destination from sequences';
+	protected static $sqlGetAllOrdered = 'SELECT id_seq, name, destination from sequences ORDER BY name';
 	private $destination;
 
 	public function __construct($seqName_, $dest_){
@@ -455,11 +649,13 @@ class Sequence extends DBObject{
 	}
 	public function save(){
 //LiLogger::log("seq save. dest id{$this->destination}");	
-		$dest = Destination::getEntryByID($this->destination);
+		//$dest = Destination::getEntryByID($this->destination);
+		$destArr = Destination::getAllWhere("WHERE id_dest = {$this->destination}"); //### REFACTORED ###
+		$dest = $destArr[0];
 //LiLogger::log("res".serialize($dest));		
 		$destName = $dest['name'];
 		if(empty($destName)){
-			self::$errormsg = 'could not obtain destination name.';
+			self::$errormsg = 'Sequence[save]: could not obtain destination name.';
 			LiLogger::log(self::$errormsg);
 			return false;
 		}
@@ -472,10 +668,14 @@ class Sequence extends DBObject{
 		//print_r($pdosql);
 		return $this->saveObject($pdosql);
 	}
-		
-	public static function getAll(){
-		return self::getAllRecords('sequences');	
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new Sequence($load['name'], $load['destination'] );
+		$me->id = $load['id_seq'];
+		return $me;}
 	}
+	
 }
 
 class User implements IDBObjects, ObjectEntity{
