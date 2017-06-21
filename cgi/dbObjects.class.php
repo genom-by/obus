@@ -12,7 +12,7 @@ use PDO;
 use PDOException;
 use LinkBox;
 use LinkBox\Logger as LiLogger;
-use LinkBox\Utils as Ut;
+use LinkBox\Utils as Utils;
 
 //include_once 'settings.inc.php';
 include_once 'utils.inc.php';
@@ -171,7 +171,43 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 				//LiLogger::log( $sql);
 		$result = self::getEntriesArrayBySQL($sql);
 		if(false === result){return false;}else{return $result[0];}
-	}	
+	}
+
+	public static function countFrom($table, $table_col_id, $where=""){
+		if(empty($table)) return false;
+		if(empty($table_col_id)) return false;
+
+		//$tableName = static::$orm['table'];
+		//$tableId = static::$orm['table_id'];
+		
+		$table_idcolumn_id = Utils::cleanInput($table_idcolumn_id);
+		$sql = "SELECT COUNT ({$table_col_id}) FROM {$table} {$where}";
+	
+		$db = LinkBox\DataBase::connect(); //get raw connection		
+		$conn = $db::getPDO(); //get raw connection
+		$count = $conn->query($sql)->fetchColumn();
+//var_dump($count);
+		if($count > 0){return $count;}else{return 0;}
+	}
+
+	/*with where word*/
+	public static function countWhere($where){
+		if(empty($where)) return false;
+
+		$tableName = static::$orm['table'];
+		$tableId = static::$orm['table_id'];
+		
+		return self::countFrom($tableName, $tableId, $where);
+		//$table_idcolumn_id = Utils::cleanInput($table_idcolumn_id);
+		$sql = "SELECT COUNT ({$tableId}) FROM {$tableName} {$where}";
+	LiLogger::log($sql);
+		$db = LinkBox\DataBase::connect(); //get raw connection		
+		$conn = $db::getPDO(); //get raw connection
+		$count = $conn->query($sql)->fetchColumn();
+//var_dump($count);
+		if($count > 0){return $count;}else{return 0;}
+	}
+	
 }//class DBObject
 //implements IDBObjects, ObjectEntity
 class Obus extends DBObject{
@@ -181,7 +217,7 @@ class Obus extends DBObject{
 	protected static $sqlGetAllOrdered = 'SELECT id_obus, name from obus ORDER BY name';
 		
 	public function __construct($name_){
-		$this->name = Ut::cleanInput($name_);
+		$this->name = Utils::cleanInput($name_);
 		$this->sqlPDOSave = "INSERT INTO obus(name) VALUES(':1:')";
 	}
 	public function save(){
@@ -203,7 +239,7 @@ class PitType extends DBObject{
 	protected static $sqlGetAll = 'SELECT id_pittype, type from pitstop_type';
 			
 	public function __construct($type_){
-		$this->name = Ut::cleanInput($type_);
+		$this->name = Utils::cleanInput($type_);
 		$this->sqlPDOSave = "INSERT INTO pitstop_type(type) VALUES(':1:')";
 	}
 	public function save(){
@@ -228,8 +264,8 @@ class Station extends DBObject{
 	private $shortname="-";
 	
 	public function __construct($name_, $short_){
-		$this->name = Ut::cleanInput($name_);
-		$this->shortname = Ut::cleanInput($short_);
+		$this->name = Utils::cleanInput($name_);
+		$this->shortname = Utils::cleanInput($short_);
 		$this->sqlPDOSave = "INSERT INTO station(name, shortName) VALUES(':1:', ':2:')";
 	}
 	public function save(){
@@ -254,8 +290,8 @@ class Destination extends DBObject{
 	private $sequence="-";
 	
 	public function __construct($name_, $seq_){
-		$this->name = Ut::cleanInput($name_);
-		$this->sequence = Ut::cleanInput($seq_);
+		$this->name = Utils::cleanInput($name_);
+		$this->sequence = Utils::cleanInput($seq_);
 		$this->sqlPDOSave = "INSERT INTO destination(name, dest_seq) VALUES(':1:', ':2:')";
 	}
 	public function save(){
@@ -283,7 +319,7 @@ class Way extends DBObject{
 	private $pitstopsMaxId = 0;
 	
 	public function __construct($post_){
-		$this->name = "way";//Ut::cleanInput($name_);
+		$this->name = "way";//Utils::cleanInput($name_);
 		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
 		$this->pitstopsTotal = $post_['totalstops'];
 		$this->pitstopsMaxId = $post_['laststopID'];
@@ -292,7 +328,7 @@ class Way extends DBObject{
 			if(!empty($post_['stationTime'])){
 			$this->pitstops[$i] = array(
 				'station'=>$post_['station'], 
-			'time'=>Ut::HHmm2Int( Ut::cleanInput( $post_['stationTime'])) ,
+			'time'=>Utils::HHmm2Int( Utils::cleanInput( $post_['stationTime'])) ,
 				'pitType'=>$post_['pitType'],
 									);
 									}
@@ -301,7 +337,7 @@ class Way extends DBObject{
 			if(!empty($post_['stationTime'.$i])){
 			$this->pitstops[$i] = array(
 				'station'=>$post_['station'.$i], 
-			'time'=>Ut::HHmm2Int( Ut::cleanInput( $post_['stationTime'.$i])) ,
+			'time'=>Utils::HHmm2Int( Utils::cleanInput( $post_['stationTime'.$i])) ,
 				'pitType'=>$post_['pitType'.$i],
 									);
 									}
@@ -433,7 +469,7 @@ all pitstops for desired sequence. proxy for getPitstopsByDestination
 	public static function GetPitsCountForItinerary($itin_id){
 		if(empty($itin_id)) return false;
 		
-		$itin_id = Ut::cleanInput($itin_id);
+		$itin_id = Utils::cleanInput($itin_id);
 		$sql = "SELECT COUNT (id_pitstop) FROM pitstop WHERE id_itinerary = {$itin_id}";
 	
 		$db = LinkBox\DataBase::connect(); //get raw connection		
@@ -475,7 +511,7 @@ class sequencesStations extends DBObject{
 	private $seqLastID = 0;
 	
 	public function __construct($post_){
-		$this->name = "sequencesStations";//Ut::cleanInput($name_);
+		$this->name = "sequencesStations";//Utils::cleanInput($name_);
 		$this->sqlPDOSave = "";//"INSERT INTO station(name) VALUES(':1:')";
 		$this->sequence = $post_['sequencesSelect'];
 		$this->seqTotal = $post_['totalsequences'];
@@ -484,9 +520,9 @@ class sequencesStations extends DBObject{
 		for($i=1; $i <= $this->seqLastID; $i++) {
 		if($post_['station'.$i] <> -1){
 			$this->seq_stations[$i] = array(
-				'station'=>Ut::cleanInput($post_['station'.$i]), 
-				'orderal'=>Ut::cleanInput($post_['orderal'.$i]),
-				'pitType'=>Ut::cleanInput($post_['pitType'.$i]),
+				'station'=>Utils::cleanInput($post_['station'.$i]), 
+				'orderal'=>Utils::cleanInput($post_['orderal'.$i]),
+				'pitType'=>Utils::cleanInput($post_['pitType'.$i]),
 									);	
 			}
 		}
@@ -579,7 +615,7 @@ WHERE seq_stations.id_seq = 1	ORDER BY orderal ; */
 	public static function GetPitsCountForSequence($seq_id){
 		if(empty($seq_id)) return false;
 		
-		$seq_id = Ut::cleanInput($seq_id);
+		$seq_id = Utils::cleanInput($seq_id);
 		$sql = "SELECT COUNT (id_ss) FROM seq_stations WHERE id_seq = {$seq_id}";
 	
 		$db = LinkBox\DataBase::connect(); //get raw connection		
@@ -609,11 +645,11 @@ class Itinerary extends DBObject{
 	private $startTime;
 	private $destination;
 	public function __construct($itineraryName_, $obus_, $station_, $startTime_, $destination_){
-		$this->name = Ut::cleanInput($itineraryName_);
-		$this->obus = Ut::cleanInput($obus_);
-		$this->station = Ut::cleanInput($station_);
-		$this->destination = Ut::cleanInput($destination_);
-		$this->startTime = Ut::HHmm2Int( Ut::cleanInput($startTime_) );
+		$this->name = Utils::cleanInput($itineraryName_);
+		$this->obus = Utils::cleanInput($obus_);
+		$this->station = Utils::cleanInput($station_);
+		$this->destination = Utils::cleanInput($destination_);
+		$this->startTime = Utils::HHmm2Int( Utils::cleanInput($startTime_) );
 		$this->sqlPDOSave = "INSERT INTO itinerary(name, start_station, destination, start_time) VALUES(':iName:', :iStSt:, :iDest:, :iStTime:)";
 	}
 	public function save(){
@@ -643,8 +679,8 @@ class Sequence extends DBObject{
 	private $destination;
 
 	public function __construct($seqName_, $dest_){
-		$this->name = Ut::cleanInput($seqName_);
-		$this->destination = Ut::cleanInput($dest_);
+		$this->name = Utils::cleanInput($seqName_);
+		$this->destination = Utils::cleanInput($dest_);
 		$this->sqlPDOSave = "INSERT INTO sequences(name, destination) VALUES(':iName:', :iDest:)";
 	}
 	public function save(){
@@ -678,9 +714,13 @@ class Sequence extends DBObject{
 	
 }
 
-class User implements IDBObjects, ObjectEntity{
+class User extends DBObject{
 
 	private $db;
+	
+	protected static $orm = array('table'=>'user', 'table_id'=>'id_user');
+	protected static $sqlGetAll = 'SELECT id_user, name from user';
+	protected static $sqlGetAllOrdered = 'SELECT id_user, name from user ORDER BY name';
 	
 	public static $errormsg;
 	private $errorEmptyFields;
@@ -691,8 +731,12 @@ class User implements IDBObjects, ObjectEntity{
 	public $name;
 	public $pwdHash;
 	
-	public function __construct($regDate_, $email_, $name_, $pwd){
-		$this->regDate = Utils::cleanInput($regDate_);
+	public function __construct($name_, $email_, $pwd, $regDate_ = 0 ){
+	
+		$this->name = Utils::cleanInput($name_);
+		$this->sqlPDOSave = "INSERT INTO user(name, email, pwdHash) VALUES(':name:', ':email:', ':pwdhash:')";
+		
+		$this->regDate = time();//Utils::cleanInput($regDate_);
 		$this->email = Utils::cleanInput($email_);
 		$this->name = Utils::cleanInput($name_);
 		//$this->pwdHash = Utils::cleanInput($pwdHash_);
@@ -704,6 +748,19 @@ class User implements IDBObjects, ObjectEntity{
 	}
 	public function save(){
 
+		if( ! $this->validateSave() ) {
+			self::$errormsg = 'Validation error when saving: '.self::$errormsg;
+			return false;
+		}		
+		$arrParameters = array(
+			":name:"=>$this->name,
+			":email:"=>$this->email,
+			":pwdhash:"=>$this->pwdHash);
+		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
+		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		//print_r($pdosql);
+		return $this->saveObject($pdosql);
+		/*
 	//-
 		if( ! $this->validateSave() ) {
 			self::$errormsg = 'Validation error when saving: '.self::$errormsg;
@@ -744,6 +801,7 @@ class User implements IDBObjects, ObjectEntity{
 			self::$errormsg = 'Save failed: '.implode(' ', $statement->errorInfo() );
 			return false;
 		}
+		*/
 	}
 	public function update(){
 	}
@@ -833,31 +891,17 @@ class User implements IDBObjects, ObjectEntity{
 		$name = Utils::cleanInput($name);
 		$email = Utils::cleanInput($email);
 		
-		try{
-			$db = DataBase::connect();
-		}catch(Exception $e){
-			$this->errormsg = 'Couldn\'t open DB. Error: '.$e->getMessage();
-			return null;
-		}		
-		$sql = "SELECT COUNT(id_user) FROM users WHERE name=? OR email=?";
-
-		$stmt = $db->connection->prepare($sql);
-		$bindState = $stmt->bindValue(1, $name, PDO::PARAM_STR);
-		$bindState = $bindState && $stmt->bindValue(2, $email, PDO::PARAM_STR);
-		if(!$bindState){
-			self::$errormsg = "Fn isThereSameUser failed:". $statement->errorInfo();
-			return null;
+		if(empty($email)){
+			$where = "WHERE name='{$name}'";	
+		}elseif(empty($name)){
+			$where = "WHERE email='{$email}'";			
+		}else{
+			$where = "WHERE name='{$name}' OR email='{$email}'";		
 		}
+
+		$count = self::countWhere($where);
 		
-		try{
-			$stmt->execute();
-		}catch(PDOException $pe){
-			$this->errormsg = 'Couldn\'t select from DB. Error: '.$pe->getMessage();
-			return null;
-		}
-		$rows = $stmt->fetchColumn();
-
-		if($rows > 0) {return true;} else {return false;}
+		if($count > 0) {return true;} else {return false;}
 	
 	}
 }

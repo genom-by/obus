@@ -207,7 +207,10 @@ $htmlItem = "<tr id='obus_id_{$item['id_obus']}'><td class='rowtxt' orm='name'>{
 				$htmlItem = '';
 				foreach($list as $item){
 					$btnDel = self::createDELTablebutton('station', $item['id_station']);
-$htmlItem = "<tr id='station_id_{$item['id_station']}'><td>{$item['name']}</td><td>{$item['shortName']}</td><td>{$btnDel}</td></tr>";
+	$btnEd = self::createEDTablebutton('station', $item['id_station']);	
+	$btnBlock = self::createBlockOfButtons('station', $item['id_station']);				
+//$htmlItem = "<tr id='station_id_{$item['id_station']}'><td>{$item['name']}</td><td>{$item['shortName']}</td><td>{$btnDel}</td></tr>";
+$htmlItem = "<tr id='station_id_{$item['id_station']}'><td class='rowtxt' orm='name'>{$item['name']}</td><td class='rowtxt' orm='shortName'>{$item['shortName']}</td><td class='btnBlock'>{$btnBlock}</td></tr>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;

@@ -202,7 +202,11 @@ var orm = el.getAttribute("orm")+'2';
 		alert(data.result);
 		if (data.result == 'ok' ){
 			var domID_td = '#'+table_+'_id_'+id_entry+' td.rowtxt';
-			$(domID_td).html( objArray['name2'] );
+			var els2 = $(domID_td);
+				$.each($(els2),function(ind,el3){
+					$(el3).html( objArray[el3.getAttribute("orm")+'2'] );
+				})
+			//$(domID_td).html( objArray['name2'] );
 			toggleEditControls(rowid, false);
 		}else{
 			console.log('error message: ',data.message);
@@ -353,7 +357,7 @@ function btn_del_seq_stats_onClick(){
 	
 	if (! confirm('Are you sure to delete all stations for destination?') ) {return;}
 	//console.info("delete from table: "+table_+" entry id:"+id_entry);
-	var id_entry = $('#sequencesSelect').val();
+	var id_entry = $('#sequencesSelectEdit').val();
 	console.info('data to send:', {id:id_entry, table:'seq_stations_delete'});
 	
 	$.post(
@@ -363,8 +367,8 @@ function btn_del_seq_stats_onClick(){
 		console.log("post returned: "+data.result);
 		alert(data.result);
 		if (data.result == 'ok' ){
-			//var domID = '#'+table_+'_id_'+id_entry;
-			//$(domID).toggle( "highlight" );
+			var domID = '#seqEditContent';
+			$(domID).html( "" );
 		}else{
 			console.log('error message: ',data.message);
 		}
@@ -410,7 +414,11 @@ function html_setLastTableID(tablename='pitstops'){
 		elLastId.val(lastrowid);
 		
 	}else if(tablename=='seq'){
-		elLastId = $('input[name=lastinisID]');
+		elLastId = $('input[name=lastseqID]');
+		var lastrow = $('.sequences_new .trseqnew').filter(":last");
+		var lastrowid = lastrow.attr("data-id");
+		
+		elLastId.val(lastrowid);		
 	}
 	
 	
@@ -694,7 +702,7 @@ td.order{
 	display:none;
 }
 /* ... loading ...
-<div style="
+.loading{
  margin: 10% auto;
  border-bottom: 6px solid #fff;
  border-left: 6px solid #fff;
@@ -708,7 +716,7 @@ td.order{
  -ms-animation: spin .6s infinite linear;
  -o-animation: spin .6s infinite linear;
  animation: spin .6s infinite linear;
- ></div>
+}
 */
 </style>
 </head>
@@ -942,7 +950,7 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 <fieldset>
 <form name="formSeqEdit" method="post">
 <p>Select sequence</p>
-<select name="seqSelect" id="seqSelect" onchange="selPitSeqEdit_onChange('sequences', this.value)">
+<select name="sequencesSelectEdit" id="sequencesSelectEdit" onchange="selPitSeqEdit_onChange('sequences', this.value)">
 <?php echo HTML::getSelectItems('sequences');?>
 </select>___<button type="button" id="btn_del_seq_stats" onclick="btn_del_seq_stats_onClick();">Clear stations</button>
 <p></p>
@@ -975,6 +983,7 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 <!--end show existing-->
 </fieldset>
 <a href="hchartLine.php" target="blank">line chart</a>
+<a href="authpage.php" target="blank">authorisation</a>
 <pre>
 <?php
 //$pitstops = Way::GetPitsCountForItinerary(13);

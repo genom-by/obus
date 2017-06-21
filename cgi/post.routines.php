@@ -119,6 +119,10 @@ function dispatchObjectUpdate($table, $id, $data){
 			$obus = Obus::load( $id); //\LinkBox\Logger::log(serialize($obus) );
 			$res = $obus->update(array('name'=>$dataArr['name2']));		
 		break;
+		case 'station':
+			$station = Station::load( $id); //\LinkBox\Logger::log(serialize($obus) );
+			$res = $station->update(array('name'=>$dataArr['name2'], 'shortName'=>$dataArr['shortName2'], ));		
+		break;
 		case 'seq_SeqEdit_table':
 			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
 			$seqstats = HTML::getSeqEditRows($_POST['id']);

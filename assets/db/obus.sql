@@ -99,3 +99,12 @@ ALTER TABLE pitstop
        ADD FOREIGN KEY (id_pittype)
                              REFERENCES pitstop_type
                              ON DELETE SET NULL;
+
+CREATE TABLE "user"(
+  "name" VARCHAR(30) DEFAULT NULL UNIQUE,  
+  "pwdHash" VARCHAR(90) DEFAULT NULL UNIQUE,  
+  "email" VARCHAR(90) DEFAULT NULL UNIQUE,
+  "id_user" INTEGER PRIMARY KEY NOT NULL,
+  CONSTRAINT "XPKuser" UNIQUE("id_user"),  
+  CONSTRAINT "XPKuserName" UNIQUE("name")
+);
