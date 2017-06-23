@@ -11,12 +11,12 @@ include_once 'HTMLroutines.class.php';
 <!DOCTYPE html>
 <html>
 <head>
-<title>Obus User page</title>
+<title>Obus User login page</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <script type="text/javascript" src="../js/jquery.min.js"></script>
-<script type="text/javascript" src="../js/jquery.validate.min.js"></script>
+
 <script type="text/javascript" src="../js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../js/obusRegister.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <script>
 /* use: var obus_text = getSelectedText('obusSel');
@@ -46,6 +46,10 @@ function getSelectedText(elementId) {
 .obus_header{
 	margin-bottom:20px;
 }
+.oror{
+	margin:auto;
+	width:50px;
+}
 </style>
 </head>
 <body>
@@ -53,7 +57,7 @@ function getSelectedText(elementId) {
 	<div class="row">
 		<div class="col-md-12">
 			<div class="obus_header">
-			<?php include_once '../tmplt/topmenu.inc.php' ?> 
+<?php include_once '../tmplt/topmenu.inc.php' ?> 
 			</div>
 		</div>	
 	</div>
@@ -76,45 +80,44 @@ if( ! isset($_GET['result']) ) {$b_class='alert alert-success';$b_hidden='hidden
 	</div>
 	<!-- /error messages -->	
 			<div class="obus_userform">
-			<div class="centered"><h3>Provide information about himself:</h3></div>
-<form class="form-horizontal" name="obus_registerForm" id="obus_registerForm" method="post" action="authpage.php">
-	<div class="form-group has-feedback">
-		<label class="control-label col-xs-2" for="inputName">User Name</label><div class="col-xs-6">
-			<input type="text" placeholder="User Name" class="form-control" id="inputName" name="inputName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
-		</div><div class="col-xs-2"></div>	
+			<div class="centered"><h3>Login</h3></div>
+<form class="form-horizontal" name="obus_loginForm" id="obus_loginForm" method="post">
+<div class="name_or_email col-md-12">
+	<div class="form-group has-feedback col-xs-5">
+		<label class="control-label col-xs-4" for="userName">User Name</label><div class="col-xs-8">
+			<input type="text" placeholder="User Name" class="form-control" id="userName" name="userName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
+		</div>
 	</div>
-	<div class="form-group has-feedback">
-		<label class="control-label col-xs-2" for="inputEmail">Email</label><div class="col-xs-6">
-			<input type="text" placeholder="Email" class="form-control" id="inputEmail" name="inputEmail"autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
-		</div><div class="col-xs-2"></div>	
+	<div class="col-xs-2 oror">OR</div>
+	<div class="form-group has-feedback col-xs-5">
+		<label class="control-label col-xs-2" for="userEmail">Email</label><div class="col-xs-10">
+			<input type="text" placeholder="Email" class="form-control" id="userEmail" name="userEmail"autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
+		</div>
 	</div>
+</div>
+<div class="clearfix"></div>
 	<div class="form-group has-feedback">
 		<label class="control-label col-xs-2" for="inputPWD">Password</label><div class="col-xs-6">
 			<input type="password" placeholder="Password" class="form-control" id="inputPWD" name="inputPWD" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
 		</div><div class="col-xs-2"></div>	
 	</div>
-	<div class="form-group has-feedback">
-		<label class="control-label col-xs-2" for="inputPWD2">Confirm Password</label><div class="col-xs-6">
-			<input type="password" placeholder="Confirm Password" class="form-control" id="inputPWD2" name="inputPWD2" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
-		</div><div class="col-xs-2"></div>	
-	</div>
 	<div class="form-group">
 		<div class="col-xs-offset-3 col-xs-9">
-			<label class="checkbox-inline" for="inputAgree">
-		<input type="checkbox" value="agree" id="inputAgree" name="inputAgree">  I agree to the <a href="#">Terms and Conditions</a>.
+			<label class="checkbox-inline" for="inputRemember">
+		<input type="checkbox" value="agree" id="inputRemember" name="inputRemember">Remember me
 			</label>
 		</div>
 	</div>
 	<br>
 	<div class="form-group">
 		<div class="col-xs-offset-3 col-xs-9">
-			<input type="submit" class="btn btn-primary" value="Submit" id="btn_register">
+			<input type="submit" class="btn btn-primary" value="Login" id="btn_login">
 			<input type="reset" class="btn btn-default" value="Reset" id="btn_reset">
 			<!--<button type="submit" id="btn_addLink" class="btn btn-info"><span class="glyphicon glyphicon-star"></span><span id="btn_addLinkCaption"> Add link</span></button>-->
 			<div class="clearfix"></div>	
 		</div>
 	</div>
-	<input type="hidden" name="action" value="register">
+	<input type="hidden" name="action" value="login">
 </form>
 <button type="button" onClick="refreshValidations();">Refresh</button>
 			</div>

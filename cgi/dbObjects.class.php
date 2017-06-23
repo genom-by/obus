@@ -719,8 +719,8 @@ class User extends DBObject{
 	private $db;
 	
 	protected static $orm = array('table'=>'user', 'table_id'=>'id_user');
-	protected static $sqlGetAll = 'SELECT id_user, name from user';
-	protected static $sqlGetAllOrdered = 'SELECT id_user, name from user ORDER BY name';
+	protected static $sqlGetAll = 'SELECT id_user, name, email from user';
+	protected static $sqlGetAllOrdered = 'SELECT id_user, name, email from user ORDER BY name';
 	
 	public static $errormsg;
 	private $errorEmptyFields;
@@ -803,6 +803,49 @@ class User extends DBObject{
 		}
 		*/
 	}
+	/* get user from DB by id
+	*/
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+		$me = new User($load['name'], $load['email'], $load['pwdHash'] );
+		$me->id = $load['id_user'];
+		return $me;}
+	}
+	/*return user for given name or email
+	*/
+	public static function getUserbyNameOrEmail($name='', $email=''){
+		$u = self::getUserDatabyNameOrEmail($name, $email);
+		if(false === $u){return false;}else{
+			return self::load($u['id_user']);
+		}
+		
+	}
+	
+	/*return user id for given name or email
+	*/
+	public static function getUserDatabyNameOrEmail($name='', $email=''){
+		
+		if( (empty($name)) and ( empty($email)) ){
+			return null;
+		}
+		$name = Utils::cleanInput($name);
+		$email = Utils::cleanInput($email);
+		
+		if(empty($email)){
+			$where = "WHERE name='{$name}'";	
+		}elseif(empty($name)){
+			$where = "WHERE email='{$email}'";			
+		}else{
+			$where = "WHERE name='{$name}' OR email='{$email}'";		
+		}
+//echo $where;
+		$user = self::getAllWhere($where);
+//var_dump($user[0]);die();
+		if($user[0]['id_user'] > 0) {return $user[0];} else {return false;}
+	
+	}
+	
 	public function update(){
 	}
 	public function delete(){}
@@ -883,9 +926,9 @@ class User extends DBObject{
 	//if error occured - returns null
 	//if exists - returns true, otherwise false
 	*/
-	public static function isThereSameUser($name, $email){
+	public static function isThereSameUser($name='', $email=''){
 		
-		if( (!isset($name)) and ( !isset($email)) ){
+		if( (empty($name)) and ( empty($email)) ){
 			return null;
 		}
 		$name = Utils::cleanInput($name);

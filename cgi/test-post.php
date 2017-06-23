@@ -1,6 +1,8 @@
 <?php
 namespace obus;
 
+include_once 'auth.inc.php';
+
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
@@ -144,7 +146,21 @@ function postTest(){
 </style>
 </head>
 <body>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="obus_header">
+<?php include_once '../tmplt/topmenu.inc.php' ?> 
+			</div>
+		</div>	
+	</div>
+</div>	
 <button onclick="postTest();">test post</button>
 <button onclick="postTest2();">test post 2</button>
+<pre>
+<?php
+var_dump( User::getUserbyNameOrEmail('genom1','ge@ge.ge') );
+?>
+</pre>
 </body>
 </html>

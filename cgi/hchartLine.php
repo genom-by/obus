@@ -1,10 +1,13 @@
 <?php
 namespace obus;
+
+include_once 'auth.inc.php';
+
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
 if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=2;
-echo 'seq: '.Sequence::load($seq)->name;
+//echo 'seq: '.Sequence::load($seq)->name;
 //var_dump(Sequence::load($seq)->name);
 ?>
 <html>
@@ -17,6 +20,9 @@ echo 'seq: '.Sequence::load($seq)->name;
 <script type="text/javascript" src="../js/highcharts.js"></script>
 <script type="text/javascript" src="../js/highcharts-more.js"></script>
 <script type="text/javascript" src="../js/exporting.js"></script>
+
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <script>
 		
 	$(function() {	
@@ -151,14 +157,20 @@ var chart1 = new Highcharts.chart('container', {
 //chart1.xAxis[0].update({        categories: newSequences    });
 }//after responce
 }
-</script><pre>
-<?php
-//echo HTML::arrayLineChart($pitstops);
-?></pre>
+</script>
 <!--<script type="text/javascript" src="../js/hchart.js"></script> -->
 <link rel="stylesheet" type="text/css" href="../css/hchart.css">
 </head>
 <body>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="obus_header">
+			<?php include_once '../tmplt/topmenu.inc.php' ?> 
+			</div>
+		</div>	
+	</div>
+</div>	
 <div id="container" style="width:1000px;height:600px;margin:.5em;"></div>
 <fieldset>
 <select name="sequencesSelect" id="sequencesSelect">
@@ -170,5 +182,9 @@ var chart1 = new Highcharts.chart('container', {
 <a href="obus-test.php" >settings</a>
 <?php //$seqstats = sequencesStations::getSeqStatNamesBySequenceID(1); echo "[".HTML::arrayLineChartCategories($seqstats)."]";
 ?>
+<pre>
+<?php
+//echo HTML::arrayLineChart($pitstops);
+?></pre>
 </body>
 </html>

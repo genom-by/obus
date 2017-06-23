@@ -1,0 +1,76 @@
+<?php
+namespace obus;
+
+include_once 'utils.inc.php';
+include_once 'dbObjects.class.php';
+include_once 'HTMLroutines.class.php';
+
+//\LinkBox\Logger::log('Start logging');
+//var_dump($_POST);
+$retval = '';
+if(!empty($_POST['action'])){
+		
+		//TODO
+		/*
+		https://github.com/delight-im/PHP-Auth
+		http://phppot.com/php/php-login-script-with-remember-me/
+		https://github.com/PHPAuth/PHPAuth/blob/master/Auth.php
+		*/
+		
+switch ($_POST['action']){
+	case 'login':
+		//echo 'obus';		
+		if(!empty($_POST['userName']) OR !empty($_POST['inputEmail'])){
+			if(User::isThereSameUser($_POST['userName'], $_POST['inputEmail'])){
+				$user = User::getUserbyNameOrEmail($_POST['userName'], $_POST['inputEmail']);
+				if(!$user){
+				print_r("result: ".$user::$errormsg);}else{
+				session_start();
+				$_SESSION["user_id"] = $user->id;
+				$_SESSION["user_name"] = $user->name;
+				header("Location: http://".$_SERVER['HTTP_HOST'].'/'.SITE_ROOT."/".SITE_STARTPAGE);
+				die();
+				}
+			}
+
+		}
+		break;
+	case 'register':
+		//echo 'staaation';
+		if(!empty($_POST['inputName'])){
+			$newuser= new User($_POST['inputName'], $_POST['inputEmail'], $_POST['inputPWD']);
+			$retval = $newuser->save();
+			if(!$retval){print_r("result: ".User::$errormsg);}
+		}		
+		break;
+	case 'logout':
+		//echo 'itinerary';
+		session_destroy();
+		/*if(!empty($_POST['itineraryName'])){
+			session_destroy();
+		}*/			
+	break;
+	case 'remember':
+				//print_r($_POST);
+			if( !empty($_POST['itinerarySelect']) ){
+				$way = new Way($_POST);
+				$retval = $way->save($_POST);
+				if(!$retval)
+					print_r("result: ".way::$errormsg);				
+			}
+	break;
+	default:
+		$retval = 'not dispatched user action';
+	}
+}
+//echo( 'action:'.$_POST['action'] );
+//parse_str($_POST["lbx_form_addlink"], $ajax);
+//print_r($ajax);
+if(!empty($_GET['action'])){
+	switch ($_GET['action']){
+		case 'logout':
+			session_destroy();
+			header("Location: http://".$_SERVER['HTTP_HOST'].'/'.SITE_ROOT."/".'cgi/loginpage.php');
+		break;
+	}
+}
