@@ -658,13 +658,15 @@ array(49) {
   }
   [1]=>  array(7) {
 	*/
-//TODO figyre out why extra 9th column is added
+//if no data - return string 'null' for not breaking js-formatting
 	public static function arrayLineChart($ways, $sequence_id=-1, $delimiter=','){
-		if (empty($ways)) return "[no data1]";	//var_dump($ways);die();
-		if (empty($sequence_id)) return "[no data2]";
+		//if (empty($ways)) return "[no data1]";	//var_dump($ways);die();
+		if (empty($ways)) return "null";	//var_dump($ways);die();
+		if (empty($sequence_id)) return "null";
+		if ( $sequence_id == -1) return "null";
 
 	$seq_stations = sequencesStations::getSeqStatNamesBySequenceID($sequence_id);
-	if ($seq_stations === false) { LiLogger::log("HTML::arrayLineChart error: no sequence stations obtained: ".sequencesStations::$errormsg); return "[no data3]";	}
+	if ($seq_stations === false) { LiLogger::log("HTML::arrayLineChart error: no sequence stations obtained: ".sequencesStations::$errormsg); return "null";	}
 	//$name2index = array ('zel0'=>0, 'kol1'=>1, 'nem2'=>2, 'mas3'=>3, 'akd4'=>4, 'spu5'=>5, 'kaz6'=>6, 'tra7'=>7);
 	
 	$name2index = array(); ###REFACTORED###

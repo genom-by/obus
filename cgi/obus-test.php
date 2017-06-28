@@ -1,6 +1,8 @@
 <?php
 namespace obus;
 
+include_once 'auth.inc.php';
+
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
@@ -15,8 +17,11 @@ switch ($_POST['action']){
 		if(!empty($_POST['obusName'])){
 			$obus= new Obus($_POST['obusName']);
 			$retval = $obus->save();
-			if(!$retval)
-			print_r("result: ".$obus::$errormsg);
+			if(!$retval){
+			\LinkBox\Logger::log("{$_POST['action']} error: ".$obus::$errormsg);
+				$actionStatus = 'error';
+				$message = $obus::$errormsg;
+			}
 		}
 		break;
 	case 'station':
@@ -24,8 +29,11 @@ switch ($_POST['action']){
 		if(!empty($_POST['stationName'])){
 			$station= new Station($_POST['stationName'], $_POST['statShortName']);
 			$retval = $station->save();
-			if(!$retval)
-			print_r("result: ".$station::$errormsg);
+			if(!$retval){
+				\LinkBox\Logger::log("{$_POST['action']} error: ".$station::$errormsg);
+				$actionStatus = 'error';
+				$message = $station::$errormsg;
+			}
 		}		
 		break;
 	case 'itinerary':
@@ -36,8 +44,11 @@ switch ($_POST['action']){
 			$iName = $_POST['itineraryName'];
 			$itiner = new Itinerary($iName, $_POST['obus'], $_POST['station'], $_POST['startTime'], $_POST['itinDest']);
 			$retval = $itiner->save();
-			if(!$retval)
-				print_r("result: ".Itinerary::$errormsg);			
+			if(!$retval){
+				\LinkBox\Logger::log("{$_POST['action']} error: ".$itiner::$errormsg);
+				$actionStatus = 'error';
+				$message = Itinerary::$errormsg;
+				}
 		}			
 	break;
 	case 'pitstops':
@@ -46,8 +57,11 @@ switch ($_POST['action']){
 				$way = new Way($_POST);
 				//var_dump($way);
 				$retval = $way->save($_POST);
-				if(!$retval)
-					print_r("result: ".$way::$errormsg);				
+				if(!$retval){
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$way::$errormsg);
+					$actionStatus = 'error';
+					$message = $way::$errormsg;
+				}
 			}
 	break;
 	case 'destination':
@@ -55,8 +69,11 @@ switch ($_POST['action']){
 			if( !empty($_POST['destName']) ){
 				$dest = new Destination($_POST['destName'], $_POST['destName']);
 				$retval = $dest->save();
-				if(!$retval)
-					print_r("result: ".$dest::$errormsg);				
+				if(!$retval){
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$dest::$errormsg);
+					$actionStatus = 'error';
+					$message = $dest::$errormsg;
+				}				
 			}
 	break;
 	case 'sequence':
@@ -64,8 +81,11 @@ switch ($_POST['action']){
 			if( !empty($_POST['seqName']) ){
 				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
 				$retval = $seq->save();
-				if(!$retval)
-					print_r("result: ".$seq::$errormsg);				
+				if(!$retval){
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$seq::$errormsg);
+					$actionStatus = 'error';
+					$message = $seq::$errormsg;
+				}				
 			}
 	break;
 	case 'sequencesStations':
@@ -73,8 +93,11 @@ switch ($_POST['action']){
 			if( !empty($_POST['sequencesSelect']) ){
 				$seq = new sequencesStations($_POST);
 				$retval = $seq->save($_POST);
-				if(!$retval)
-					print_r("result: ".$seq::$errormsg);				
+				if(!$retval){
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$seq::$errormsg);
+					$actionStatus = 'error';
+					$message = $seq::$errormsg;
+				}				
 			}
 	break;
 	}
@@ -647,6 +670,13 @@ function serialize(_obj)
    }
 }
 //SERIALIZE
+<?php if( Auth::notLogged()){ ?>
+$(function(){
+$('fieldset').prop('disabled',true);
+})
+<?}else{?>
+$('fieldset').prop('disabled',false);
+<?}?>
 </script>
 <style>
 .hided{
@@ -725,10 +755,18 @@ td.order{
 	<div class="row">
 		<div class="col-md-12">
 			<div class="obus_header">
+			<?php include_once '../tmplt/topmenu.inc.php' ?> 
 			</div>
 		</div>	
 	</div>
-</div>	
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<?php include_once '../tmplt/errorBlock.inc.php' ?> 
+		</div>	
+	</div>
+</div>
 <div class="container">
 	<div class="row">
 		<div class="col-md-3">
@@ -783,7 +821,7 @@ td.order{
 <div class="statName_inputs">
 <label for="stationName">Station Name</label>
 <input type="text" name="stationName" id="stationName"/><br/>
-<label for="statShortName">Station Short Name</label>
+<label for="statShortName">Short Name</label>
 <input type="text" name="statShortName" id="statShortName"/>
 </div>
 <div class="statName_send">
@@ -982,8 +1020,6 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 </div>
 <!--end show existing-->
 </fieldset>
-<a href="hchartLine.php" target="blank">line chart</a>
-<a href="authpage.php" target="blank">authorisation</a>
 <pre>
 <?php
 //$pitstops = Way::GetPitsCountForItinerary(13);

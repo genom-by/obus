@@ -1,12 +1,12 @@
 <?php
-namespace obus;
-
 //==========================================
 // DB objecs classes
-// ver 1.5
+// ver 1.8
 // © genom_by
-// last updated 05 may 2017
+// last updated 27 jun 2017
 //==========================================
+
+namespace obus;
 
 use PDO;
 use PDOException;
@@ -14,7 +14,8 @@ use LinkBox;
 use LinkBox\Logger as LiLogger;
 use LinkBox\Utils as Utils;
 
-//include_once 'settings.inc.php';
+include_once 'auth.inc.php';
+
 include_once 'utils.inc.php';
 include_once 'settings.inc.php';
 include_once 'database.class.php';
@@ -39,6 +40,7 @@ class DBObject{
 	public $name;
 	
 	protected $id;	// database table id of object
+	protected $uid;	// database id of user to whom odject belongs (if applicable)
 	
 	private $db;	// database connection
 	private $sqlPDOSave;
@@ -57,6 +59,25 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		self::$errormsg="DBObject[getEntriesBySQL]: No SQL provided";
 		return false;
 	}
+## uid
+	$userWhere = static::buildUserWhereClause();
+
+	if( ! empty($userWhere) ){
+		$where_position = strpos($sql, 'WHERE');
+		if(false !== $where_position){
+			$where = substr($sql, $where_position+strlen('WHERE'));
+			
+			$user_sql = $sql.' '.$userWhere.' AND '.$where;
+		}else{
+			$user_sql = $sql.' '.$userWhere;		
+		}
+	}else{
+		$user_sql = $sql;
+	}
+	//LiLogger::log('usersql where: '.$user_sql);
+
+## uid
+
 	$objects = LinkBox\DataBase::getArrayBySQL($sql, $ref);
 	if($objects === false){
 		self::$errormsg = "DBObject[getEntriesBySQL]: No data from DB: ".LinkBox\DataBase::$errormsg;
@@ -146,9 +167,31 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 	returns all records for inherited class based on static sql query
 	*/
 	public static function getAll(){
+	## REFACTOR - user
 		if(!empty(static::$sqlGetAllOrdered)){$sql = static::$sqlGetAllOrdered;
 		}else{$sql = static::$sqlGetAll;}
-		return self::getEntriesArrayBySQL($sql);		
+		/*
+		if( static::$orm['is_uid'] ){
+			$uidcolumname = static::$orm['where_uid']?static::$orm['where_uid']:'uid';
+			if( ! Auth::notLogged() ){
+				$uid = Auth::whoLoggedID();
+				$userWhere = " WHERE {$uidcolumname} = {$uid}";}
+			else{
+				$userWhere = " WHERE {$uidcolumname} = -1";//protect from unauthorised access
+				}	
+			}else{$userWhere='';}*/
+		$userWhere = static::buildUserWhereClause();
+		
+		$order_position = strpos($sql, 'ORDER BY');
+		if(false !== $order_position){
+			$order = substr($sql, $order_position);
+			
+			$user_sql = static::$sqlGetAll.' '.$userWhere.' '.$order;
+		}else{
+			$user_sql = $sql.$userWhere;		
+		}	
+		//LiLogger::log('usersql order: '.$user_sql);
+		return self::getEntriesArrayBySQL($user_sql);		
 	}
 	/*
 	returns filtered records for inherited class based on static sql query and provided filter
@@ -157,7 +200,39 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		if(empty($whereSQL)){self::$errormsg = "DBObject[getAllWhere] no where clause"; return false;}
 		$sql = static::$sqlGetAll.' '.$whereSQL;		//LiLogger::log( $sql);		
 
-		return self::getEntriesArrayBySQL($sql);		
+		$userWhere = static::buildUserWhereClause();
+
+		if( ! empty($userWhere) ){
+			$where_position = strpos($whereSQL, 'WHERE');
+			if(false !== $where_position){
+				$where = substr($whereSQL, $where_position+strlen('WHERE'));
+				
+				$user_sql = static::$sqlGetAll.' '.$userWhere.' AND '.$where;
+			}else{
+				$user_sql = $userWhere.' AND '.$whereSQL;		
+			}
+		}else{
+			$user_sql = $sql;
+		}
+		//LiLogger::log('usersql where: '.$user_sql);
+		
+		return self::getEntriesArrayBySQL($user_sql);		
+	}
+	/*
+	builds where clause for filtering users
+	*/
+	protected static function buildUserWhereClause(){
+		
+		if( static::$orm['is_uid'] ){
+			$uidcolumname = static::$orm['where_uid']?static::$orm['where_uid']:'uid';
+			if( ! Auth::notLogged() ){
+				$uid = Auth::whoLoggedID();
+				$userWhere = " WHERE {$uidcolumname} = {$uid}";}
+			else{
+				$userWhere = " WHERE {$uidcolumname} = -1";//protect from unauthorised access
+				}	
+			}else{$userWhere = '';}
+		return $userWhere;
 	}
 	/*
 	returns class objext based on provided id
@@ -173,16 +248,32 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		if(false === result){return false;}else{return $result[0];}
 	}
 
-	public static function countFrom($table, $table_col_id, $where=""){
+	public static function countFrom($table, $table_col_id, $whereSQL=""){
 		if(empty($table)) return false;
 		if(empty($table_col_id)) return false;
 
 		//$tableName = static::$orm['table'];
 		//$tableId = static::$orm['table_id'];
-		
+## uid
+		$userWhere = static::buildUserWhereClause();
+
+		if( ! empty($userWhere) ){
+			$where_position = strpos($whereSQL, 'WHERE');
+			if(false !== $where_position){
+				$where = substr($whereSQL, $where_position+strlen('WHERE'));
+				
+				$user_sql_where = $userWhere.' AND '.$where;
+			}else{
+				$user_sql_where = $userWhere.' AND '.$whereSQL;		
+			}
+		}else{
+			$user_sql_where = $whereSQL;
+		}
+		//LiLogger::log('usersql where: '.$user_sql_where);
+## uid		
 		$table_idcolumn_id = Utils::cleanInput($table_idcolumn_id);
-		$sql = "SELECT COUNT ({$table_col_id}) FROM {$table} {$where}";
-	
+		$sql = "SELECT COUNT ({$table_col_id}) FROM {$table} {$user_sql_where}";
+		
 		$db = LinkBox\DataBase::connect(); //get raw connection		
 		$conn = $db::getPDO(); //get raw connection
 		$count = $conn->query($sql)->fetchColumn();
@@ -199,6 +290,7 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		
 		return self::countFrom($tableName, $tableId, $where);
 		//$table_idcolumn_id = Utils::cleanInput($table_idcolumn_id);
+		/*
 		$sql = "SELECT COUNT ({$tableId}) FROM {$tableName} {$where}";
 	LiLogger::log($sql);
 		$db = LinkBox\DataBase::connect(); //get raw connection		
@@ -206,22 +298,25 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		$count = $conn->query($sql)->fetchColumn();
 //var_dump($count);
 		if($count > 0){return $count;}else{return 0;}
+		*/
 	}
 	
 }//class DBObject
 //implements IDBObjects, ObjectEntity
 class Obus extends DBObject{
 
-	protected static $orm = array('table'=>'obus', 'table_id'=>'id_obus');
-	protected static $sqlGetAll = 'SELECT id_obus, name from obus';
-	protected static $sqlGetAllOrdered = 'SELECT id_obus, name from obus ORDER BY name';
+	protected static $orm = array('table'=>'obus', 'table_id'=>'id_obus', 'is_uid'=>true);
+	protected static $sqlGetAll = 'SELECT id_obus, name, uid from obus';
+	protected static $sqlGetAllOrdered = 'SELECT id_obus, name, uid from obus ORDER BY name';
 		
 	public function __construct($name_){
 		$this->name = Utils::cleanInput($name_);
-		$this->sqlPDOSave = "INSERT INTO obus(name) VALUES(':1:')";
+		$this->uid = Auth::whoLoggedID();
+		$this->sqlPDOSave = "INSERT INTO obus(name, uid) VALUES(':1:', :2:)";
 	}
 	public function save(){
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
+		$pdosql = str_replace(':2:', $this->uid, $pdosql);
 		return $this->saveObject($pdosql);
 	}
 	public static function load($id){
@@ -229,13 +324,14 @@ class Obus extends DBObject{
 		if(empty($load)){return false;}else{
 		$me = new Obus($load['name']);
 		$me->id = $load['id_obus'];
+		$me->uid = $load['uid'];
 		return $me;}
 	}
 
 }
 class PitType extends DBObject{
 
-	protected static $orm = array('table'=>'pitstop_type', 'table_id'=>'id_pittype');
+	protected static $orm = array('table'=>'pitstop_type', 'table_id'=>'id_pittype', 'is_uid'=>false);
 	protected static $sqlGetAll = 'SELECT id_pittype, type from pitstop_type';
 			
 	public function __construct($type_){
@@ -257,20 +353,22 @@ class PitType extends DBObject{
 
 class Station extends DBObject{
 	
-	protected static $orm = array('table'=>'station', 'table_id'=>'id_station');
-	protected static $sqlGetAll = 'SELECT id_station, name, shortName from station';
-	protected static $sqlGetAllOrdered = 'SELECT id_station, name, shortName from station ORDER BY name COLLATE NOCASE';
+	protected static $orm = array('table'=>'station', 'table_id'=>'id_station', 'is_uid'=>true);
+	protected static $sqlGetAll = 'SELECT id_station, name, shortName, uid from station';
+	protected static $sqlGetAllOrdered = 'SELECT id_station, name, shortName, uid from station ORDER BY name COLLATE NOCASE';
 		
 	private $shortname="-";
 	
 	public function __construct($name_, $short_){
 		$this->name = Utils::cleanInput($name_);
 		$this->shortname = Utils::cleanInput($short_);
-		$this->sqlPDOSave = "INSERT INTO station(name, shortName) VALUES(':1:', ':2:')";
+		$this->uid = Auth::whoLoggedID();		
+		$this->sqlPDOSave = "INSERT INTO station(name, shortName, uid) VALUES(':1:', ':2:', :3:)";
 	}
 	public function save(){
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		$pdosql = str_replace(':2:', $this->shortname, $pdosql);
+		$pdosql = str_replace(':3:', $this->uid, $pdosql);
 		return $this->saveObject($pdosql);
 	}
 	public static function load($id){
@@ -283,20 +381,22 @@ class Station extends DBObject{
 }
 class Destination extends DBObject{
 	
-	protected static $orm = array('table'=>'destination', 'table_id'=>'id_dest');
-	protected static $sqlGetAll = 'SELECT id_dest, name, dest_seq from destination';
-	protected static $sqlGetAllOrdered = 'SELECT id_dest, name, dest_seq from destination ORDER BY name';
+	protected static $orm = array('table'=>'destination', 'table_id'=>'id_dest', 'is_uid'=>true);
+	protected static $sqlGetAll = 'SELECT id_dest, name, dest_seq, uid from destination';
+	protected static $sqlGetAllOrdered = 'SELECT id_dest, name, dest_seq, uid from destination ORDER BY name';
 	
 	private $sequence="-";
 	
 	public function __construct($name_, $seq_){
 		$this->name = Utils::cleanInput($name_);
 		$this->sequence = Utils::cleanInput($seq_);
-		$this->sqlPDOSave = "INSERT INTO destination(name, dest_seq) VALUES(':1:', ':2:')";
+		$this->uid = Auth::whoLoggedID();
+		$this->sqlPDOSave = "INSERT INTO destination(name, dest_seq, uid) VALUES(':1:', ':2:', :3:)";
 	}
 	public function save(){
 		$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		$pdosql = str_replace(':2:', $this->shortname, $pdosql);
+		$pdosql = str_replace(':3:', $this->uid, $pdosql);		
 		return $this->saveObject($pdosql);
 	}
 	public static function load($id){
@@ -310,7 +410,7 @@ class Destination extends DBObject{
 
 class Way extends DBObject{
 	
-	protected static $orm = array('table'=>'pitstop', 'table_id'=>'id_pitstop');
+	protected static $orm = array('table'=>'pitstop', 'table_id'=>'id_pitstop', 'is_uid'=>false);
 	protected static $sqlGetAll = 'SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin';
 
 	private $itinerary = 0; //main itinerary
@@ -450,7 +550,7 @@ all pitstops for desired sequence. proxy for getPitstopsByDestination
 */
 	public static function getPitstopsBySequence($id_seq){
 		if( empty($id_seq) ) {
-			self::$errormsg = 'getPitstopsByDestination:no id_seq';
+			self::$errormsg = 'getPitstopsBySequence:no id_seq';
 			LiLogger::log( self::$errormsg );
 		return false;}
 		//get id destination for this sequence
@@ -501,7 +601,7 @@ all pitstops for desired sequence. proxy for getPitstopsByDestination
 */
 class sequencesStations extends DBObject{
 
-	protected static $orm = array('table'=>'seq_stations', 'table_id'=>'id_ss');
+	protected static $orm = array('table'=>'seq_stations', 'table_id'=>'id_ss', 'is_uid'=>false);
 	protected static $sqlGetAll = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station';
 	protected static $sqlGetAllOrdered = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station ORDER BY orderal';
 	
@@ -636,9 +736,9 @@ WHERE seq_stations.id_seq = 1	ORDER BY orderal ; */
 
 class Itinerary extends DBObject{
 
-	protected static $orm = array('table'=>'itinerary', 'table_id'=>'id_itin');
-	protected static $sqlGetAll = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station';
-	protected static $sqlGetAllOrdered = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station ORDER BY itinerary.name';
+	protected static $orm = array('table'=>'itinerary', 'table_id'=>'id_itin', 'is_uid'=>true, 'where_uid'=>'itinerary.uid');
+	protected static $sqlGetAll = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName, itinerary.uid from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station';
+	protected static $sqlGetAllOrdered = 'SELECT id_itin, itinerary.name, start_station, start_time, destination, station.name AS statName, itinerary.uid from itinerary LEFT JOIN station ON itinerary.start_station = station.id_station ORDER BY itinerary.name';
 
 	private $obus;
 	private $station;
@@ -650,13 +750,15 @@ class Itinerary extends DBObject{
 		$this->station = Utils::cleanInput($station_);
 		$this->destination = Utils::cleanInput($destination_);
 		$this->startTime = Utils::HHmm2Int( Utils::cleanInput($startTime_) );
-		$this->sqlPDOSave = "INSERT INTO itinerary(name, start_station, destination, start_time) VALUES(':iName:', :iStSt:, :iDest:, :iStTime:)";
+		$this->uid = Auth::whoLoggedID();
+		$this->sqlPDOSave = "INSERT INTO itinerary(name, start_station, destination, start_time, uid) VALUES(':iName:', :iStSt:, :iDest:, :iStTime:, :iuid:)";
 	}
 	public function save(){
 		$arrParameters = array(
 		":iName:"=>$this->name,
 		":iStSt:"=>$this->station,
 		":iDest:"=>$this->destination,
+		":iuid:"=>$this->uid,
 		":iStTime:"=>$this->startTime);
 		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
@@ -673,15 +775,16 @@ class Itinerary extends DBObject{
 }
 class Sequence extends DBObject{
 	
-	protected static $orm = array('table'=>'sequences', 'table_id'=>'id_seq');
-	protected static $sqlGetAll = 'SELECT id_seq, name, destination from sequences';
-	protected static $sqlGetAllOrdered = 'SELECT id_seq, name, destination from sequences ORDER BY name';
+	protected static $orm = array('table'=>'sequences', 'table_id'=>'id_seq', 'is_uid'=>true);
+	protected static $sqlGetAll = 'SELECT id_seq, name, destination, uid from sequences';
+	protected static $sqlGetAllOrdered = 'SELECT id_seq, name, destination, uid from sequences ORDER BY name';
 	private $destination;
 
 	public function __construct($seqName_, $dest_){
 		$this->name = Utils::cleanInput($seqName_);
 		$this->destination = Utils::cleanInput($dest_);
-		$this->sqlPDOSave = "INSERT INTO sequences(name, destination) VALUES(':iName:', :iDest:)";
+		$this->uid = Auth::whoLoggedID();
+		$this->sqlPDOSave = "INSERT INTO sequences(name, destination, uid) VALUES(':iName:', :iDest:, :iuid:)";
 	}
 	public function save(){
 //LiLogger::log("seq save. dest id{$this->destination}");	
@@ -698,6 +801,7 @@ class Sequence extends DBObject{
 		$seqDestName = "[ {$destName} ] via {$this->name}";
 		$arrParameters = array(
 		":iName:"=>$seqDestName,
+		":iuid:"=>$this->uid,
 		":iDest:"=>$this->destination);
 		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
@@ -719,8 +823,8 @@ class User extends DBObject{
 	private $db;
 	
 	protected static $orm = array('table'=>'user', 'table_id'=>'id_user');
-	protected static $sqlGetAll = 'SELECT id_user, name, email from user';
-	protected static $sqlGetAllOrdered = 'SELECT id_user, name, email from user ORDER BY name';
+	protected static $sqlGetAll = 'SELECT id_user, name, email, pwdHash from user';
+	protected static $sqlGetAllOrdered = 'SELECT id_user, name, email, pwdHash from user ORDER BY name';
 	
 	public static $errormsg;
 	private $errorEmptyFields;
@@ -808,8 +912,9 @@ class User extends DBObject{
 	public static function load($id){
 		$load = self::getFromDB($id);
 		if(empty($load)){return false;}else{
-		$me = new User($load['name'], $load['email'], $load['pwdHash'] );
+		$me = new User($load['name'], $load['email'], 'dummyPWD' );
 		$me->id = $load['id_user'];
+		$me->pwdHash = $load['pwdHash'];
 		return $me;}
 	}
 	/*return user for given name or email

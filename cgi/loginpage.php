@@ -67,17 +67,7 @@ function getSelectedText(elementId) {
 		<div class="col-md-12">
 			<!-- error messages -->
 	<div class="clearfix"></div>
-<?php
-if(! empty($retval)){$b_class='alert alert-danger';$b_hidden=null;}
-if(isset($_GET['result']) AND $_GET['result'] == 0) {$b_class='alert alert-danger';$b_hidden=null;}
-if(isset($_GET['result']) AND $_GET['result'] == 1) {$b_class='alert alert-success';$b_hidden=null;
-$_GET['msg'] = $_GET['msg']."Please move to <a href='/tt/obus/'>main page</a>.";}
-if( ! isset($_GET['result']) ) {$b_class='alert alert-success';$b_hidden='hidden="true"';}
-?>
-	<div id="obus_formErrors" class="<?=$b_class;?>" <?=$b_hidden;?>">
-	<a class="close" href="#" onclick="$('#obus_formErrors').prop('hidden', true);">×</a>
-	<p id="obus_register_baloon"><?= unserialize($_GET['msg']);?></p>
-	</div>
+			<?php include_once '../tmplt/errorBlock.inc.php' ?> 
 	<!-- /error messages -->	
 			<div class="obus_userform">
 			<div class="centered"><h3>Login</h3></div>

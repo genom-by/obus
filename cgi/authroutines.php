@@ -2,7 +2,9 @@
 namespace obus;
 
 include_once 'utils.inc.php';
+include_once 'auth.class.php';
 include_once 'dbObjects.class.php';
+include_once 'app.class.php';
 include_once 'HTMLroutines.class.php';
 
 //\LinkBox\Logger::log('Start logging');
@@ -24,15 +26,28 @@ switch ($_POST['action']){
 			if(User::isThereSameUser($_POST['userName'], $_POST['inputEmail'])){
 				$user = User::getUserbyNameOrEmail($_POST['userName'], $_POST['inputEmail']);
 				if(!$user){
-				print_r("result: ".$user::$errormsg);}else{
-				session_start();
+				//print_r("result: ".$user::$errormsg);
+					$actionStatus = 'error';
+					$message = User::$errormsg;
+				}else{
+				/*session_start();
 				$_SESSION["user_id"] = $user->id;
-				$_SESSION["user_name"] = $user->name;
-				header("Location: http://".$_SERVER['HTTP_HOST'].'/'.SITE_ROOT."/".SITE_STARTPAGE);
-				die();
+				$_SESSION["user_name"] = $user->name;*/
+					$res = Auth::loginUser($user, $_POST['inputPWD'], $_POST['inputRemember']);
+					if($res == true){
+						$locate = App::link('chart');
+						header("Location: {$locate}");
+						die();
+					}else{
+						$actionStatus = 'error';
+						$message = 'password not valid';					
+					}
 				}
+			}else{
+				$actionStatus = 'error';
+				$message = 'No such user';			
 			}
-
+//TODO sql not unique password field
 		}
 		break;
 	case 'register':
@@ -40,12 +55,18 @@ switch ($_POST['action']){
 		if(!empty($_POST['inputName'])){
 			$newuser= new User($_POST['inputName'], $_POST['inputEmail'], $_POST['inputPWD']);
 			$retval = $newuser->save();
-			if(!$retval){print_r("result: ".User::$errormsg);}
+			if(!$retval){
+				//print_r("result: ".User::$errormsg);
+				//\LinkBox\Logger::log("{$_POST['action']} error: ".$station::$errormsg);
+				$actionStatus = 'error';
+				$message = User::$errormsg;
+			}
 		}		
 		break;
 	case 'logout':
 		//echo 'itinerary';
 		session_destroy();
+		Auth::logout();
 		/*if(!empty($_POST['itineraryName'])){
 			session_destroy();
 		}*/			
@@ -56,7 +77,9 @@ switch ($_POST['action']){
 				$way = new Way($_POST);
 				$retval = $way->save($_POST);
 				if(!$retval)
-					print_r("result: ".way::$errormsg);				
+					//print_r("result: ".way::$errormsg);	
+					$actionStatus = 'error';
+					$message = way::$errormsg;				
 			}
 	break;
 	default:

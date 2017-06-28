@@ -63,21 +63,11 @@ function getSelectedText(elementId) {
 		<div class="col-md-12">
 			<!-- error messages -->
 	<div class="clearfix"></div>
-<?php
-if(! empty($retval)){$b_class='alert alert-danger';$b_hidden=null;}
-if(isset($_GET['result']) AND $_GET['result'] == 0) {$b_class='alert alert-danger';$b_hidden=null;}
-if(isset($_GET['result']) AND $_GET['result'] == 1) {$b_class='alert alert-success';$b_hidden=null;
-$_GET['msg'] = $_GET['msg']."Please move to <a href='/tt/obus/'>main page</a>.";}
-if( ! isset($_GET['result']) ) {$b_class='alert alert-success';$b_hidden='hidden="true"';}
-?>
-	<div id="obus_formErrors" class="<?=$b_class;?>" <?=$b_hidden;?>">
-	<a class="close" href="#" onclick="$('#obus_formErrors').prop('hidden', true);">×</a>
-	<p id="obus_register_baloon"><?= unserialize($_GET['msg']);?></p>
-	</div>
+			<?php include_once '../tmplt/errorBlock.inc.php' ?> 
 	<!-- /error messages -->	
 			<div class="obus_userform">
 			<div class="centered"><h3>Provide information about himself:</h3></div>
-<form class="form-horizontal" name="obus_registerForm" id="obus_registerForm" method="post" action="authpage.php">
+<form class="form-horizontal" name="obus_registerForm" id="obus_registerForm" method="post" action="registerpage.php">
 	<div class="form-group has-feedback">
 		<label class="control-label col-xs-2" for="inputName">User Name</label><div class="col-xs-6">
 			<input type="text" placeholder="User Name" class="form-control" id="inputName" name="inputName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>

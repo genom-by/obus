@@ -6,7 +6,7 @@ include_once 'auth.inc.php';
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
-if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=2;
+if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=-1;
 //echo 'seq: '.Sequence::load($seq)->name;
 //var_dump(Sequence::load($seq)->name);
 ?>
@@ -176,10 +176,9 @@ var chart1 = new Highcharts.chart('container', {
 <select name="sequencesSelect" id="sequencesSelect">
 <?php echo HTML::getSelectItems('sequences');?>
 </select>
-<button onClick="redraw();">Redraw</button>
-<button onClick="redraw2();">Redraw2</button>
+<button onClick="redraw();" style='display:none'>Redraw</button>
+<button onClick="redraw2();">Redraw</button>
 </fieldset>
-<a href="obus-test.php" >settings</a>
 <?php //$seqstats = sequencesStations::getSeqStatNamesBySequenceID(1); echo "[".HTML::arrayLineChartCategories($seqstats)."]";
 ?>
 <pre>
