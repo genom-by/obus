@@ -25,33 +25,38 @@ Logger::log('val_type:'.$_GET['val_type']);
 
 
 ob_start();
-Logger::log('ajax:'.$ajax);
-$goodForRegister = false; // true - good for using. false - validation will fail
-$ret_val = null;
+Logger::log('ajax:'.$_GET['val_type'].' for user '.$_POST['userName'].' and email '.$_POST['userEmail']);
+$goodForRegister = null; // true - good for using. false - validation will fail
+$ret_val = false;
 
 switch( Utils::cleanInput($_GET['val_type']) ){
 
 	case "name":
 	try{
-		$ret_val = User::isThereSameUser(Utils::cleanInput($_POST['inputName']),"");
-		}catch(\Exception $e){$ret_val = false;}
+		$ret_val = User::isThereSameUser(Utils::cleanInput($_POST['userName']),"");
+		}catch(\Exception $e){$ret_val = null;}
 		if ( $ret_val === false ) {
 			$goodForRegister = true;
+		}else{
+			$goodForRegister = false;		
 		}
 		break;
 	case "email":
 	try{	
-		$ret_val = User::isThereSameUser("", Utils::cleanInput($_POST['inputEmail']));
-		}catch(\Exception $e){$ret_val = false;}		
+		$ret_val = User::isThereSameUser("", Utils::cleanInput($_POST['userEmail']));
+		}catch(\Exception $e){$ret_val = null;}		
 		if ( $ret_val === false ) {
 			$goodForRegister = true;
-		}	
+		}else{
+			$goodForRegister = false;	
+		}
 		break;
 	default:
 		$goodForRegister = false;
 }
-if(is_null($ret_val)){
+if(is_null($goodForRegister)){
 	Logger::log('Error attempting the same user:'.User::$errormsg);	
+	$goodForRegister = false;
 }
 sleep(1);
 
@@ -64,6 +69,7 @@ header('Content-type: application/json');
 
 //Logger::log("reply sent for user [{$_POST['inputName']}] and mail [{$_POST['inputEmail']}]:".$goodForRegister);	
 echo(json_encode($goodForRegister)); // true - good for using. false - validation will fail
+//	echo(json_encode(true)); // testing always true
 
 
 //User::isThereSameUser("user12","1v@v.v");

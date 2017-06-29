@@ -187,7 +187,7 @@ console.log ('here');
 $('#obus_registerForm').validate({
 rules: {
   
- inputName: {
+ userName: {
 	minlength: 3,
 	required: true,
 	remote: {
@@ -197,7 +197,7 @@ rules: {
 		}
   },
   
-  inputEmail: {
+  userEmail: {
 	required: true,
 	email: true,
 	remote: {
@@ -221,12 +221,12 @@ rules: {
   
 },
 	messages:{
-		inputName: {
+		userName: {
 			required: "provide correct name", 
 			//remote: jQuery.validator.format("{0} is already in use")
 			remote: "This username is already taken! Try another."
 		},
-		inputEmail: {
+		userEmail: {
 			required: "provide correct email", 
 			//remote: jQuery.validator.format("{0} is already in use")
 			remote: "This Email is already taken! Try another."

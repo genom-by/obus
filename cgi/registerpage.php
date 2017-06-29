@@ -69,13 +69,13 @@ function getSelectedText(elementId) {
 			<div class="centered"><h3>Provide information about himself:</h3></div>
 <form class="form-horizontal" name="obus_registerForm" id="obus_registerForm" method="post" action="registerpage.php">
 	<div class="form-group has-feedback">
-		<label class="control-label col-xs-2" for="inputName">User Name</label><div class="col-xs-6">
-			<input type="text" placeholder="User Name" class="form-control" id="inputName" name="inputName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
+		<label class="control-label col-xs-2" for="userName">User Name</label><div class="col-xs-6">
+			<input type="text" placeholder="User Name" class="form-control" id="userName" name="userName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
 		</div><div class="col-xs-2"></div>	
 	</div>
 	<div class="form-group has-feedback">
-		<label class="control-label col-xs-2" for="inputEmail">Email</label><div class="col-xs-6">
-			<input type="text" placeholder="Email" class="form-control" id="inputEmail" name="inputEmail"autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
+		<label class="control-label col-xs-2" for="userEmail">Email</label><div class="col-xs-6">
+			<input type="text" placeholder="Email" class="form-control" id="userEmail" name="userEmail"autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
 		</div><div class="col-xs-2"></div>	
 	</div>
 	<div class="form-group has-feedback">

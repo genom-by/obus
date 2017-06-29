@@ -115,8 +115,8 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 	public function saveObject($pdosql){
 		$res = LinkBox\DataBase::executeInsert($pdosql);
 		if($res === false){
-			self::$errormsg = 'error while saving into DB: '.LinkBox\DataBase::$errormsg;
-			LiLogger::log( self::$errormsg );
+			$this->errormsg = 'error while saving into DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( $this->errormsg );
 			return false;
 		}
 		else return true;
@@ -273,7 +273,8 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 ## uid		
 		$table_idcolumn_id = Utils::cleanInput($table_idcolumn_id);
 		$sql = "SELECT COUNT ({$table_col_id}) FROM {$table} {$user_sql_where}";
-		
+
+//LiLogger::log('count sql: '.$sql);		
 		$db = LinkBox\DataBase::connect(); //get raw connection		
 		$conn = $db::getPDO(); //get raw connection
 		$count = $conn->query($sql)->fetchColumn();
@@ -853,7 +854,7 @@ class User extends DBObject{
 	public function save(){
 
 		if( ! $this->validateSave() ) {
-			self::$errormsg = 'Validation error when saving: '.self::$errormsg;
+			$this->errormsg = 'Validation error when saving: '.self::$errormsg;
 			return false;
 		}		
 		$arrParameters = array(
@@ -863,7 +864,12 @@ class User extends DBObject{
 		$pdosql = strtr($this->sqlPDOSave, $arrParameters);
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		//print_r($pdosql);
-		return $this->saveObject($pdosql);
+		$retval = $this->saveObject($pdosql);
+		if(!$retval){
+			$this->errormsg = 'Could not save user: '.$this->errormsg;
+			return false;
+		}else 
+			return true;
 		/*
 	//-
 		if( ! $this->validateSave() ) {
@@ -1044,9 +1050,9 @@ class User extends DBObject{
 		}elseif(empty($name)){
 			$where = "WHERE email='{$email}'";			
 		}else{
-			$where = "WHERE name='{$name}' OR email='{$email}'";		
+			$where = "WHERE name='{$name}' AND email='{$email}'";		
 		}
-
+//LiLogger::log('user-auth-where:'.$where);
 		$count = self::countWhere($where);
 		
 		if($count > 0) {return true;} else {return false;}
