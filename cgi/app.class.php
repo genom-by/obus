@@ -51,5 +51,25 @@ class App{
 			return $link;
 		}
 	}
+	
+	public static function currentPage(){
+		
+		$pos = strrpos($_SERVER['SCRIPT_NAME'], '/');
+		$filename = substr( $_SERVER['SCRIPT_NAME'], ++$pos );
+		//echo $filename;
+		switch ( $filename ){
+				
+			case 'loginpage.php': $link = 'login'; break;
+			case 'registerpage.php': $link = 'register'; break;
+			case 'hchartLine.php': $link = 'chart';	break;
+			case 'obus-test.php': $link = 'dataset'; break;
+			case 'profile.php': $link = 'profile'; break;
+			case 'settings.php': $link = 'settings'; break;
+			case 'howto.php': $link = 'howto'; break;
+		default:
+			$link = '404';			
+		}
+		return $link;		
+	}
 
 }//class App

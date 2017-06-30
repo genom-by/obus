@@ -53,6 +53,16 @@ function getSelectedText(elementId) {
 img{
     max-width: 100%;
     max-height: 100%;
+	outline:1px solid orange;
+}
+img.schema {
+    width:80%; /* you can use % */
+    height: auto;
+}
+p{
+ margin:20px 0;
+ font-weight:bold;
+ font-size:16px;
 }
 </style>
 </head>
@@ -82,9 +92,28 @@ if( ! isset($_GET['result']) ) {$b_class='alert alert-success';$b_hidden='hidden
 	<a class="close" href="#" onclick="$('#obus_formErrors').prop('hidden', true);">×</a>
 	<p id="obus_register_baloon"><?= unserialize($_GET['msg']);?></p>
 	</div>
-	<!-- /error messages -->	
-		<img src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/Obus_howto1.png';?>"/>
-		<img src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/Obus_howto2.png';?>"/>
+	<!-- /error messages -->
+	<p>Assume we have two alternative routes from point 1 to point 2 of public city transport</p><p>
+		<img class='schema' src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/MMapObus.png';?>"/>
+	</p>
+	<p>So Obus chart allows to see which one is better for travel</p><p>
+		<img class='schema' src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/obusHow2.png';?>"/>
+			</p>
+	<p>At once one should setup all preliminary data (routes, bus numbers, bus stations etc.)</p><p>
+		<img src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/obusHow3.png';?>"/>
+			</p>
+	<p>Then create for every itinerary station-to-station timeline as well as create one or some sequence of stations for every routes</p><p>
+		<img src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/obusHow4.png';?>"/>
+			</p>
+	<p>Schedule for city transport (e.g. Minsk city) may be taken from websites</p><p>
+		<img src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/obusHow5.png';?>"/>
+			</p>
+	<p>After that one can look at schedule of all transport itineraries with interchanges</p><p>
+		<img class='schema' src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/Obus_howto1.png';?>"/>
+			</p>
+	<p>And pick up better time for making travel with public city transport</p><p>
+		<img class='schema' src="http://<?=$_SERVER['HTTP_HOST'].'/'.SITE_ROOT.'/img/Obus_howto2.png';?>"/>
+		</p>
 		</div>	
 	</div>
 </div>	

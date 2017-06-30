@@ -26,9 +26,7 @@ include_once 'app.class.php';
 <!-- Collection of nav links and other content for toggling -->
 <div id="navbarCollapse" class="collapse navbar-collapse">
 	<ul class="nav navbar-nav">
-		<li class="active"><a href="<?=App::link('dataset');?>">Dataset</a></li>
-		<li><a href="<?=App::link('profile');?>">Profile</a></li>
-		<li><a href="<?=App::link('howto');?>">How to use</a></li>
+		<?= HTML::getTopMenuItems();?>
 	</ul>
 	<ul class="nav navbar-nav navbar-right">
 	<?if(Auth::notLogged()){?>

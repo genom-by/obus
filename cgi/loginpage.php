@@ -75,7 +75,7 @@ function getSelectedText(elementId) {
 <div class="name_or_email col-md-12">
 	<div class="form-group has-feedback col-xs-5">
 		<label class="control-label col-xs-4" for="userName">User Name</label><div class="col-xs-8">
-			<input type="text" placeholder="User Name" class="form-control" id="userName" name="userName" autocomplete="off" autocorrect="off"><span class="val_msg glyphicon form-control-feedback"></span>
+			<input type="text" placeholder="User Name" class="form-control" id="userName" name="userName" autocomplete="off" autocorrect="off" autofocus><span class="val_msg glyphicon form-control-feedback"></span>
 		</div>
 	</div>
 	<div class="col-xs-2 oror">OR</div>

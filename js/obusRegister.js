@@ -209,11 +209,11 @@ rules: {
   
   inputPWD: {
 		required: true,
-		minlength: 5
+		minlength: 4
 	},
 	inputPWD2: {
 		required: true,
-		minlength: 5,
+		minlength: 4,
 		equalTo: "#inputPWD"
 	},
 

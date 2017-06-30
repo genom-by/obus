@@ -6,7 +6,8 @@ include_once 'auth.inc.php';
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
-if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=-1;
+if(Auth::notLogged()){$seq = -1;}else{
+if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=-1;}
 //echo 'seq: '.Sequence::load($seq)->name;
 //var_dump(Sequence::load($seq)->name);
 ?>
@@ -79,6 +80,10 @@ function time2HHMM(time){
 }
 function redraw2(){
 	var id_sequence = $('#sequencesSelect').val();
+	window.location.replace('hchartLine.php?seq='+id_sequence);
+}
+function redrawUP(){
+	var id_sequence = $('#sequencesSelectUP').val();
 	window.location.replace('hchartLine.php?seq='+id_sequence);
 }
 function redraw(){

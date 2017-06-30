@@ -160,7 +160,8 @@ class HTML{
 					$destinSelect = "<select>{$destin}</select>";
 $htmlItem = "<tr id='itinerary_id_{$item['id_itin']}'><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
 			"<td>{$item['statName']}</td><td>{$time}</td><td>{$destinSelect}</td><td>{$btnDel}</td></tr>";
-$htmlheader = "<tr><th>ID</th><th>Name</th><th>startStat.Name</th><th>Time(HH:mm)</th><th>destinID</th><th>del</th></tr>";
+			$filterSelect = "<select id='filter_itin_dest' onChange='filter_itin_dest_onChange(`filter_itin_dest`,this.value)';>{$destin}</select>";
+$htmlheader = "<thead><tr><th>ID</th><th>Name</th><th>Start Station</th><th>Time </th><th>Dest: {$filterSelect}</th><th>del</th></tr></thead>";
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
 			//return $htmlList;
@@ -258,7 +259,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 				$row_selpitType = "<select name='pitType' id='pitType".$item['id_station']."'>".$html_selectorPitTypes."</select>";
 				$btn_delRow = "<button type='button' class='tbl_pitnew_row_del' onclick='btn_delPitstopNewRow(`{$totalstops}`)'>X</button>";
 				*/$row_selStation = "<select name='station".$item['id_station']."' id='stationSel".$item['id_station']."'>".$html_selectorStations."</select>";//self::getSelectItems('station')
-				$row_Time = "<input type='text' autocomplete='off' name='stationTime".$item['id_station']."' id='stationTime".$item['id_station']."' size='10'/>";
+				$row_Time = "<input type='text' autocomplete='off' name='stationTime".$item['id_station']."' id='stationTime".$item['id_station']."' size='10' tabindex='{$totalstops}'/>";
 				$row_selpitType = "<select name='pitType".$item['id_station']."' id='pitType".$item['id_station']."'>".$html_selectorPitTypes."</select>";
 				$btn_delRow = "<button type='button' class='tbl_pitnew_row_del' onclick='btn_delPitstopNewRow(`{$totalstops}`)'>X</button>";
 			
@@ -271,7 +272,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 		}
 		$cloneID = -1;
 		$row_selStation = "<select name='station' id='stationSel{$cloneID}'>".$html_selectorStations."</select>";//self::getSelectItems('station')
-		$row_Time = "<input type='text' autocomplete='off' name='stationTime' id='stationTime{$cloneID}' size='10'/>";
+		$row_Time = "<input type='text' autocomplete='off' name='stationTime' id='stationTime{$cloneID}' size='10' tabindex='{$cloneID}'/>";
 		$row_selpitType = "<select name='pitType' id='pitType{$cloneID}'>".$html_selectorPitTypes."</select>";
 		$btn_delRow = "<button type='button' class='tbl_pitnew_row_del'>X</button>";
 		$htmlItemToClone = "<tr class='trpitnewcloneable' id='tbl_pitnew_row_clone' data-id='-1'><td>{$row_selStation}</td><td>{$row_Time}</td><td>{$row_selpitType}</td><td>{$btn_delRow}</td></tr>";
@@ -279,8 +280,8 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 	//return $htmlList;
 	}else{$htmlTable = "no data";}			
 	
-	$htmlheader = "<tr><th>Station</th><th>Time(HH:mm)</th><th>Stat.Type</th></tr>";
-	$htmlBtnAddRow = "<tr><td colspan='4'><button class='btn_new_tablerow' type='button' onclick='btn_addPitstopNewRow()'>Add new row</button></td></tr>";
+	$htmlheader = "<thead><tr><th>Station</th><th>Time(HH:mm)</th><th>Stat.Type</th></tr>";
+	$htmlBtnAddRow = "<tr><td colspan='4'><button class='btn_new_tablerow' type='button' onclick='btn_addPitstopNewRow()'>Add new row</button></td></tr></thead>";
 	
 	$htmlInputsTotal_Last = "<input name='totalstops' value='{$totalstops}' type='hidden'>".PHP_EOL."<input name='laststopID' value='{$totalstops}' type='hidden'>";
 	
@@ -305,7 +306,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 			$totalstops++;
 			if($type == 'new'){
 				$row_selStation = "<select name='station{$row}' id='stationSel{$row}'>".$html_selectorStations."</select>";//self::getSelectItems('station')
-				$row_Time = "<input type='text' autocomplete='off' name='stationTime{$row}' id='stationTime{$row}' size='10'/>";
+				$row_Time = "<input type='text' autocomplete='off' name='stationTime{$row}' id='stationTime{$row}' size='10' tabindex='{$row}'/>";
 				$row_selpitType = "<select name='pitType{$row}' id='pitType{$row}'>".$html_selectorPitTypes."</select>";
 				$btn_delRow = "<button type='button' class='tbl_pitnew_row_del' onclick='btn_delPitstopNewRow(`{$row}`)'>X</button>";
 			
@@ -318,7 +319,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 		}
 		$cloneID = -1;
 		$row_selStation = "<select name='station'>".$html_selectorStations."</select>";//self::getSelectItems('station')
-		$row_Time = "<input type='text' autocomplete='off' name='stationTime' size='10'/>";
+		$row_Time = "<input type='text' autocomplete='off' name='stationTime' size='10' tabindex='{$cloneID}'/>";
 		$row_selpitType = "<select name='pitType' >".$html_selectorPitTypes."</select>";
 		$btn_delRow = "<button type='button' class='tbl_pitnew_row_del'>X</button>";
 		$htmlItemToClone = "<tr class='trpitnewcloneable' id='tbl_pitnew_row_clone' data-id='-1'><td>{$row_selStation}</td><td>{$row_Time}</td><td>{$row_selpitType}</td><td>{$btn_delRow}</td></tr>";
@@ -326,7 +327,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 	//return $htmlList;
 	}else{$htmlTable = "no data";}			
 	
-	$htmlheader = "<tr><th>Station</th><th>Time(HH:mm)</th><th>Stat.Type</th></tr>";
+	$htmlheader = "<thead><tr><th>Station</th><th>Time(HH:mm)</th><th>Stat.Type</th></tr></thead>";
 	$htmlBtnAddRow = "<tr><td colspan='3'><button class='btn_new_tablerow' type='button' onclick='btn_addPitstopNewRow()'>Add new row</button></td></tr>";
 	
 	$htmlInputsTotal_Last = "<input name='totalstops' value='{$totalstops}' type='hidden'>".PHP_EOL."<input name='laststopID' value='{$totalstops}' type='hidden'>";
@@ -457,7 +458,7 @@ $htmlItem = "<tr id='sequences_id_{$item['id_seq']}'><td>{$item['name']}</td><td
 	
 	$htmlInputsTotal_Last = "<input name='totalsequences' value='{$totalstops}' type='hidden'>".PHP_EOL."<input name='lastseqID' value='{$totalstops}' type='hidden'>";
 	
-	$htmlheader = "<tr><th>##</th><th>Station</th><th>Stat.Type</th></tr>";
+	$htmlheader = "<thead><tr><th>##</th><th>Station</th><th>Stat.Type</th></tr></thead>";
 	
 	return "<table class='sequences_new'>".$htmlheader.$htmlTable.$htmlBtnAddRow.$htmlItemToClone."</table>".$htmlInputsTotal_Last;
 	}
@@ -725,6 +726,30 @@ array(49) {
 	return $line_arr_string; 
  //return "'zel0', 'kol1', 'nem2', 'mas3', 'akd4', 'spu5', 'kaz6', 'tra7'";
  
+	}
+	//returns LI entries
+	public static function getTopMenuItems(){
+	 //class="active"
+	 	$lis = '';
+		$pages = array('dataset'=>'Dataset', 'profile'=>'Profile', 'howto'=>'How to use');
+		foreach($pages as $pg=>$title){
+			$link = App::link($pg);
+			$class = '';
+			if( App::currentPage()== $pg ){
+				$class = " class='active' ";
+			}
+			$lis = $lis."<li {$class}><a href='{$link}'>{$title}</a></li>";
+		}
+		/*$lis = $lis."<li><a href='{App::link('dataset')}'>Dataset</a></li>";
+		$lis = $lis."<li><a href='{App::link('profile')}'>Profile</a></li>";
+		$lis = $lis."<li><a href='{App::link('howto')}'>How to use</a></li>";
+*/
+		if(App::currentPage() == 'chart'){
+			$sel = HTML::getSelectItems('sequences');
+$lis = $lis."<li><a><select name='sequencesSelectUP' id='sequencesSelectUP'>{$sel}</select>";
+$lis = $lis."<button onClick='redrawUP();'>Show</button></a></li>";
+		}
+		return $lis;
 	}
 	
 } //HTML class

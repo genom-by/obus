@@ -58,9 +58,9 @@ switch ($_POST['action']){
 				//var_dump($way);
 				$retval = $way->save($_POST);
 				if(!$retval){
-					\LinkBox\Logger::log("{$_POST['action']} error: ".$way::$errormsg);
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$way->errormsg);
 					$actionStatus = 'error';
-					$message = $way::$errormsg;
+					$message = $way->errormsg;
 				}
 			}
 	break;
@@ -451,12 +451,15 @@ function html_setLastTableID(tablename='pitstops'){
 */
 function btn_delPitstopNewRow(row_id){
 console.log(row_id);
+	var input_total = $('input[name=totalstops]');
+	var total_value = input_total.val();
+
+	if(total_value <= 1){return;}
 	//var domID = '#'+table_+'_id_'+id_entry;
 	var domID = '#tbl_pitnew_row_'+row_id;
 	$(domID).toggle( "highlight" );
 	$(domID).remove();
-	var input_total = $('input[name=totalstops]');
-	var total_value = input_total.val();
+
 	input_total.val(--total_value);
 	
 	html_setLastTableID();
@@ -469,12 +472,15 @@ function btn_delPitstopNewRow2(event){
 */
 function btn_delSequenceNewRow(row_id){
 console.log(row_id);
+	var input_total = $('input[name=totalsequences]');
+	var total_value = input_total.val();
+	
+	if(total_value <= 1){return;}
 	//var domID = '#'+table_+'_id_'+id_entry;
 	var domID = '#tbl_seqnew_row_'+row_id;
 	$(domID).toggle( "highlight" );
 	$(domID).remove();
-	var input_total = $('input[name=totalsequences]');
-	var total_value = input_total.val();
+
 	input_total.val(--total_value);
 	
 	html_setLastTableID('seq');
@@ -499,13 +505,17 @@ function btn_addPitstopNewRow(){
 		cloneable.attr('id','tbl_pitnew_row_'+clonedrowid);
 	
 	cloneable.find('button').on('click',{row_id:clonedrowid}, btn_delPitstopNewRow2);
-
+	
+	cloneable.find('input[name=stationTime]').attr('tabindex',clonedrowid);
 	cloneable.find('input').attr('id','stationTime'+clonedrowid);	
 	cloneable.find('input').attr('name','stationTime'+clonedrowid);	
+	
 	cloneable.find('select[name=station]').attr('id','stationSel'+clonedrowid);	
 	cloneable.find('select[name=pitType]').attr('id','pitType'+clonedrowid);	
 	cloneable.find('select[name=station]').attr('name','station'+clonedrowid);	
 	cloneable.find('select[name=pitType]').attr('name','pitType'+clonedrowid);
+	
+
 	
 	// add this element to table
 	lastrow.after(cloneable.css('display','table-row'));
@@ -579,6 +589,27 @@ function selPitSeqEdit_onChange(action, itin_id){
 		,"json"
 	);
 }
+/* filter in itineraries header
+*/
+function filter_itin_dest_onChange(table,index){
+	if (table == 'filter_itin_dest'){
+	//console.log('index:'+index);	
+	//console.log(this);	
+		var $rows = $('#tbl_itineraries tr').not('thead tr');
+		var $rowsSel = $('#tbl_itineraries tr select').not('thead tr select');
+		//var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+	//console.log('val:'+val);
+		$rows.show().filter(function() {
+			//var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+			var dest = $(this).find('select').val();
+			//console.log('dest:'+dest);    
+			//return !~text.indexOf(val);
+			return !(dest == index);
+		}).hide();
+		
+	}
+}
+
 /*	selector for adding new itin / sequence
 */
 function itinerarySelect_onChange(action, itin_id){
@@ -875,7 +906,7 @@ td.order{
 <!--show existing-->
 <button type="button" data-toggle="collapse" data-target="#itiblock">Show Itineraries</button>
 <div id="itiblock" class="collapse">
-<table class="table table-striped table-hover table-condensed small">
+<table id="tbl_itineraries" class="table table-striped table-hover table-condensed small">
 <?php echo HTML::getTableItems('itinerary');?>
 </table>
 </div>
@@ -1008,18 +1039,6 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 	</div>
 </div>	
 <!-- ---------------------------------------------- pitstops -- end ---------   |   ----------------------------- sequenses --- end -----------------------------------    -->
-<!-- timetable test-->
-<fieldset>
-<legend>Time Table</legend>
-<!--show existing-->
-<button type="button" data-toggle="collapse" data-target="#pitsblock">Show pitstops</button>
-<div id="pitsblock" class="collapse">
-<table class="table table-striped table-hover table-condensed small">
-<?php echo HTML::getPitstops();?>
-</table>
-</div>
-<!--end show existing-->
-</fieldset>
 <pre>
 <?php
 //$pitstops = Way::GetPitsCountForItinerary(13);

@@ -56,6 +56,7 @@ switch ($_POST['action']){
 //echo( 'action:'.$_POST['action'] );
 //parse_str($_POST["lbx_form_addlink"], $ajax);
 //print_r($ajax);
+
 ?>
 <html>
 <head>
@@ -65,59 +66,21 @@ switch ($_POST['action']){
 <script type="text/javascript" src="../js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <script>
-function getSelectedText(elementId) {
-    var elt = document.getElementById(elementId);
+$(function(){
 
-    if (elt.selectedIndex == -1)
-        return null;
+$('#search').keyup(function() {
+var $rows = $('#table tr');
+    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+    console.log('val:'+val);
+    $rows.show().filter(function() {
+        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+console.log('text:'+text);    
+    //return !~text.indexOf(val);
+        return !(1+text.indexOf(val));
+    }).hide();
+});
+});
 
-    return elt.options[elt.selectedIndex].text;
-}
-
-function btnItinerName_onClick(){
-
-	var obus_text = getSelectedText('obusSel');
-	var stat_text = getSelectedText('stationSel');
-
-	//var obus = document.getElementById("obusSel").value;
-    //var station = document.getElementById("stationSel").value;
-    var starttime = document.getElementById("startTime").value;
-    
-	var itinerName = document.getElementById("itineraryName");
-	itinerName.value = obus_text+'_'+stat_text.substring(0,3)+'_'+starttime;
-	//document.getElementById("testSpan").innerHTML = "sdsd";//itinerName.value;
-	$('#itir_submit').prop('disabled', false);
-}
-function btn_showtrans_onClick(){
-	var transblock = document.getElementById("transblock");
-	//if(transblock)
-}
-function btnDel_onClick(id_pitstop){
-	//var transblock = document.getElementById("transblock");
-	console.info("id pitstop: "+id_pitstop);
-	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
-	$.post(
-		"post.routines.php",
-		{id:id_pitstop, table:'pitstop'},
-		function(data){
-		console.log(data.result);
-		alert(data.result);}
-		,"json"
-	);
-}
-function btnDelItin_onClick(id_itin){
-	//var transblock = document.getElementById("transblock");
-	console.info("id itinerary: "+id_itin);
-	//$("#post-btn").click(function(){ $.post("process.php", $("#reg-form").serialize(), function(data) { alert(data); }); });
-	$.post(
-		"post.routines.php",
-		{id:id_itin, table:'itinerary'},
-		function(data){
-			console.log(data.result);
-			alert(data.result);}
-		,"json"
-	);
-}
 function postTest(){
 	console.log('there');
 	$.post( "post.routines.php", { id: "test" }, function( data ) {
@@ -127,6 +90,20 @@ function postTest(){
 	},"json");
 }
 
+function tilda(){
+var massive= new Array();
+massive[1]="слово1";
+massive[3]="слово2";
+massive[5]="слово3";
+
+for(var k in massive ) {
+        console.log( 'k:'+ k  );
+    if ( ~~k == k ) {
+        console.log( massive[ k ] );
+    }
+}
+
+}
 </script>
 <style>
 .hided{
@@ -155,11 +132,37 @@ function postTest(){
 		</div>	
 	</div>
 </div>	
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="obus_header">
+<input type="text" id="search" placeholder="Type to search">
+<table id="table">
+   <tr>
+      <td>Apple</td>
+      <td>Green</td>
+   </tr>
+   <tr>
+      <td>Grapes</td>
+      <td>Green</td>
+   </tr>
+   <tr>
+      <td>Orange</td>
+      <td>Orange</td>
+   </tr>
+</table>
+			</div>
+		</div>	
+	</div>
+</div>	
 <button onclick="postTest();">test post</button>
 <button onclick="postTest2();">test post 2</button>
+<button onclick="tilda();">tilda</button>
 <pre>
 <?php
 var_dump( User::getUserbyNameOrEmail('genom1','ge@ge.ge') );
+//var_dump($_SERVER);
+echo App::currentPage();
 ?>
 </pre>
 </body>

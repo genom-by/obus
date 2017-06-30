@@ -92,6 +92,13 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		if (empty($id)) return false;
 		if (empty($id_column) ) $id_column = "id_{$table}";
 		
+		/* protection from GUEST deleting */
+		if(Auth::whoLoggedName() === 'guest'){
+			self::$errormsg = 'Guests can not delete entries.';
+			LiLogger::log( self::$errormsg );
+			return false;	
+		}
+		
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
 		//$conn->beginTransaction();
@@ -453,8 +460,8 @@ class Way extends DBObject{
 		$conn = $db::getPDO(); //get raw connection
 		
 		if($conn === false){
-			self::$errormsg = 'error while saving pitstops into DB: '.LinkBox\DataBase::$errormsg;
-			LiLogger::log( self::$errormsg );
+			$this->errormsg = 'error while saving pitstops into DB: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( $this->errormsg );
 			return false;
 		}
 		$stmt = $conn->prepare('INSERT INTO pitstop(id_station, time, id_pittype, id_itinerary) VALUES(:id_stat, :time, :id_pittyp, :id_itin)');
@@ -480,12 +487,18 @@ class Way extends DBObject{
         } else {
             $conn->rollBack();
             //throw $e;
-			self::$errormsg = 'error performing pitstops transaction: '.$e->getMessage();//LinkBox\DataBase::$errormsg;
-			LiLogger::log( self::$errormsg );
+			$this->errormsg = 'error performing pitstops transaction: '.$e->getMessage();//LinkBox\DataBase::$errormsg;
+			LiLogger::log( $this->errormsg );
 			return false;
         }
     }
-		
+		if ($stmt->rowCount()){
+			$this->errormsg = 'Saved successfully.';
+			return true;
+		} else{
+			$this->errormsg = 'Failure: not saved.';
+			return false;
+		}
 		//return $this->saveObject($pdosql);
 	}
 /*
@@ -666,7 +679,13 @@ class sequencesStations extends DBObject{
 			return false;
         }
     }
-		
+		if ($stmt->rowCount()){
+			$this->errormsg = 'Saved successfully.';
+			return true;
+		} else{
+			$this->errormsg = 'Failure: not saved.';
+			return false;
+		}
 		//return $this->saveObject($pdosql);
 	}
 		
@@ -766,6 +785,7 @@ class Itinerary extends DBObject{
 		//print_r($pdosql);
 		return $this->saveObject($pdosql);
 	}
+	
 	public static function load($id){
 		$load = self::getFromDB($id);
 		if(empty($load)){return false;}else{
@@ -809,6 +829,7 @@ class Sequence extends DBObject{
 		//print_r($pdosql);
 		return $this->saveObject($pdosql);
 	}
+	
 	public static function load($id){
 		$load = self::getFromDB($id);
 		if(empty($load)){return false;}else{

@@ -43,6 +43,13 @@ class Auth{
 			return false;
 		}
 	}
+	public static function whoLoggedName(){
+		if( ! empty($_SESSION["user_name"]) ){
+			return $_SESSION["user_name"];
+		}else{
+			return false;
+		}
+	}
 	public static function notLogged(){
 		if( empty($_SESSION["user_id"]) ){
 			return true;
