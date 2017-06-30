@@ -6,8 +6,20 @@ include_once 'auth.inc.php';
 include_once 'utils.inc.php';
 include_once 'dbObjects.class.php';
 include_once 'HTMLroutines.class.php';
-if(Auth::notLogged()){$seq = -1;}else{
-if(! empty($_GET['seq'])){$seq = $_GET['seq'];}else $seq=-1;}
+
+use LinkBox\Utils as Utils;
+
+//if(Auth::notLogged()){$seq = -1;}else{
+if( ! empty($_GET['seq']) ){
+		$seq = Utils::cleanInput( $_GET['seq'] );
+		if( ! is_numeric($seq) ){
+			$seq=-1;			
+		}
+		if( ! Auth::isAllowed('load','Sequence', $seq) ){
+			$seq=-1;	
+		}else{}
+	}else $seq=-1;
+	
 //echo 'seq: '.Sequence::load($seq)->name;
 //var_dump(Sequence::load($seq)->name);
 ?>

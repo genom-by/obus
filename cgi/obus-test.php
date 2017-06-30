@@ -596,9 +596,13 @@ function filter_itin_dest_onChange(table,index){
 	//console.log('index:'+index);	
 	//console.log(this);	
 		var $rows = $('#tbl_itineraries tr').not('thead tr');
-		var $rowsSel = $('#tbl_itineraries tr select').not('thead tr select');
+		//var $rowsSel = $('#tbl_itineraries tr select').not('thead tr select');
 		//var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
 	//console.log('val:'+val);
+	if(index == -1){
+		$rows.show();
+		return;
+	}
 		$rows.show().filter(function() {
 			//var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
 			var dest = $(this).find('select').val();

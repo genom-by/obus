@@ -111,5 +111,57 @@ class Auth{
 			}
 		}
 	}
+	/* permissions to load / delete / update
+	*/
+	public static function isAllowed($action, $entity='object', $whatID=-1){
+		if(empty($action) ){return false;}
+		$isAllowed = null;
+		switch($action){
+			case 'load':
+				if( ! empty($entity) ){
+					
+					$tableNameA = ORM::getTableMap($entity);
+					$tableName = $tableNameA['table'];
+					$idColNameA = ORM::getTableMap($entity);
+					$idColName = $idColNameA['table_id'];
+					$sql = "SELECT uid FROM {$tableName} WHERE {$idColName} = {$whatID}";
+				//Logger::log( 'Auth::sql'.$sql );					
+					$db = LinkBox\DataBase::connect(); //get raw connection		
+					$conn = $db::getPDO(); //get raw connection
+					$uidRes = $conn->query($sql);
+					if( $uidRes == false){
+						$isAllowed = false;
+					}else{
+						$uidRow = $uidRes->fetch();
+						$uid = $uidRow['uid'];
+						//Logger::log( 'result'.$uid );	
+						if( $uid == Auth::whoLoggedID() ){
+							$isAllowed = true;
+						}else{
+							$isAllowed = false;	
+						}						
+					}
+				}else{
+					$isAllowed = false;
+				}
+				
+				if( ! $isAllowed ){
+					self::$errormsg = 'Access restricted.';
+				}
+			break;
+			case 'delete':
+				if(Auth::whoLoggedName() === 'guest'){
+					self::$errormsg = 'Guests can not delete entries.';
+				Logger::log( self::$errormsg );
+					$isAllowed = false;	
+				}
+			break;
+			case 'update':
+			break;
+			default:
+				$isAllowed = false;
+		}
+		return $isAllowed;
+	}
 	
 }//class Auth

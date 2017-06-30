@@ -93,12 +93,11 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		if (empty($id_column) ) $id_column = "id_{$table}";
 		
 		/* protection from GUEST deleting */
-		if(Auth::whoLoggedName() === 'guest'){
-			self::$errormsg = 'Guests can not delete entries.';
+		if( ! Auth::isAllowed('delete', $table, $id) ){
+			self::$errormsg = 'Could not delete: '.Auth::$errormsg;
 			LiLogger::log( self::$errormsg );
-			return false;	
+			return false;			
 		}
-		
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
 		//$conn->beginTransaction();
@@ -1080,6 +1079,22 @@ class User extends DBObject{
 	
 	}
 }
+
+class ORM{
+	protected static $mapping = array(
+		'User' => array('table'=>'user', 'table_id'=>'id_user'),
+		'Sequence' => array('table'=>'sequences', 'table_id'=>'id_seq', 'is_uid'=>true)
+	);
+	public static function getTableMap($entity){
+		if( array_key_exists($entity, self::$mapping) ){
+				return self::$mapping[$entity];
+			}else{
+				return false;
+			}
+		}
+	} // ORM
+	
+
 
 class DataBase123{
 	protected static $instance;

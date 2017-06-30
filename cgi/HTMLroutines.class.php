@@ -160,10 +160,13 @@ class HTML{
 					$destinSelect = "<select>{$destin}</select>";
 $htmlItem = "<tr id='itinerary_id_{$item['id_itin']}'><td>{$item['id_itin']}</td><td>{$item['name']}</td>".
 			"<td>{$item['statName']}</td><td>{$time}</td><td>{$destinSelect}</td><td>{$btnDel}</td></tr>";
-			$filterSelect = "<select id='filter_itin_dest' onChange='filter_itin_dest_onChange(`filter_itin_dest`,this.value)';>{$destin}</select>";
-$htmlheader = "<thead><tr><th>ID</th><th>Name</th><th>Start Station</th><th>Time </th><th>Dest: {$filterSelect}</th><th>del</th></tr></thead>";
+
 					$htmlTable = $htmlTable.$htmlItem.PHP_EOL;
 				}
+			//$filterSelectAllOption = "<option value='-2'>All dests</option>";
+			$filterSelDestOptions = self::getSelectItems('destination');
+			$filterSelect = "<select id='filter_itin_dest' onChange='filter_itin_dest_onChange(`filter_itin_dest`,this.value)';>{$filterSelDestOptions}</select>";
+$htmlheader = "<thead><tr><th>ID</th><th>Name</th><th>Start Station</th><th>Time </th><th>Dest: {$filterSelect}</th><th>del</th></tr></thead>";				
 			//return $htmlList;
 			$htmlTable = $htmlheader.$htmlTable;
 			}else{$htmlTable = "no data";}			
