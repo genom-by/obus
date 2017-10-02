@@ -52,6 +52,13 @@ class Auth{
 	}
 	public static function notLogged(){
 		if( empty($_SESSION["user_id"]) ){
+			//REMEMBER ME
+			if( !empty($_COOKIE["member_login"]) ){
+				return ! self::loginRememberedUser($_COOKIE["member_login"], 
+					$_COOKIE["member_password"]);
+			}else{
+				return true;
+			}
 			return true;
 		}else{
 			return false;
@@ -59,7 +66,7 @@ class Auth{
 	}
 	
 	public static function logout(){
-		unset(self::$uid);
+		if(isset(self::$uid)){unset(self::$uid);}
 		self::rememberMe('user', false);
 		session_destroy();
 	}
@@ -88,6 +95,33 @@ class Auth{
 			return false;
 		}	
 	}
+	public static function loginRememberedUser($userName, $pwdHash){
+		if( empty($userName) ){
+			return false;			
+		}
+		if( empty($pwdHash) ){
+			return false;
+		}else{
+		//TODO implement tokenizing
+		/*
+		$user_id = Auth::getUserIDbyToken($_SESSION['token']);
+		if($user_id === false){return false; }
+		$user = User->load($user_id);
+		*/
+			$user = User::getUserbyNameOrEmail($userName, '');
+			if($user !== false){
+				if($user->pwdHash == $pwdHash){
+					session_start();
+					$_SESSION["user_id"] = $user->id;
+					$_SESSION["user_name"] = $user->name;
+					self::$uid = $user->id;	
+
+					return true;						
+				}
+			}
+		}
+		return false;
+	}
 	
 	public static function userKnowPassword($user, $pwd){
 		
@@ -99,69 +133,28 @@ class Auth{
 	//TODO clearance
 	public static function rememberMe( $user, $re ){
 		
+		//TODO implement tokenizing
+		/*
+		$token = Auth::saveUserToken($user);
+		setcookie($token);
+		*/
+		
 		if( $re ) {
-			setcookie ("member_login",$user->name,time()+ (10 * 365 * 24 * 60 * 60));
-			setcookie ("member_password",$user->pwdHash,time()+ (10 * 365 * 24 * 60 * 60));
+			setcookie ("member_login",$user->name,time()+ (30 * 24 * 60 * 60));
+			setcookie ("member_password",$user->pwdHash,time()+ (30 * 24 * 60 * 60));
 		} else {
 			if(isset($_COOKIE["member_login"])) {
-				setcookie ("member_login","");
+				setcookie ("member_login","", time() - 3600);
 			}
 			if(isset($_COOKIE["member_password"])) {
-				setcookie ("member_password","");
+				setcookie ("member_password","", time() - 3600);
 			}
 		}
 	}
-	/* permissions to load / delete / update
-	*/
-	public static function isAllowed($action, $entity='object', $whatID=-1){
-		if(empty($action) ){return false;}
-		$isAllowed = null;
-		switch($action){
-			case 'load':
-				if( ! empty($entity) ){
-					
-					$tableNameA = ORM::getTableMap($entity);
-					$tableName = $tableNameA['table'];
-					$idColNameA = ORM::getTableMap($entity);
-					$idColName = $idColNameA['table_id'];
-					$sql = "SELECT uid FROM {$tableName} WHERE {$idColName} = {$whatID}";
-				//Logger::log( 'Auth::sql'.$sql );					
-					$db = LinkBox\DataBase::connect(); //get raw connection		
-					$conn = $db::getPDO(); //get raw connection
-					$uidRes = $conn->query($sql);
-					if( $uidRes == false){
-						$isAllowed = false;
-					}else{
-						$uidRow = $uidRes->fetch();
-						$uid = $uidRow['uid'];
-						//Logger::log( 'result'.$uid );	
-						if( $uid == Auth::whoLoggedID() ){
-							$isAllowed = true;
-						}else{
-							$isAllowed = false;	
-						}						
-					}
-				}else{
-					$isAllowed = false;
-				}
-				
-				if( ! $isAllowed ){
-					self::$errormsg = 'Access restricted.';
-				}
-			break;
-			case 'delete':
-				if(Auth::whoLoggedName() === 'guest'){
-					self::$errormsg = 'Guests can not delete entries.';
-				Logger::log( self::$errormsg );
-					$isAllowed = false;	
-				}
-			break;
-			case 'update':
-			break;
-			default:
-				$isAllowed = false;
-		}
-		return $isAllowed;
-	}
-	
+		
+		//TODO implement tokenizing
+		/*
+		public static function saveUserToken($user){}
+		public static function getUserIDbyToken($token){}
+		*/
 }//class Auth

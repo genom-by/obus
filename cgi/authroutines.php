@@ -65,7 +65,7 @@ switch ($_POST['action']){
 				$message = 'Could not register new user: '.$newuser->errormsg;
 			}else{
 				$actionStatus = 'success';
-				$message = 'Congratulations! You were registered.';			
+				$message = "Congratulations! You were registered. Now you can <a class='notifylink' href='".App::link('login')."'>log in</a> to proceed with app.";		
 			}
 		}else{
 			$actionStatus = 'error';
@@ -101,7 +101,7 @@ switch ($_POST['action']){
 if(!empty($_GET['action'])){
 	switch ($_GET['action']){
 		case 'logout':
-			session_destroy();
+			Auth::logout();
 			header("Location: http://".$_SERVER['HTTP_HOST'].'/'.SITE_ROOT."/".'cgi/loginpage.php');
 		break;
 	}

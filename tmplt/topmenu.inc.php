@@ -11,6 +11,10 @@ include_once 'app.class.php';
 	margin-right:-20px;
 	font-style:italic;
 }
+div.brand_active a{
+	background-color: #e7e7e7;
+	height:60px;
+}
 </style>
 <nav role="navigation" class="navbar navbar-default">
 <!-- Brand and toggle get grouped for better mobile display -->
@@ -21,7 +25,7 @@ include_once 'app.class.php';
 		<span class="icon-bar"></span>
 		<span class="icon-bar"></span>
 	</button>
-	<a href="<?=App::link('chart');?>" class="navbar-brand">Chart</a>
+	<div <?php if(App::currentPage()== 'chart') echo "class='brand_active'";?>><a href="<?=App::link('chart');?>" class="navbar-brand">Chart</a></div>
 </div>
 <!-- Collection of nav links and other content for toggling -->
 <div id="navbarCollapse" class="collapse navbar-collapse">

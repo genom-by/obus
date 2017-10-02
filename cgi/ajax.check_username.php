@@ -34,7 +34,8 @@ switch( Utils::cleanInput($_GET['val_type']) ){
 	case "name":
 	try{
 		$ret_val = User::isThereSameUser(Utils::cleanInput($_POST['userName']),"");
-		}catch(\Exception $e){$ret_val = null;}
+		}catch(\Exception $e){$ret_val = null;
+			Logger::log('exception getting userdata:'.$e->getMessage());}
 		if ( $ret_val === false ) {
 			$goodForRegister = true;
 		}else{
@@ -44,7 +45,8 @@ switch( Utils::cleanInput($_GET['val_type']) ){
 	case "email":
 	try{	
 		$ret_val = User::isThereSameUser("", Utils::cleanInput($_POST['userEmail']));
-		}catch(\Exception $e){$ret_val = null;}		
+		}catch(\Exception $e){$ret_val = null;
+			Logger::log('exception getting userdata:'.$e->getMessage());}		
 		if ( $ret_val === false ) {
 			$goodForRegister = true;
 		}else{

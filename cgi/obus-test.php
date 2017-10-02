@@ -10,7 +10,9 @@ include_once 'HTMLroutines.class.php';
 \LinkBox\Logger::log('Start logging');
 
 if(!empty($_POST['action'])){
-		
+	if( Auth::notLogged() ){
+		break;
+	}	
 switch ($_POST['action']){
 	case 'obus':
 		//echo 'obus';		
@@ -18,9 +20,9 @@ switch ($_POST['action']){
 			$obus= new Obus($_POST['obusName']);
 			$retval = $obus->save();
 			if(!$retval){
-			\LinkBox\Logger::log("{$_POST['action']} error: ".$obus::$errormsg);
+				$message = $obus->errormsg;			
+				\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 				$actionStatus = 'error';
-				$message = $obus::$errormsg;
 			}
 		}
 		break;
@@ -30,9 +32,9 @@ switch ($_POST['action']){
 			$station= new Station($_POST['stationName'], $_POST['statShortName']);
 			$retval = $station->save();
 			if(!$retval){
-				\LinkBox\Logger::log("{$_POST['action']} error: ".$station::$errormsg);
+				$message = $station->errormsg;			
+				\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 				$actionStatus = 'error';
-				$message = $station::$errormsg;
 			}
 		}		
 		break;
@@ -45,9 +47,9 @@ switch ($_POST['action']){
 			$itiner = new Itinerary($iName, $_POST['obus'], $_POST['station'], $_POST['startTime'], $_POST['itinDest']);
 			$retval = $itiner->save();
 			if(!$retval){
-				\LinkBox\Logger::log("{$_POST['action']} error: ".$itiner::$errormsg);
+				$message = $itiner->errormsg;			
+				\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 				$actionStatus = 'error';
-				$message = Itinerary::$errormsg;
 				}
 		}			
 	break;
@@ -58,9 +60,49 @@ switch ($_POST['action']){
 				//var_dump($way);
 				$retval = $way->save($_POST);
 				if(!$retval){
-					\LinkBox\Logger::log("{$_POST['action']} error: ".$way->errormsg);
+					$message = $way->errormsg;				
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 					$actionStatus = 'error';
-					$message = $way->errormsg;
+				}
+			}
+	break;
+	case 'pitstopsEdit':
+				//print_r($_POST);
+			if( !empty($_POST['itinerarySelectEdit']) ){
+				$way = Way::load($_POST['itinerarySelectEdit']);
+				if($way !== false){
+					$newWay = Way::newEditable($_POST);
+							//echo'<pre>';var_dump($newWay); die();
+					$retval = $newWay->editPitstops($_POST);
+					if(!$retval){
+						$message = $newWay->errormsg;
+						\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
+						$actionStatus = 'error';			
+					}
+				}else{
+					$message = 'Could load itinerary: '.Way::$errormsg;
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
+					$actionStatus = 'error';					
+				}
+			}
+	break;
+	case 'sequencesStationsEdit':
+				//print_r($_POST);
+			if( !empty($_POST['sequencesSelectEdit']) ){
+				$seq = sequencesStations::load($_POST['sequencesSelectEdit']);
+				if($seq !== false){
+					$newSeq = sequencesStations::newEditable($_POST);
+							//echo'<pre>';var_dump($newSeq); die();
+					$retval = $newSeq->editSequences($_POST);
+					if(!$retval){
+						$message = $newSeq->errormsg;
+						\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
+						$actionStatus = 'error';			
+					}
+				}else{
+					$message = 'Could load sequence: '.sequencesStations::$errormsg;
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
+					$actionStatus = 'error';					
 				}
 			}
 	break;
@@ -70,9 +112,9 @@ switch ($_POST['action']){
 				$dest = new Destination($_POST['destName'], $_POST['destName']);
 				$retval = $dest->save();
 				if(!$retval){
-					\LinkBox\Logger::log("{$_POST['action']} error: ".$dest::$errormsg);
+					$message = $dest->errormsg;				
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 					$actionStatus = 'error';
-					$message = $dest::$errormsg;
 				}				
 			}
 	break;
@@ -82,9 +124,9 @@ switch ($_POST['action']){
 				$seq = new Sequence($_POST['seqName'], $_POST['seqDest']);
 				$retval = $seq->save();
 				if(!$retval){
-					\LinkBox\Logger::log("{$_POST['action']} error: ".$seq::$errormsg);
+					$message = $seq->errormsg;				
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 					$actionStatus = 'error';
-					$message = $seq::$errormsg;
 				}				
 			}
 	break;
@@ -94,9 +136,9 @@ switch ($_POST['action']){
 				$seq = new sequencesStations($_POST);
 				$retval = $seq->save($_POST);
 				if(!$retval){
-					\LinkBox\Logger::log("{$_POST['action']} error: ".$seq::$errormsg);
+					$message = $seq->errormsg;				
+					\LinkBox\Logger::log("{$_POST['action']} error: ".$message);
 					$actionStatus = 'error';
-					$message = $seq::$errormsg;
 				}				
 			}
 	break;
@@ -464,9 +506,34 @@ console.log(row_id);
 	
 	html_setLastTableID();
 }
+/* delete row from html table EDIT pitstops 
+*/
+function btn_delPitstopEDITRow(row_id){
+
+	var input_total = $('input[name=totalstopsEDIT]');
+	var total_value = input_total.val();
+console.log('total_value:'+total_value);
+	if(total_value <= 1){return;}
+	//var domID = '#'+table_+'_id_'+id_entry;
+	var domID = '#tbl_pitedit_row_'+row_id;
+	$(domID).toggle( "highlight" );
+	$(domID).remove();
+
+	input_total.val(--total_value);
+	
+	var elLastId = $('input[name=laststopIDEDIT]');
+	var lastrow = $('#pitEditContent .trpitedit').filter(":last");
+	var lastrowid = lastrow.attr("data-id");
+	
+	elLastId.val(lastrowid);
+}
 function btn_delPitstopNewRow2(event){
 	console.log(event.data.row_id);
 	btn_delPitstopNewRow(event.data.row_id)
+}
+function btn_delPitstopNewRow2EDIT(event){
+	console.log(event.data.row_id);
+	btn_delPitstopEDITRow(event.data.row_id)
 }
 /* delete row from html table  itins
 */
@@ -489,11 +556,78 @@ function btn_delSequenceNewRow2(event){
 	console.log(event.data.row_id);
 	btn_delSequenceNewRow(event.data.row_id)
 }
+function btn_delSequenceEDITRow2(event){
+	console.log(event.data.row_id);
+	btn_delSequenceEDITRow(event.data.row_id)
+}
 
+/* delete row from html table EDIT pitstops 
+*/
+function btn_delSequenceEDITRow(row_id){
+
+	var input_total = $('input[name=totalseqEDIT]');
+	var total_value = input_total.val();
+console.log('total_value:'+total_value);
+	if(total_value <= 1){return;}
+	//var domID = '#'+table_+'_id_'+id_entry;
+	var domID = '#tbl_seqedit_row_'+row_id;
+	$(domID).toggle( "highlight" );
+	$(domID).remove();
+
+	input_total.val(--total_value);
+	
+	var elLastId = $('input[name=lastseqIDEDIT]');
+	var lastrow = $('.seqeditcontent .trseqedit').filter(":last");
+	var lastrowid = lastrow.attr("data-id");
+	
+	elLastId.val(lastrowid);
+}
+/* add new row for html table EDIT pitstops 
+*/
+function btn_addPitstopNewRowEDIT(){
+	
+	var lastrow = $('#pitEditContent .trpitedit').filter(":last");
+
+	var lastrowid = lastrow.attr("data-id");	//console.log(lastrowid);	
+	var clonedrowid = 1+parseInt(lastrowid);	//console.log('clonedrowid:'+clonedrowid);
+	
+	var cloneable = $('.trpitnewcloneableEDIT').clone();
+		cloneable.removeClass('trpitnewcloneableEDIT').addClass('trpitedit');
+		cloneable.attr('data-id',clonedrowid);
+		cloneable.attr('id','tbl_pitedit_row_'+clonedrowid);
+	
+	cloneable.find('button').on('click',{row_id:clonedrowid}, btn_delPitstopNewRow2EDIT);
+	
+	cloneable.find('input[name=stationTimeED]').attr('tabindex',clonedrowid);
+	cloneable.find('input').attr('id','stationTimeED'+clonedrowid);	
+	cloneable.find('input').attr('name','stationTimeED'+clonedrowid);	
+	
+	cloneable.find('select[name=stationED]').attr('id','stationSelED'+clonedrowid);	
+	cloneable.find('select[name=pitTypeED]').attr('id','pitTypeED'+clonedrowid);	
+	cloneable.find('select[name=stationED]').attr('name','stationED'+clonedrowid);	
+	cloneable.find('select[name=pitTypeED]').attr('name','pitTypeED'+clonedrowid);
+	
+
+	
+	// add this element to table
+	lastrow.after(cloneable.css('display','table-row'));
+
+	var domID = '#tbl_pitedit_row_'+lastrowid;
+
+	var input_total = $('input[name=totalstopsEDIT]');
+	var total_value = input_total.val();
+		input_total.val(++total_value);
+		
+	var elLastId = $('input[name=laststopIDEDIT]');
+	lastrow = $('#pitEditContent .trpitedit').filter(":last");
+	var lastrowid = lastrow.attr("data-id");
+	
+	elLastId.val(lastrowid);
+}
 /* add new row for html table pitstops 
 */
 function btn_addPitstopNewRow(){
-
+	
 	var lastrow = $('.pitstops_new .trpitnew').filter(":last");
 
 	var lastrowid = lastrow.attr("data-id");	//console.log(lastrowid);	
@@ -527,6 +661,57 @@ function btn_addPitstopNewRow(){
 		input_total.val(++total_value);
 		
 	html_setLastTableID();
+}
+/* add new row for html table sequenecs 
+*/
+function btn_addSequenceNewRowEDIT(){
+	
+	var lastrow = $('.seqeditcontent .trseqedit').filter(":last");
+	var lastorder = $('.seqeditcontent .trseqedit .tdorder').filter(":last");
+	var lastorderNum = lastorder.html();
+	var nextOrder = 1 + parseInt(lastorderNum);
+
+	var lastrowid = lastrow.attr("data-id");	//console.log(lastrowid);	
+	var clonedrowid = 1+parseInt(lastrowid);	//console.log('clonedrowid:'+clonedrowid);
+	
+	var cloneable = $('.trseqnewcloneableEDIT').clone();
+		cloneable.removeClass('trseqnewcloneableEDIT').addClass('trseqedit');
+		cloneable.attr('data-id',clonedrowid);
+		cloneable.attr('id','tbl_seqedit_row_'+clonedrowid);
+	
+	cloneable.find('button').on('click',{row_id:clonedrowid}, btn_delSequenceEDITRow2);
+	
+	// possible orderal
+	//cloneable.find('input[name=orderalED]').attr('tabindex',clonedrowid);
+	cloneable.find('input').attr('id','orderalED'+nextOrder);	
+	cloneable.find('input').attr('name','orderalED'+nextOrder);	
+	cloneable.find('input').val(nextOrder);	
+	
+console.log(cloneable.find('input').val());
+	
+	cloneable.find('td.tdorder').html(nextOrder);	
+	
+	cloneable.find('select[name=station]').attr('id','stationSSED'+nextOrder);	
+	cloneable.find('select[name=pitType]').attr('id','seqTypeED'+nextOrder);	
+	cloneable.find('select[name=station]').attr('name','stationSSED'+nextOrder);	
+	cloneable.find('select[name=pitType]').attr('name','seqTypeED'+nextOrder);
+	
+
+	
+	// add this element to table
+	lastrow.after(cloneable.css('display','table-row'));
+
+	var domID = '#tbl_seqedit_row_'+lastrowid;
+
+	var input_total = $('input[name=totalseqEDIT]');
+	var total_value = input_total.val();
+		input_total.val(++total_value);
+		
+	var elLastId = $('input[name=lastseqIDEDIT]');
+	lastrow = $('.seqeditcontent .trseqedit').filter(":last");
+	var lastrowid = lastrow.attr("data-id");
+	
+	elLastId.val(lastrowid);
 }
 /* add new row for html table sequences
 */
@@ -567,12 +752,19 @@ function btn_addSequenceNewRow(){
 function selPitSeqEdit_onChange(action, itin_id){
 	console.log("selected id"+itin_id+" and action is "+action);
 	if(action=='pitstops'){
-	table_='pits_PitEdit_table'
+	table_='pits_PitEdit_table';
 	divID='#pitEditContent';
-	}else if(action=='sequences'){
-	table_='seq_SeqEdit_table'
+	}else if(action=='pitstopsView'){
+	table_='pits_PitView_table';
+	divID='#pitViewContent';
+	}else if(action=='sequencesEdit'){
+	table_='seq_SeqEdit_table';
 	divID='#seqEditContent';
+	}else if(action=='sequencesView'){
+	table_='seq_SeqView_table';
+	divID='#seqViewContent';
 	}else{table:'no_table'; return false;}
+
 	$.post(
 		"post.routines.php",
 		{action: 'pageUpdate', id:itin_id, table:table_},
@@ -596,13 +788,9 @@ function filter_itin_dest_onChange(table,index){
 	//console.log('index:'+index);	
 	//console.log(this);	
 		var $rows = $('#tbl_itineraries tr').not('thead tr');
-		//var $rowsSel = $('#tbl_itineraries tr select').not('thead tr select');
+		var $rowsSel = $('#tbl_itineraries tr select').not('thead tr select');
 		//var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
 	//console.log('val:'+val);
-	if(index == -1){
-		$rows.show();
-		return;
-	}
 		$rows.show().filter(function() {
 			//var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
 			var dest = $(this).find('select').val();
@@ -748,13 +936,13 @@ width:80%;
 td.inp{
 display:none;
 }
-table.pitstops_new td, table.sequences_new td{
+table.pitstops_new td, table.pitEditContent td, table.sequences_new td{
 padding:1px 2px;
 }
 .btn_new_tablerow{
 width:100%;
 }
-.trpitnewcloneable, .trseqnewcloneable{
+.trpitnewcloneable, .trpitnewcloneableEDIT, .trseqnewcloneable, .trseqnewcloneableEDIT{
 display:none;
 }
 .tbl_pitnew_row_del, .tbl_seqnew_row_del{
@@ -765,6 +953,9 @@ td.order{
 }
 .hid_inp{
 	display:none;
+}
+.tdorder{
+width:15%;
 }
 /* ... loading ...
 .loading{
@@ -954,6 +1145,7 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 			<h3>Pitstops</h3>
 	<ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#secPitNew">New pitstop</a></li>
+        <li><a data-toggle="tab" href="#secPitView">View pitstops</a></li>
         <li><a data-toggle="tab" href="#secPitEdit">Edit pitstops</a></li>
     </ul>
     <div class="tab-content">
@@ -973,6 +1165,22 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 </form>
 </fieldset>	
 </div>
+<!-- ---------------- View Pitstop ------------------------ -->
+        <div id="secPitView" class="tab-pane fade">
+<fieldset>
+<form name="formPitView" method="post">
+<p>Select itinerary</p>
+<select name="itinerarySelectView" id="itinerarySelectView" onchange="selPitSeqEdit_onChange('pitstopsView',this.value)">
+<?php echo HTML::getSelectItems('itinerary');?>
+</select>
+<p></p>
+<table id="pitViewContent" class="table table-striped table-hover table-condensed small">
+</table>
+<p></p>
+<input type="hidden" name="action" value="pitstopsView">
+</form>
+</fieldset>	
+        </div>
 <!-- ---------------- Edit Pitstop ------------------------ -->
         <div id="secPitEdit" class="tab-pane fade">
 <fieldset>
@@ -982,7 +1190,7 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 <?php echo HTML::getSelectItems('itinerary');?>
 </select>___<button type="button" id="btn_del_pits_stats" onclick="btn_del_pits_stats_onClick();">Clear stations</button>
 <p></p>
-<table id="pitEditContent" class="table table-striped table-hover table-condensed small">
+<table id="pitEditContent" class="piteditcontent">
 </table>
 <p></p>
 <input type="hidden" name="action" value="pitstopsEdit">
@@ -999,6 +1207,7 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 			<h3>Sequences</h3>
 	<ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#secSeqNew">New sequence</a></li>
+        <li><a data-toggle="tab" href="#secSeqView">View sequences</a></li>
         <li><a data-toggle="tab" href="#secSeqEdit">Edit sequences</a></li>
     </ul>
 	<div class="tab-content">
@@ -1018,16 +1227,32 @@ via<input type="text" name="seqName" id="seqName" autocomplete="off"/>
 </form>
 </fieldset>	
 	</div>
+<!-- ---------------- View Sequence ------------------------ -->
+        <div id="secSeqView" class="tab-pane fade">
+<fieldset>
+<form name="formSeqView" method="post">
+<p>Select sequence</p>
+<select name="sequencesSelectView" id="sequencesSelectView" onchange="selPitSeqEdit_onChange('sequencesView', this.value)">
+<?php echo HTML::getSelectItems('sequences');?>
+</select>
+<p></p>
+<table id="seqViewContent" class="table table-striped table-hover table-condensed small">
+</table>
+<p></p>
+<input type="hidden" name="action" value="sequencesStationsView">
+</form>
+</fieldset>	
+        </div>
 <!-- ---------------- Edit Sequence ------------------------ -->
         <div id="secSeqEdit" class="tab-pane fade">
 <fieldset>
 <form name="formSeqEdit" method="post">
 <p>Select sequence</p>
-<select name="sequencesSelectEdit" id="sequencesSelectEdit" onchange="selPitSeqEdit_onChange('sequences', this.value)">
+<select name="sequencesSelectEdit" id="sequencesSelectEdit" onchange="selPitSeqEdit_onChange('sequencesEdit', this.value)">
 <?php echo HTML::getSelectItems('sequences');?>
 </select>___<button type="button" id="btn_del_seq_stats" onclick="btn_del_seq_stats_onClick();">Clear stations</button>
 <p></p>
-<table id="seqEditContent" class="table table-striped table-hover table-condensed small">
+<table id="seqEditContent" class="seqeditcontent">
 </table>
 <p></p>
 <input type="hidden" name="action" value="sequencesStationsEdit">

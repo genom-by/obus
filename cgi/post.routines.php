@@ -85,9 +85,27 @@ function dispatchPageUpdate($table, $id){
 				die();
 				}
 		break;
+		case 'pits_PitView_table':
+			$seqstats = HTML::getPitStopsViewRows($_POST['id']);
+			if(false === $seqstats){returnPOSTError('could not obtain pitstops');die();}
+			else{
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;
 		case 'seq_SeqEdit_table':
 			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
 			$seqstats = HTML::getSeqEditRows($_POST['id']);
+			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
+			else{
+				//$seqstats = HTML::getPitStopsEditRows($seqstats);
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;
+		case 'seq_SeqView_table':
+			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
+			$seqstats = HTML::getSeqViewRows($_POST['id']);
 			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
 			else{
 				//$seqstats = HTML::getPitStopsEditRows($seqstats);
@@ -133,6 +151,25 @@ function dispatchObjectUpdate($table, $id, $data){
 				die();
 				}
 		break;
+		case 'seq_SeqView_table':
+			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
+			$seqstats = HTML::getSeqViewRows($_POST['id']);
+			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
+			else{
+				//$seqstats = HTML::getPitStopsEditRows($seqstats);
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;
+		/*case 'way_pitstops':
+			$way = Way::load( $id);
+			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
+			else{
+				//$seqstats = HTML::getPitStopsEditRows($seqstats);
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;*/
 	default:
 		$res = false;
 		$err = 'No table provided';
@@ -174,6 +211,16 @@ function dispatchInquire($table, $id, $question){
 		case 'seq_SeqEdit_table':
 			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
 			$seqstats = HTML::getSeqEditRows($_POST['id']);
+			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
+			else{
+				//$seqstats = HTML::getPitStopsEditRows($seqstats);
+				echo json_encode(array('result'=>'ok', 'payload'=>$seqstats) );
+				die();
+				}
+		break;
+		case 'seq_SeqView_table':
+			//$seqstats = sequencesStations::getSeqStatNamesBySequenceID($_POST['id']);
+			$seqstats = HTML::getSeqViewRows($_POST['id']);
 			if(false === $seqstats){returnPOSTError('could not obtain sequences');die();}
 			else{
 				//$seqstats = HTML::getPitStopsEditRows($seqstats);

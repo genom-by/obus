@@ -93,11 +93,12 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		if (empty($id_column) ) $id_column = "id_{$table}";
 		
 		/* protection from GUEST deleting */
-		if( ! Auth::isAllowed('delete', $table, $id) ){
-			self::$errormsg = 'Could not delete: '.Auth::$errormsg;
+		if(Auth::whoLoggedName() === 'guest'){
+			self::$errormsg = 'Guests can not delete entries.';
 			LiLogger::log( self::$errormsg );
-			return false;			
+			return false;	
 		}
+		
 		$db = LinkBox\DataBase::connect(); //get raw connection
 		$conn = $db::getPDO(); //get raw connection
 		//$conn->beginTransaction();
@@ -187,15 +188,17 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 				}	
 			}else{$userWhere='';}*/
 		$userWhere = static::buildUserWhereClause();
+		$orderby = static::buildORDERBYClause();
 		
-		$order_position = strpos($sql, 'ORDER BY');
+		$user_sql = static::$sqlGetAll.' '.$userWhere.' '.$orderby;
+		/*$order_position = strpos($sql, 'ORDER BY');
 		if(false !== $order_position){
 			$order = substr($sql, $order_position);
 			
 			$user_sql = static::$sqlGetAll.' '.$userWhere.' '.$order;
 		}else{
 			$user_sql = $sql.$userWhere;		
-		}	
+		}	*/
 		//LiLogger::log('usersql order: '.$user_sql);
 		return self::getEntriesArrayBySQL($user_sql);		
 	}
@@ -207,6 +210,13 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 		$sql = static::$sqlGetAll.' '.$whereSQL;		//LiLogger::log( $sql);		
 
 		$userWhere = static::buildUserWhereClause();
+		
+		$order_position = strpos($whereSQL, 'ORDER BY');
+		if(false === $order_position){
+			$orderby = static::buildORDERBYClause();		
+		}else{$orderby = '';}
+		
+
 
 		if( ! empty($userWhere) ){
 			$where_position = strpos($whereSQL, 'WHERE');
@@ -221,6 +231,7 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 			$user_sql = $sql;
 		}
 		//LiLogger::log('usersql where: '.$user_sql);
+		$user_sql = $user_sql.' '.$orderby;
 		
 		return self::getEntriesArrayBySQL($user_sql);		
 	}
@@ -239,6 +250,25 @@ public static function getEntriesArrayBySQL($sql, $ref=-1){
 				}	
 			}else{$userWhere = '';}
 		return $userWhere;
+	}
+	/*
+	builds ORDER BY part if presented
+	returns ' ORDER BY column_name' or empty string
+	*/
+	protected static function buildORDERBYClause(){
+		
+		if(!empty(static::$sqlGetAllOrdered)){$sql = static::$sqlGetAllOrdered;
+		}else{return '';}
+		
+		$order_position = strpos($sql, 'ORDER BY');
+		if(false !== $order_position){
+			$order = substr($sql, $order_position);
+			
+			return ' '.$order;
+		}else{
+			return '';		
+		}
+		
 	}
 	/*
 	returns class objext based on provided id
@@ -418,7 +448,8 @@ class Destination extends DBObject{
 class Way extends DBObject{
 	
 	protected static $orm = array('table'=>'pitstop', 'table_id'=>'id_pitstop', 'is_uid'=>false);
-	protected static $sqlGetAll = 'SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin';
+	protected static $sqlGetAll = 'SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, id_pittype, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin';
+	protected static $sqlGetAllOrdered = 'SELECT id_pitstop, pitstop.id_station, station.shortName, station.name AS statName, id_itinerary, itinerary.name AS itinName, id_pittype, `time` FROM pitstop LEFT JOIN station ON pitstop.id_station = station.id_station LEFT JOIN itinerary ON pitstop.id_itinerary = itinerary.id_itin ORDER BY `time`';
 
 	private $itinerary = 0; //main itinerary
 	private $pitstops = null; //['pitstop_id'=>time]
@@ -450,6 +481,34 @@ class Way extends DBObject{
 									}
 		}
 	}
+		
+	public static function newEditable($post_){
+		$eWay = new Way('dummy');
+		$eWay->pitstopsTotal = $post_['totalstopsEDIT'];
+		$eWay->pitstopsMaxId = $post_['laststopIDEDIT'];
+		$eWay->itinerary = $post_['itinerarySelectEdit'];
+		
+		for($i=1; $i <= $eWay->pitstopsMaxId; $i++) {
+			if(!empty($post_['stationTimeED'.$i])){
+				$eWay->pitstops[$i] = array(
+					'station'=>$post_['stationED'.$i], 
+					'time'=>Utils::HHmm2Int( Utils::cleanInput( $post_['stationTimeED'.$i])) ,
+					'pitType'=>$post_['pitTypeED'.$i],
+										);
+			}
+		}
+		
+		return $eWay;
+	}
+	
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+			$load['laststopID'] = 0;
+			$me = new Way($load);
+			$me->id = $load['id_pitstop'];
+		return $me;}
+	}
 	public function save($post_){
 		//$pdosql = str_replace(':1:', $this->name, $this->sqlPDOSave);
 		//phpnet//$conn = new PDO('sqlite:C:\path\to\file.sqlite');
@@ -463,11 +522,83 @@ class Way extends DBObject{
 			LiLogger::log( $this->errormsg );
 			return false;
 		}
+			
+		if( empty($this->pitstops) ){
+			$this->errormsg = 'Could not save itinerary: no pitstops in itinerary.';
+			LiLogger::log( $this->errormsg );
+			return false;				
+		}
+			
 		$stmt = $conn->prepare('INSERT INTO pitstop(id_station, time, id_pittype, id_itinerary) VALUES(:id_stat, :time, :id_pittyp, :id_itin)');
-		
+			
 		try {
         $conn->beginTransaction();
 			//var_dump($this->pitstops);
+
+        foreach($this->pitstops as $pit_num => $pitstop) {
+            $stmt->bindValue(':id_stat', $pitstop['station'], PDO::PARAM_INT);
+            $stmt->bindValue(':time', $pitstop['time'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_pittyp', $pitstop['pitType'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_itin', $this->itinerary, PDO::PARAM_INT);
+            $stmt->execute();
+            sleep(1);
+        }
+        $conn->commit();
+    } catch(PDOException $e) {
+        if(stripos($e->getMessage(), 'DATABASE IS LOCKED') !== false) {
+            // This should be specific to SQLite, sleep for 0.25 seconds
+            // and try again.  We do have to commit the open transaction first though
+            $conn->commit();
+            usleep(250000);
+        } else {
+            $conn->rollBack();
+            //throw $e;
+			$this->errormsg = 'error performing pitstops transaction: '.$e->getMessage();//LinkBox\DataBase::$errormsg;
+			LiLogger::log( $this->errormsg );
+			return false;
+        }
+    }
+		if ($stmt->rowCount()){
+			$this->errormsg = 'Saved successfully.';
+			return true;
+		} else{
+			$this->errormsg = 'Failure: not saved.';
+			return false;
+		}
+		//return $this->saveObject($pdosql);
+	}
+	/* ====================================================== editPitstops ===============================================
+	*/
+	public function editPitstops($post_){
+		
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		
+		if($conn === false){
+			$this->errormsg = 'error while editing pitstops: '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( $this->errormsg );
+			return false;
+		}
+			
+		if( empty($this->pitstops) ){
+			$this->errormsg = 'Could not edit itinerary: no pitstops in new itinerary.';
+			LiLogger::log( $this->errormsg );
+			return false;				
+		}
+		$itin_id = $post_['itinerarySelectEdit'];
+		if( empty($itin_id) ){
+			$this->errormsg = 'Could not edit itinerary: no itinerary ID.';
+			LiLogger::log( $this->errormsg );
+			return false;				
+		}
+		
+		$stmt = $conn->prepare('INSERT INTO pitstop(id_station, time, id_pittype, id_itinerary) VALUES(:id_stat, :time, :id_pittyp, :id_itin)');
+			
+		try {
+        $conn->beginTransaction();
+			//var_dump($this->pitstops);
+		$db->executeDelete("DELETE FROM pitstop WHERE id_itinerary={$itin_id}") ;
+		
         foreach($this->pitstops as $pit_num => $pitstop) {
             $stmt->bindValue(':id_stat', $pitstop['station'], PDO::PARAM_INT);
             $stmt->bindValue(':time', $pitstop['time'], PDO::PARAM_INT);
@@ -607,16 +738,17 @@ all pitstops for desired sequence. proxy for getPitstopsByDestination
 		$conn = $db::getPDO(); //get raw connection
 		return ( $db->executeDelete("DELETE FROM pitstop WHERE id_itinerary={$itin_id}") );
 	}
+
 }
 	
-/*							sequencesStations
+/*===============================================================		sequencesStations		===============================================
 * set of stations for X-axis of graph
 */
 class sequencesStations extends DBObject{
 
 	protected static $orm = array('table'=>'seq_stations', 'table_id'=>'id_ss', 'is_uid'=>false);
-	protected static $sqlGetAll = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station';
-	protected static $sqlGetAllOrdered = 'SELECT id_ss, seq_stations.id_station, orderal, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station ORDER BY orderal';
+	protected static $sqlGetAll = 'SELECT id_ss, seq_stations.id_station, orderal, id_pitstoptype, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station';
+	protected static $sqlGetAllOrdered = 'SELECT id_ss, seq_stations.id_station, orderal, id_pitstoptype, station.shortName, station.name AS statName FROM seq_stations LEFT JOIN station ON seq_stations.id_station = station.id_station ORDER BY orderal';
 	
 	private $sequence = 0; //main sequence
 	private $seq_stations = null; //['pitstop_id'=>time]
@@ -631,15 +763,47 @@ class sequencesStations extends DBObject{
 		$this->seqLastID = $post_['lastseqID'];
 			
 		for($i=1; $i <= $this->seqLastID; $i++) {
-		if($post_['station'.$i] <> -1){
-			$this->seq_stations[$i] = array(
-				'station'=>Utils::cleanInput($post_['station'.$i]), 
-				'orderal'=>Utils::cleanInput($post_['orderal'.$i]),
-				'pitType'=>Utils::cleanInput($post_['pitType'.$i]),
-									);	
+			if( ! empty( $post_['station'.$i] )){
+				if($post_['station'.$i] <> -1){
+					$this->seq_stations[$i] = array(
+						'station'=>Utils::cleanInput($post_['station'.$i]), 
+						'orderal'=>Utils::cleanInput($post_['orderal'.$i]),
+						'pitType'=>Utils::cleanInput($post_['pitType'.$i]),
+											);	
+					}		
 			}
 		}
 	}
+	public static function newEditable($post_){
+		$eWay = new sequencesStations('dummy');
+		$eWay->sequence = $post_['sequencesSelectEdit'];
+		$eWay->seqTotal = $post_['totalseqEDIT'];
+		$eWay->seqLastID = $post_['lastseqIDEDIT'];
+		
+		for($i=1; $i <= $eWay->seqLastID; $i++) {
+			if( ! empty( $post_['stationSSED'.$i] )){
+				if($post_['stationSSED'.$i] <> -1){
+					$eWay->seq_stations[$i] = array(
+						'station'=>Utils::cleanInput($post_['stationSSED'.$i]), 
+						'orderal'=>Utils::cleanInput($post_['orderalED'.$i]),
+						'pitType'=>Utils::cleanInput($post_['seqTypeED'.$i]),
+											);	
+					}			
+			}
+		}
+		return $eWay;
+	}
+	
+	public static function load($id){
+		$load = self::getFromDB($id);
+		if(empty($load)){return false;}else{
+			$load['lastseqIDEDIT'] = 0;
+			$me = new sequencesStations($load);
+			$me->id = $load['id_ss'];
+		return $me;}
+	}
+/*====================== save sequences =======================
+*/	
 	public function save($post_){
 
 		$db = LinkBox\DataBase::connect(); //get raw connection
@@ -680,6 +844,73 @@ class sequencesStations extends DBObject{
     }
 		if ($stmt->rowCount()){
 			$this->errormsg = 'Saved successfully.';
+			return true;
+		} else{
+			$this->errormsg = 'Failure: not saved.';
+			return false;
+		}
+		//return $this->saveObject($pdosql);
+	}
+	
+	/*====================== edit sequences =======================
+*/	
+	public function editSequences($post_){
+
+		$db = LinkBox\DataBase::connect(); //get raw connection
+		$conn = $db::getPDO(); //get raw connection
+		
+		if($conn === false){
+			self::$errormsg = 'error while editing seq-stations. '.LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+		}
+		if( empty($this->seq_stations) ){
+			$this->errormsg = 'Could not edit Sequence: no sequences in new object.';
+			LiLogger::log( $this->errormsg );
+			return false;				
+		}
+		$itin_id = $post_['sequencesSelectEdit'];
+		if( empty($itin_id) ){
+			$this->errormsg = 'Could not edit Sequence: no sequence ID.';
+			LiLogger::log( $this->errormsg );
+			return false;				
+		}
+		
+		$stmt = $conn->prepare('INSERT INTO seq_stations(id_seq, id_station, id_pitstoptype, orderal) VALUES(:id_seq, :id_stat, :id_pittyp, :orderal)');
+		
+		try {
+        $conn->beginTransaction();
+			//var_dump($this->pitstops);
+		$db->executeDelete("DELETE FROM seq_stations WHERE id_seq={$itin_id}") ;
+			
+        foreach($this->seq_stations as $stat_order => $station) {
+            $stmt->bindValue(':id_stat', $station['station'], PDO::PARAM_INT);
+            $stmt->bindValue(':orderal', $station['orderal'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_pittyp', $station['pitType'], PDO::PARAM_INT);
+            $stmt->bindValue(':id_seq', $this->sequence, PDO::PARAM_INT);
+            $stmt->execute();
+            sleep(1);
+        }
+        $conn->commit();
+    } catch(PDOException $e) {
+        if(stripos($e->getMessage(), 'DATABASE IS LOCKED') !== false) {
+            // This should be specific to SQLite, sleep for 0.25 seconds
+            // and try again.  We do have to commit the open transaction first though
+            $conn->commit();
+            usleep(250000);
+        } else {
+            $conn->rollBack();
+            //throw $e;
+			self::$errormsg = 'error performing sequences transaction: '.$e->getMessage();
+			$this->errormsg = self::$errormsg;
+			//LinkBox\DataBase::$errormsg;
+			LiLogger::log( self::$errormsg );
+			return false;
+        }
+    }
+		if ($stmt->rowCount()){
+			$this->errormsg = 'Saved successfully.';
+			LiLogger::log( "editSequences Saved successfully. Count: ".$stmt->rowCount() );
 			return true;
 		} else{
 			$this->errormsg = 'Failure: not saved.';
@@ -1079,22 +1310,6 @@ class User extends DBObject{
 	
 	}
 }
-
-class ORM{
-	protected static $mapping = array(
-		'User' => array('table'=>'user', 'table_id'=>'id_user'),
-		'Sequence' => array('table'=>'sequences', 'table_id'=>'id_seq', 'is_uid'=>true)
-	);
-	public static function getTableMap($entity){
-		if( array_key_exists($entity, self::$mapping) ){
-				return self::$mapping[$entity];
-			}else{
-				return false;
-			}
-		}
-	} // ORM
-	
-
 
 class DataBase123{
 	protected static $instance;

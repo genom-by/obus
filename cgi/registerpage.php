@@ -46,6 +46,9 @@ function getSelectedText(elementId) {
 .obus_header{
 	margin-bottom:20px;
 }
+.notifylink{
+	text-decoration:underline;
+}
 </style>
 </head>
 <body>
