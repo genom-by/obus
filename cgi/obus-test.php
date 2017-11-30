@@ -467,7 +467,10 @@ function btn_del_pits_stats_onClick(){
 	);	
 }
 
-function html_setLastTableID(tablename='pitstops'){
+function html_setLastTableID(tablename){
+	
+	//default value for preES2005
+	tablename = typeof tablename !== 'undefined' ? 'pitstops' : '';
 	
 	var elLastId = '';
 	
